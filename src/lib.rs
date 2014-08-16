@@ -4,6 +4,8 @@ extern crate core;
 use std::iter::FromIterator;
 use core::slice::Items;
 
+pub mod generators;
+
 trait Poly<T> : FromIterator<T> {
     fn as_slice<'a>(&'a self) -> &'a [T];
 
@@ -99,6 +101,8 @@ impl<'a, T: Clone> VertexPass<uint, T> for IndexDeref<'a, T> {
         self.vertices[*index].clone()
     }
 }
+
+trait Generator<T> : Iterator<T> {}
 
 #[cfg(test)]
 mod test {
