@@ -1,0 +1,10 @@
+[package]
+name = "vertex"
+version = "0.0.0"
+authors = [
+    "Colin Sherratt <colin.sherratt@gmail.com>",
+]
+
+[[lib]]
+name = "vertex"
+path = "src/lib.rs"
