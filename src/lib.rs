@@ -119,7 +119,7 @@ impl<T> Poly<T> for Vector4<T> {
     }
 }
 
-trait Poly<T> : FromIterator<T> {
+pub trait Poly<T> : FromIterator<T> {
     fn as_slice<'a>(&'a self) -> &'a [T];
 
     fn iter<'a>(&'a self) -> Items<T> {
