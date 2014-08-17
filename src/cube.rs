@@ -22,7 +22,6 @@ impl Cube {
 
     pub fn face(&self, idx: uint) -> Quad<Vector3<f32>> {
         match idx {
-            // back face
             0 => Quad::new(self.vert(0b000), self.vert(0b001),
                            self.vert(0b011), self.vert(0b010)),
             1 => Quad::new(self.vert(0b110), self.vert(0b111),

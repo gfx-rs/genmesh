@@ -168,14 +168,14 @@ impl<T> Quad<T> {
 }
 
 pub trait ToTriangle<T> {
-    fn to_triangles(&self) -> T;
+    fn to_triangles(&self, |T|);
 }
 
-impl<T: Clone> ToTriangle<Vector2<Triangle<T>>> for Quad<T> {
-    fn to_triangles(&self) -> Vector2<Triangle<T>> {
+impl<T: Clone> ToTriangle<Triangle<T>> for Quad<T> {
+    fn to_triangles(&self, emit: |Triangle<T>|) {
         let &Quad(Vector4([ref v0, ref v1, ref v2, ref v3])) = self;
-        Vector2([Triangle::new(v0.clone(), v1.clone(), v2.clone()),
-                 Triangle::new(v2.clone(), v3.clone(), v0.clone())])
+        emit(Triangle::new(v0.clone(), v1.clone(), v2.clone()));
+        emit(Triangle::new(v2.clone(), v3.clone(), v0.clone()));
     }
 }
 
@@ -239,6 +239,13 @@ pub trait Generator<T, P: Poly<T>> : Iterator<P> {
             f: f
         }
     }
+
+    fn to_triangles<OUT_P>(self) -> ConvertTriangles<Self, OUT_P> {
+        ConvertTriangles {
+            source: self,
+            buffer: Some(RingBuf::with_capacity(2)),
+        }
+    }
 }
 
 pub struct GeometryMap<'a, SRC, IN_P, OUT_P> {
@@ -280,6 +287,35 @@ impl<'a, IN_P, OUT_P, SRC: Iterator<IN_P>> Iterator<OUT_P> for GeometryMap<'a, S
     }
 }
 
+pub struct ConvertTriangles<SRC, OUT_P> {
+    source: SRC,
+    buffer: Option<RingBuf<OUT_P>>,
+}
+
+impl<IN_V, IN_P: ToTriangle<OUT_P>, OUT_P: Poly<IN_V>, SRC: Iterator<IN_P>> Iterator<OUT_P> for ConvertTriangles<SRC, OUT_P> {
+    fn next(&mut self) -> Option<OUT_P> {
+        loop {
+            match self.buffer.get_mut_ref().pop_front() {
+                p @ Some(_) => return p,
+                None => ()
+            }
+
+            match self.source.next() {
+                Some(p) => {
+                    let mut buf = self.buffer.take().unwrap();
+                    p.to_triangles(|emited| buf.push(emited));
+                    self.buffer = Some(buf);
+                }
+                None => return None
+            }
+
+        }
+    }
+}
+
+impl<OUT_V, IN_P: ToTriangle<OUT_P>, OUT_P: Poly<OUT_V>, SRC: Iterator<IN_P>> Generator<OUT_V, OUT_P> for ConvertTriangles<SRC, OUT_P> {}
+
+
 impl<'a, IN_P, OUT_V, OUT_P: Poly<OUT_V>, SRC: Iterator<IN_P>> Generator<OUT_V, OUT_P> for GeometryMap<'a, SRC, IN_P, OUT_P> {}
 
 impl<'a, IN_V, IN_P: Poly<IN_V>,
@@ -308,6 +344,7 @@ impl<T: Clone, P: Poly<T>, SRC: Iterator<P>> Iterator<T> for VertexGenerator<SRC
         }
     }
 }
+
 
 
 #[cfg(test)]
