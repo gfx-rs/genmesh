@@ -1,4 +1,4 @@
-use core::slice::Items;
+use std::vec::MoveItems;
 
 pub struct Vector1<T>(pub [T, ..1]);
 pub struct Vector2<T>(pub [T, ..2]);
@@ -22,7 +22,7 @@ impl<T: Clone> Clone for Vector1<T> {
     }
 }
 
-impl<T> Poly<T> for Vector1<T> {
+impl<T: Clone> Poly<T> for Vector1<T> {
     fn as_slice<'a>(&'a self) -> &'a [T] {
         let &Vector1(ref s) = self;
         s.as_slice()
@@ -47,7 +47,7 @@ impl<T: Clone> Clone for Vector2<T> {
     }
 }
 
-impl<T> Poly<T> for Vector2<T> {
+impl<T: Clone> Poly<T> for Vector2<T> {
     fn as_slice<'a>(&'a self) -> &'a [T] {
         let &Vector2(ref s) = self;
         s.as_slice()
@@ -73,7 +73,7 @@ impl<T: Clone> Clone for Vector3<T> {
     }
 }
 
-impl<T> Poly<T> for Vector3<T> {
+impl<T: Clone> Poly<T> for Vector3<T> {
     fn as_slice<'a>(&'a self) -> &'a [T] {
         let &Vector3(ref s) = self;
         s.as_slice()
@@ -100,18 +100,18 @@ impl<T: Clone> Clone for Vector4<T> {
     }
 }
 
-impl<T> Poly<T> for Vector4<T> {
+impl<T: Clone> Poly<T> for Vector4<T> {
     fn as_slice<'a>(&'a self) -> &'a [T] {
         let &Vector4(ref s) = self;
         s.as_slice()
     }
 }
 
-pub trait Poly<T> : FromIterator<T> {
+pub trait Poly<T: Clone> : FromIterator<T> {
     fn as_slice<'a>(&'a self) -> &'a [T];
 
-    fn iter<'a>(&'a self) -> Items<T> {
-        self.as_slice().iter()
+    fn iter<'a>(&'a self) -> MoveItems<T> {
+        self.as_slice().into_vec().move_iter()
     }
 }
 
@@ -140,7 +140,7 @@ impl<T> FromIterator<T> for Triangle<T> {
     }
 }
 
-impl<T> Poly<T> for Triangle<T> {
+impl<T: Clone> Poly<T> for Triangle<T> {
     fn as_slice<'a>(&'a self) -> &'a [T] {
         let &Triangle(Vector3(ref s)) = self;
         s.as_slice()
@@ -152,6 +152,13 @@ pub struct Quad<T>(pub Vector4<T>);
 impl<T> Quad<T> {
     pub fn new(v0: T, v1: T, v2: T, v3: T) -> Quad<T> {
         Quad(Vector4([v0, v1, v2, v3]))
+    }
+}
+
+impl<T: Clone> Clone for Quad<T> {
+    fn clone(&self) -> Quad<T> {
+        let &Quad(ref v) = self;
+        Quad(v.clone()) 
     }
 }
 
@@ -177,19 +184,20 @@ impl<T> FromIterator<T> for Quad<T> {
     }
 }
 
-impl<T> Poly<T> for Quad<T> {
+impl<T: Clone> Poly<T> for Quad<T> {
     fn as_slice<'a>(&'a self) -> &'a [T] {
         let &Quad(Vector4(ref s)) = self;
         s.as_slice()
     }
 }
 
+#[deriving(Clone)]
 pub enum Polygon<T> {
     PolyTri(Triangle<T>),
     PolyQuad(Quad<T>)
 }
 
-impl<T> Poly<T> for Polygon<T> {
+impl<T: Clone> Poly<T> for Polygon<T> {
     fn as_slice<'a>(&'a self) -> &'a [T] {
         match self {
             &PolyTri(Triangle(ref s)) => s.as_slice(),
