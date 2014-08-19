@@ -124,8 +124,3 @@ impl<T: Clone> ToTriangles<T> for Polygon<T> {
         }
     }
 }
-
-#[cfg(test)]
-mod test_quad {
-
-}

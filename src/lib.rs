@@ -41,8 +41,3 @@ mod triangle;
 pub mod generators {
     pub use cube::Cube;
 }
-
-#[cfg(test)]
-mod test {
-
-}
