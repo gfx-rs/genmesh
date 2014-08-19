@@ -2,9 +2,6 @@
 extern crate core;
 extern crate debug;
 
-use std::collections::RingBuf;
-use std::collections::Deque;
-
 pub use poly::{
     Vector1,
     Vector2,
@@ -32,11 +29,18 @@ pub use triangle::{
     TriangleGenerator
 };
 
+pub use polygon::{
+    PolygonVertexMap,
+    PolygonPolyMap,
+    PolygonPipeline,
+    PolygonGenerator
+};
 
 mod cube;
 mod poly;
 mod quad;
 mod triangle;
+mod polygon;
 
 pub mod generators {
     pub use cube::Cube;

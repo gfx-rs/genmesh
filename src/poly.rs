@@ -1,5 +1,3 @@
-use std::vec::MoveItems;
-
 pub struct Vector1<T>(pub [T, ..1]);
 pub struct Vector2<T>(pub [T, ..2]);
 pub struct Vector3<T>(pub [T, ..3]);
@@ -96,6 +94,15 @@ impl<T: Clone> Triangle<T> {
 pub enum Polygon<T> {
     PolyTri(Triangle<T>),
     PolyQuad(Quad<T>)
+}
+
+impl<T: Clone> Polygon<T> {
+    pub fn map_vertex<U>(&self, f: |T| -> U) -> Polygon<U> {
+        match self {
+            &PolyTri(ref t) => PolyTri(t.map_vertex(f)),
+            &PolyQuad(ref q) => PolyQuad(q.map_vertex(f))
+        }
+    }
 }
 
 pub trait ToTriangles<T> {
