@@ -1,6 +1,6 @@
 
 use core::iter::Range;
-use super::{Generator, Quad, Vector3};
+use super::{QuadPipeline, Quad, Vector3};
 
 pub struct Cube {
     range: Range<uint>
@@ -8,9 +8,7 @@ pub struct Cube {
 
 impl Cube {
     pub fn new() -> Cube {
-        Cube {
-            range: range(0, 6)
-        }
+        Cube { range: range(0, 6) }
     }
 
     pub fn vert(&self, idx: uint) -> Vector3<f32> {
@@ -45,4 +43,4 @@ impl Iterator<Quad<Vector3<f32>>> for Cube {
     }
 }
 
-impl Generator<Vector3<f32>, Quad<Vector3<f32>>> for Cube {}
+impl<'a> QuadPipeline<'a, Vector3<f32>> for Cube {}
