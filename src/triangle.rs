@@ -1,7 +1,8 @@
 use Triangle;
+use TriangluateMesh;
 
-pub trait TrianglePipeline<'a, T> : Iterator<Triangle<T>> {
-    fn vertex<'a,U>(self, f: |T|:'a -> U) -> TriangleVertexMap<'a, Self, T, U> {
+pub trait TrianglePipeline<T: Clone> : Iterator<Triangle<T>> {
+    fn vertex<'a, U>(self, f: |T|:'a -> U) -> TriangleVertexMap<'a, Self, T, U> {
         TriangleVertexMap {
             source: self,
             f: f
@@ -14,6 +15,10 @@ pub trait TrianglePipeline<'a, T> : Iterator<Triangle<T>> {
             f: f
         }
     }
+
+    fn to_triangles(self) -> TriangluateMesh<Self, T> {
+        TriangluateMesh::new(self)
+    }
 }
 
 pub struct TriangleVertexMap<'a, SRC, T, U> {
@@ -21,7 +26,7 @@ pub struct TriangleVertexMap<'a, SRC, T, U> {
     f: |T|:'a -> U
 }
 
-impl<'a, SRC: TrianglePipeline<'a, T>, T: Clone, U> Iterator<Triangle<U>> for TriangleVertexMap<'a, SRC, T, U> {
+impl<'a, SRC: TrianglePipeline<T>, T: Clone, U> Iterator<Triangle<U>> for TriangleVertexMap<'a, SRC, T, U> {
     fn next(&mut self) -> Option<Triangle<U>> {
         self.source.next().map(|quad| {
             quad.map_vertex(|v| (self.f)(v))
@@ -29,20 +34,20 @@ impl<'a, SRC: TrianglePipeline<'a, T>, T: Clone, U> Iterator<Triangle<U>> for Tr
     }
 }
 
-impl<'a, SRC: TrianglePipeline<'a, T>, T: Clone, U> TrianglePipeline<'a, U> for TriangleVertexMap<'a, SRC, T, U> {}
+impl<'a, SRC: TrianglePipeline<T>, T: Clone, U: Clone> TrianglePipeline<U> for TriangleVertexMap<'a, SRC, T, U> {}
 
 pub struct TrianglePolyMap<'a, SRC, T, U> {
     source: SRC,
     f: |Triangle<T>|:'a -> Triangle<U>
 }
 
-impl<'a, SRC: TrianglePipeline<'a, T>, T, U> Iterator<Triangle<U>> for TrianglePolyMap<'a, SRC, T, U> {
+impl<'a, SRC: TrianglePipeline<T>, T, U> Iterator<Triangle<U>> for TrianglePolyMap<'a, SRC, T, U> {
     fn next(&mut self) -> Option<Triangle<U>> {
         self.source.next().map(|q| (self.f)(q))
     }
 }
 
-impl<'a, SRC: TrianglePipeline<'a, T>, T, U> TrianglePipeline<'a, U> for TrianglePolyMap<'a, SRC, T, U> {}
+impl<'a, SRC: TrianglePipeline<T>, T, U: Clone> TrianglePipeline<U> for TrianglePolyMap<'a, SRC, T, U> {}
 
 pub struct TriangleGenerator<SRC> {
     source: SRC
@@ -62,4 +67,4 @@ impl<'a, T, SRC: Iterator<Triangle<T>>> Iterator<Triangle<T>> for TriangleGenera
     }
 } 
 
-impl<'a, T, SRC: Iterator<Triangle<T>>> TrianglePipeline<'a, T> for TriangleGenerator<SRC> {}
+impl<'a, T: Clone, SRC: Iterator<Triangle<T>>> TrianglePipeline<T> for TriangleGenerator<SRC> {}

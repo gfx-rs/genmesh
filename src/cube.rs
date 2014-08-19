@@ -43,4 +43,4 @@ impl Iterator<Quad<Vector3<f32>>> for Cube {
     }
 }
 
-impl<'a> QuadPipeline<'a, Vector3<f32>> for Cube {}
+impl QuadPipeline<Vector3<f32>> for Cube {}

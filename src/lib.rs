@@ -12,7 +12,6 @@ pub use poly::{
     Polygon,
     PolyTri,
     PolyQuad,
-    ToTriangles
 };
 
 pub use quad::{
@@ -36,11 +35,17 @@ pub use polygon::{
     PolygonGenerator
 };
 
+pub use triangulate::{
+    ToTriangles,
+    TriangluateMesh
+};
+
 mod cube;
 mod poly;
 mod quad;
 mod triangle;
 mod polygon;
+mod triangulate;
 
 pub mod generators {
     pub use cube::Cube;

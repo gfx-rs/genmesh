@@ -1,6 +1,7 @@
 use Polygon;
+use TriangluateMesh;
 
-pub trait PolygonPipeline<'a, T> : Iterator<Polygon<T>> {
+pub trait PolygonPipeline<T: Clone> : Iterator<Polygon<T>> {
     fn vertex<'a,U>(self, f: |T|:'a -> U) -> PolygonVertexMap<'a, Self, T, U> {
         PolygonVertexMap {
             source: self,
@@ -14,6 +15,10 @@ pub trait PolygonPipeline<'a, T> : Iterator<Polygon<T>> {
             f: f
         }
     }
+
+    fn to_triangles(self) -> TriangluateMesh<Self, T> {
+        TriangluateMesh::new(self)
+    }
 }
 
 pub struct PolygonVertexMap<'a, SRC, T, U> {
@@ -21,7 +26,7 @@ pub struct PolygonVertexMap<'a, SRC, T, U> {
     f: |T|:'a -> U
 }
 
-impl<'a, SRC: PolygonPipeline<'a, T>, T: Clone, U> Iterator<Polygon<U>> for PolygonVertexMap<'a, SRC, T, U> {
+impl<'a, SRC: PolygonPipeline<T>, T: Clone, U> Iterator<Polygon<U>> for PolygonVertexMap<'a, SRC, T, U> {
     fn next(&mut self) -> Option<Polygon<U>> {
         self.source.next().map(|quad| {
             quad.map_vertex(|v| (self.f)(v))
@@ -29,20 +34,20 @@ impl<'a, SRC: PolygonPipeline<'a, T>, T: Clone, U> Iterator<Polygon<U>> for Poly
     }
 }
 
-impl<'a, SRC: PolygonPipeline<'a, T>, T: Clone, U> PolygonPipeline<'a, U> for PolygonVertexMap<'a, SRC, T, U> {}
+impl<'a, SRC: PolygonPipeline<T>, T: Clone, U: Clone> PolygonPipeline<U> for PolygonVertexMap<'a, SRC, T, U> {}
 
 pub struct PolygonPolyMap<'a, SRC, T, U> {
     source: SRC,
     f: |Polygon<T>|:'a -> Polygon<U>
 }
 
-impl<'a, SRC: PolygonPipeline<'a, T>, T, U> Iterator<Polygon<U>> for PolygonPolyMap<'a, SRC, T, U> {
+impl<'a, SRC: PolygonPipeline<T>, T, U> Iterator<Polygon<U>> for PolygonPolyMap<'a, SRC, T, U> {
     fn next(&mut self) -> Option<Polygon<U>> {
         self.source.next().map(|q| (self.f)(q))
     }
 }
 
-impl<'a, SRC: PolygonPipeline<'a, T>, T, U> PolygonPipeline<'a, U> for PolygonPolyMap<'a, SRC, T, U> {}
+impl<'a, SRC: PolygonPipeline<T>, T, U: Clone> PolygonPipeline<U> for PolygonPolyMap<'a, SRC, T, U> {}
 
 pub struct PolygonGenerator<SRC> {
     source: SRC
@@ -62,4 +67,4 @@ impl<'a, T, SRC: Iterator<Polygon<T>>> Iterator<Polygon<T>> for PolygonGenerator
     }
 } 
 
-impl<'a, T, SRC: Iterator<Polygon<T>>> PolygonPipeline<'a, T> for PolygonGenerator<SRC> {}
+impl<'a, T: Clone, SRC: Iterator<Polygon<T>>> PolygonPipeline<T> for PolygonGenerator<SRC> {}

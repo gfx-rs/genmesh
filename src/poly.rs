@@ -104,30 +104,3 @@ impl<T: Clone> Polygon<T> {
         }
     }
 }
-
-pub trait ToTriangles<T> {
-    fn to_triangles(&self, emit: |Triangle<T>|);
-}
-
-impl<T: Clone> ToTriangles<T> for Quad<T> {
-    fn to_triangles(&self, emit: |Triangle<T>|) {
-        let &Quad{x: ref x, y: ref y, z: ref z, w: ref w} = self;
-        emit(Triangle::new(x.clone(), y.clone(), z.clone()));
-        emit(Triangle::new(z.clone(), w.clone(), x.clone()));
-    }
-}
-
-impl<T: Clone> ToTriangles<T> for Triangle<T> {
-    fn to_triangles(&self, emit: |Triangle<T>|) {
-        emit(self.clone());
-    }
-}
-
-impl<T: Clone> ToTriangles<T> for Polygon<T> {
-    fn to_triangles(&self, emit: |Triangle<T>|) {
-        match self {
-            &PolyTri(ref t) => t.to_triangles(emit),
-            &PolyQuad(ref q) => q.to_triangles(emit),
-        }
-    }
-}
