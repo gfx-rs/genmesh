@@ -10,7 +10,7 @@ This also provides some `Generators` for creating primitives at runtime.
  - `vertex` maps a function to each vertex in a polygon
  - `polygon` maps a function to each polygon
  - `to_triangles` triangles Quads to Triangles
- - `verticies` terminates the pipeline producing a vertex iterator
+ - `vertices` terminates the pipeline producing a vertex iterator
 
 **Currently Supported Generators**
  - `Cube`
