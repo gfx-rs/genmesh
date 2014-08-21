@@ -12,6 +12,8 @@ pub use poly::{
     Polygon,
     PolyTri,
     PolyQuad,
+    Vertices,
+    AsVertices
 };
 
 pub use quad::{

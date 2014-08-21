@@ -1,5 +1,6 @@
 use Polygon;
 use TriangluateMesh;
+use AsVertices;
 
 pub trait PolygonPipeline<T: Clone> : Iterator<Polygon<T>> {
     fn vertex<'a,U>(self, f: |T|:'a -> U) -> PolygonVertexMap<'a, Self, T, U> {
@@ -18,6 +19,10 @@ pub trait PolygonPipeline<T: Clone> : Iterator<Polygon<T>> {
 
     fn to_triangles(self) -> TriangluateMesh<Self, T> {
         TriangluateMesh::new(self)
+    }
+
+    fn vertices(self) -> AsVertices<Self, T> {
+        AsVertices::new(self)
     }
 }
 

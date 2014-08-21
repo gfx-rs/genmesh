@@ -1,3 +1,5 @@
+use std::collections::{RingBuf, Deque};
+
 pub struct Vector1<T>(pub [T, ..1]);
 pub struct Vector2<T>(pub [T, ..2]);
 pub struct Vector3<T>(pub [T, ..3]);
@@ -101,6 +103,68 @@ impl<T: Clone> Polygon<T> {
         match self {
             &PolyTri(ref t) => PolyTri(t.map_vertex(f)),
             &PolyQuad(ref q) => PolyQuad(q.map_vertex(f))
+        }
+    }
+}
+
+pub trait Vertices<T> {
+    fn vertices(self, f: |T|);
+}
+
+impl<T> Vertices<T> for Triangle<T> {
+    fn vertices(self, emit: |T|) {
+        let Triangle{x: x, y: y, z: z} = self;
+        emit(x);
+        emit(y);
+        emit(z);
+    }
+}
+
+impl<T> Vertices<T> for Quad<T> {
+    fn vertices(self, emit: |T|) {
+        let Quad{x: x, y: y, z: z, w: w} = self;
+        emit(x);
+        emit(y);
+        emit(z);
+        emit(w);
+    }
+}
+
+impl<T> Vertices<T> for Polygon<T> {
+    fn vertices(self, emit: |T|) {
+        match self {
+            PolyTri(p) => p.vertices(emit),
+            PolyQuad(p) => p.vertices(emit)
+        }
+    }
+}
+
+pub struct AsVertices<SRC, V> {
+    source: SRC,
+    buffer: RingBuf<V>
+}
+
+impl<V, U: Vertices<V>, SRC: Iterator<U>> AsVertices<SRC, V> {
+    pub fn new(src: SRC) -> AsVertices<SRC, V> {
+        AsVertices {
+            source: src,
+            buffer: RingBuf::new()
+        }
+    }
+}
+
+impl<V, U: Vertices<V>, SRC: Iterator<U>> Iterator<V> for AsVertices<SRC, V> {
+    fn next(&mut self) -> Option<V> {
+        loop {
+            match self.buffer.pop_front() {
+                Some(v) => return Some(v),
+                None => ()
+            }
+
+            match self.source.next() {
+                Some(p) => p.vertices(|v| self.buffer.push(v)),
+                None => return None
+            }
         }
     }
 }
