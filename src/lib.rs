@@ -36,12 +36,15 @@ pub use polygon::{
     PolygonGenerator
 };
 
-mod cube;
 mod poly;
 mod quad;
 mod triangle;
 mod polygon;
 
+mod cube;
+mod plane;
+
 pub mod generators {
     pub use cube::Cube;
+    pub use plane::Plane;
 }
