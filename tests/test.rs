@@ -7,8 +7,11 @@ use vertex::{
     ToTriangles,
     Triangle,
     TriangleGenerator,
-    TrianglePipeline
+    TrianglePipeline,
+    Vector2
 };
+
+use vertex::generators::Plane;
 
 #[test]
 fn test_quad_vertex() {
@@ -122,4 +125,23 @@ fn test_to_triangles() {
     t.to_triangles(|v| result.push(v));
 
     assert_eq!(result, vec![Triangle::new(0u, 1, 2)]);
+}
+
+#[test]
+fn test_plane() {
+    let mut plane = Plane::new();
+
+    let a = plane.next().unwrap();
+
+    let Quad {
+        x: Vector2([ax, ay]),
+        y: Vector2([bx, by]),
+        z: Vector2([cx, cy]),
+        w: Vector2([dx, dy])
+    } = a;
+
+    assert_eq!(ax, -1.); assert_eq!(ay, -1.);
+    assert_eq!(bx, -1.); assert_eq!(by,  1.);
+    assert_eq!(cx,  1.); assert_eq!(cy,  1.);
+    assert_eq!(dx,  1.); assert_eq!(dy, -1.);
 }
