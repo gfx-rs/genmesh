@@ -57,4 +57,4 @@ impl Iterator<Quad<Vector2<f32>>> for Plane {
     }
 }
 
-impl<'a> QuadPipeline<'a, Vector2<f32>> for Plane {}
+impl<'a> QuadPipeline<Vector2<f32>> for Plane {}
