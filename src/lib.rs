@@ -9,13 +9,14 @@ pub use poly::{
     PolyTri,
     PolyQuad,
     Vertices,
-    VerticesPipeline,
+    VerticesIterator,
     MapToVertices
 };
 
 pub use triangulate::{
     EmitTriangles,
-    TriangluateMesh
+    Triangulate,
+    TriangulateIterator
 };
 
 mod triangulate;

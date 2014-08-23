@@ -68,11 +68,11 @@ impl<T: Clone> Polygon<T> {
     }
 }
 
-pub trait Vertices<T> {
+pub trait EmitVertices<T> {
     fn emit_vertices(self, f: |T|);
 }
 
-impl<T> Vertices<T> for Triangle<T> {
+impl<T> EmitVertices<T> for Triangle<T> {
     fn emit_vertices(self, emit: |T|) {
         let Triangle{x: x, y: y, z: z} = self;
         emit(x);
@@ -81,7 +81,7 @@ impl<T> Vertices<T> for Triangle<T> {
     }
 }
 
-impl<T> Vertices<T> for Quad<T> {
+impl<T> EmitVertices<T> for Quad<T> {
     fn emit_vertices(self, emit: |T|) {
         let Quad{x: x, y: y, z: z, w: w} = self;
         emit(x);
@@ -91,7 +91,7 @@ impl<T> Vertices<T> for Quad<T> {
     }
 }
 
-impl<T> Vertices<T> for Polygon<T> {
+impl<T> EmitVertices<T> for Polygon<T> {
     fn emit_vertices(self, emit: |T|) {
         match self {
             PolyTri(p) => p.emit_vertices(emit),
@@ -100,25 +100,25 @@ impl<T> Vertices<T> for Polygon<T> {
     }
 }
 
-pub trait AsVertices<SRC, V> {
-    fn vertices(self) -> VerticesPipeline<SRC, V>;
+pub trait Vertices<SRC, V> {
+    fn vertices(self) -> VerticesIterator<SRC, V>;
 }
 
-impl<V, P: Vertices<V>, T: Iterator<P>> AsVertices<T, V> for T {
-    fn vertices(self) -> VerticesPipeline<T, V> {
-        VerticesPipeline {
+impl<V, P: EmitVertices<V>, T: Iterator<P>> Vertices<T, V> for T {
+    fn vertices(self) -> VerticesIterator<T, V> {
+        VerticesIterator {
             source: self,
             buffer: RingBuf::new()
         }
     }    
 }
 
-pub struct VerticesPipeline<SRC, V> {
+pub struct VerticesIterator<SRC, V> {
     source: SRC,
     buffer: RingBuf<V>
 }
 
-impl<V, U: Vertices<V>, SRC: Iterator<U>> Iterator<V> for VerticesPipeline<SRC, V> {
+impl<V, U: EmitVertices<V>, SRC: Iterator<U>> Iterator<V> for VerticesIterator<SRC, V> {
     fn next(&mut self) -> Option<V> {
         loop {
             match self.buffer.pop_front() {

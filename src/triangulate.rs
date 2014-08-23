@@ -35,31 +35,31 @@ impl<T: Clone> EmitTriangles<T> for Polygon<T> {
     }
 }
 
-trait Triangluate<T, V> {
-    fn triangluate(self) -> TriangluateMesh<T, V>;
+pub trait Triangulate<T, V> {
+    fn triangluate(self) -> TriangulateIterator<T, V>;
 }
 
-impl<V, P: EmitTriangles<V>, T: Iterator<P>> Triangluate<T, V> for T {
-    fn triangluate(self) -> TriangluateMesh<T, V> {
-        TriangluateMesh::new(self)
+impl<V, P: EmitTriangles<V>, T: Iterator<P>> Triangulate<T, V> for T {
+    fn triangluate(self) -> TriangulateIterator<T, V> {
+        TriangulateIterator::new(self)
     }
 }
 
-pub struct TriangluateMesh<SRC, V> {
+pub struct TriangulateIterator<SRC, V> {
     source: SRC,
     buffer: RingBuf<Triangle<V>>
 }
 
-impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> TriangluateMesh<SRC, V> {
-    pub fn new(src: SRC) -> TriangluateMesh<SRC, V> {
-        TriangluateMesh {
+impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> TriangulateIterator<SRC, V> {
+    pub fn new(src: SRC) -> TriangulateIterator<SRC, V> {
+        TriangulateIterator {
             source: src,
             buffer: RingBuf::new()
         }
     }
 }
 
-impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> Iterator<Triangle<V>> for TriangluateMesh<SRC, V> {
+impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> Iterator<Triangle<V>> for TriangulateIterator<SRC, V> {
     fn next(&mut self) -> Option<Triangle<V>> {
         loop {
             match self.buffer.pop_front() {
