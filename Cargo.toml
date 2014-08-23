@@ -1,10 +1,10 @@
 [package]
-name = "vertex"
+name = "genmesh"
 version = "0.1.0"
 authors = [
     "Colin Sherratt <colin.sherratt@gmail.com>",
 ]
 
 [lib]
-name = "vertex"
+name = "genmesh"
 path = "src/lib.rs"
