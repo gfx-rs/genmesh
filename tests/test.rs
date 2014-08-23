@@ -18,10 +18,14 @@ use vertex::{
     Quad,
     EmitTriangles,
     Triangle,
-    MapToVertices
+    MapToVertices,
+    LruIndexer,
+    Indexer,
+    Vertices,
+    Triangulate
 };
 
-use vertex::generators::Plane;
+use vertex::generators::{Cube, Plane};
 
 #[test]
 fn test_quad_vertex() {
@@ -154,4 +158,32 @@ fn test_plane() {
     assert_eq!(bx, -1.); assert_eq!(by,  1.);
     assert_eq!(cx,  1.); assert_eq!(cy,  1.);
     assert_eq!(dx,  1.); assert_eq!(dy, -1.);
+}
+
+#[test]
+fn test_lru_indexer() {
+    let mut vectices = Vec::new();
+    let indexes: Vec<uint> = {
+        let mut indexer = LruIndexer::new(8, |_, v| vectices.push(v));
+
+        Cube::new().vertex(|v| indexer.index(v))
+                   .vertices()
+                   .collect()
+    };
+
+    assert_eq!(8, vectices.len());
+    assert_eq!(6*4, indexes.len());
+
+    let mut vectices = Vec::new();
+    let indexes: Vec<uint> = {
+        let mut indexer = LruIndexer::new(4, |_, v| vectices.push(v));
+
+        Cube::new().triangluate()
+                   .vertex(|v| indexer.index(v))
+                   .vertices()
+                   .collect()
+    };
+
+    assert_eq!(20, vectices.len());
+    assert_eq!(3*6*2, indexes.len());
 }

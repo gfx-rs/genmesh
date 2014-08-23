@@ -23,7 +23,8 @@ pub use poly::{
     PolyQuad,
     Vertices,
     VerticesIterator,
-    MapToVertices
+    MapToVertices,
+    MapVertex
 };
 
 pub use triangulate::{
@@ -32,8 +33,14 @@ pub use triangulate::{
     TriangulateIterator
 };
 
+pub use indexer::{
+    Indexer,
+    LruIndexer
+};
+
 mod triangulate;
 mod poly;
+mod indexer;
 
 mod cube;
 mod plane;
