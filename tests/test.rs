@@ -1,14 +1,11 @@
 extern crate vertex;
 
 use vertex::{
-    QuadGenerator,
-    QuadPipeline,
     Quad,
     EmitTriangles,
     Triangle,
-    TriangleGenerator,
-    TrianglePipeline,
-    Vector2
+    Vector2,
+    MapToVertices
 };
 
 use vertex::generators::Plane;
@@ -21,8 +18,8 @@ fn test_quad_vertex() {
     let output = &[Quad::new(false, true, false, true),
                    Quad::new(true, false, true, false)];
 
-    let transformed = QuadGenerator::new(input.iter().map(|x| x.clone()))
-        .vertex(|v| v % 2 != 0);
+    let transformed = input.iter().map(|x| x.clone())
+                                  .vertex(|v| v % 2 != 0);
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -37,9 +34,9 @@ fn test_quad_vertex_two_stages() {
     let output = &[Quad::new(false, true, false, true),
                    Quad::new(true, false, true, false)];
 
-    let transformed = QuadGenerator::new(input.iter().map(|x| x.clone()))
-        .vertex(|v| v as u8)
-        .vertex(|v| v % 2 != 0);
+    let transformed = input.iter().map(|x| x.clone())
+                                  .vertex(|v| v as u8)
+                                  .vertex(|v| v % 2 != 0);
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -54,8 +51,8 @@ fn test_quad_poly_simple() {
     let output = &[Quad::new(0i, 1, 2, 0),
                    Quad::new(0i, 2, 3, 0)];
 
-    let transformed = QuadGenerator::new(input.iter().map(|x| x.clone()))
-        .polygon(|v| Quad::new(0i, v.y as int, v.z as int, 0));
+    let transformed = input.iter().map(|x| x.clone())
+                                  .map(|v| Quad::new(0i, v.y as int, v.z as int, 0));
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -70,8 +67,8 @@ fn test_triangle_vertex() {
     let output = &[Triangle::new(false, true, false),
                    Triangle::new(true, false, true)];
 
-    let transformed = TriangleGenerator::new(input.iter().map(|x| x.clone()))
-        .vertex(|v| v % 2 != 0);
+    let transformed = input.iter().map(|x| x.clone())
+                           .vertex(|v| v % 2 != 0);
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -86,9 +83,9 @@ fn test_triangle_vertex_two_stages() {
     let output = &[Triangle::new(false, true, false),
                    Triangle::new(true, false, true)];
 
-    let transformed = TriangleGenerator::new(input.iter().map(|x| x.clone()))
-        .vertex(|v| v as u8)
-        .vertex(|v| v % 2 != 0);
+    let transformed = input.iter().map(|x| x.clone())
+                           .vertex(|v| v as u8)
+                           .vertex(|v| v % 2 != 0);
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -103,8 +100,8 @@ fn test_triangle_poly_simple() {
     let output = &[Triangle::new(0i, 1, 2),
                    Triangle::new(0i, 2, 3)];
 
-    let transformed = TriangleGenerator::new(input.iter().map(|x| x.clone()))
-        .polygon(|v| Triangle::new(0i, v.y as int, v.z as int));
+    let transformed = input.iter().map(|x| x.clone())
+                           .map(|v| Triangle::new(0i, v.y as int, v.z as int));
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);

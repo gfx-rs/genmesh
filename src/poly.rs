@@ -145,22 +145,16 @@ pub trait AsVertices<SRC, V> {
 
 impl<V, P: Vertices<V>, T: Iterator<P>> AsVertices<T, V> for T {
     fn vertices(self) -> VerticesPipeline<T, V> {
-        VerticesPipeline::new(self)
+        VerticesPipeline {
+            source: self,
+            buffer: RingBuf::new()
+        }
     }    
 }
 
 pub struct VerticesPipeline<SRC, V> {
     source: SRC,
     buffer: RingBuf<V>
-}
-
-impl<V, U: Vertices<V>, SRC: Iterator<U>> VerticesPipeline<SRC, V> {
-    pub fn new(src: SRC) -> VerticesPipeline<SRC, V> {
-        VerticesPipeline {
-            source: src,
-            buffer: RingBuf::new()
-        }
-    }
 }
 
 impl<V, U: Vertices<V>, SRC: Iterator<U>> Iterator<V> for VerticesPipeline<SRC, V> {
@@ -176,5 +170,67 @@ impl<V, U: Vertices<V>, SRC: Iterator<U>> Iterator<V> for VerticesPipeline<SRC, 
                 None => return None
             }
         }
+    }
+}
+
+pub trait MapVertex<T, U, P> {
+    fn map_vertex(self, f: |T| -> U) -> P;
+}
+
+impl<T: Clone, U> MapVertex<T, U, Triangle<U>> for Triangle<T> {
+    fn map_vertex(self, map: |T| -> U) -> Triangle<U> {
+        let Triangle{x: x, y: y, z: z} = self;
+        Triangle {
+            x: map(x),
+            y: map(y),
+            z: map(z)
+        }
+    }
+}
+
+impl<T: Clone, U> MapVertex<T, U, Quad<U>> for Quad<T> {
+    fn map_vertex(self, map: |T| -> U) -> Quad<U> {
+        let Quad{x: x, y: y, z: z, w: w} = self;
+        Quad {
+            x: map(x),
+            y: map(y),
+            z: map(z),
+            w: map(w)
+        }
+    }
+}
+
+impl<T: Clone, U> MapVertex<T, U, Polygon<U>> for Polygon<T> {
+    fn map_vertex(self, map: |T| -> U) -> Polygon<U> {
+        match self {
+            PolyTri(p) => PolyTri(p.map_vertex(map)),
+            PolyQuad(p) => PolyQuad(p.map_vertex(map))
+        }
+    }
+}
+
+pub trait MapToVertices<T, U> {
+    fn vertex<'a>(self, map: |T|:'a -> U) -> MapToVerticesIter<'a, Self, T, U>;
+}
+
+impl<V_IN, V_OUT, P, P_IN: MapVertex<V_IN, V_OUT, P>, T: Iterator<P_IN>>
+    MapToVertices<V_IN, V_OUT> for T {
+    fn vertex<'a>(self, map: |V_IN|:'a -> V_OUT) -> MapToVerticesIter<'a, T, V_IN, V_OUT> {
+        MapToVerticesIter {
+            src: self,
+            f: map
+        }
+    }
+}
+
+struct MapToVerticesIter<'a, SRC, T, U> {
+    src: SRC,
+    f: |T|:'a -> U
+}
+
+impl<'a, P_IN: MapVertex<T, U, P>,
+         SRC: Iterator<P_IN>, T, U, P> Iterator<P> for MapToVerticesIter<'a, SRC, T, U> {
+    fn next(&mut self) -> Option<P> {
+        self.src.next().map(|x| x.map_vertex(|x| (self.f)(x)))
     }
 }

@@ -1,6 +1,6 @@
 
 use core::iter::Range;
-use super::{QuadPipeline, Quad, Vector3};
+use super::{Quad, Vector3};
 
 pub struct Cube {
     range: Range<uint>
@@ -43,5 +43,3 @@ impl Iterator<Quad<Vector3<f32>>> for Cube {
         self.range.next().map(|idx| self.face(idx))
     }
 }
-
-impl QuadPipeline<Vector3<f32>> for Cube {}

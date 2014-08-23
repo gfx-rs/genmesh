@@ -1,5 +1,5 @@
 
-use super::{QuadPipeline, Quad, Vector2};
+use super::{Quad, Vector2};
 
 pub struct Plane {
     subdivide_x: uint,
@@ -56,5 +56,3 @@ impl Iterator<Quad<Vector2<f32>>> for Plane {
         Some(Quad::new(x, y, z, w))
     }
 }
-
-impl<'a> QuadPipeline<Vector2<f32>> for Plane {}

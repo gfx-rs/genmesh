@@ -6,7 +6,6 @@ use {
     PolyTri,
     PolyQuad,
     Polygon,
-    TrianglePipeline,
 };
 
 pub trait EmitTriangles<T> {
@@ -75,5 +74,3 @@ impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> Iterator<Triangle<V>> for Triangl
         }
     }
 }
-
-impl<V: Clone, U: EmitTriangles<V>, SRC: Iterator<U>> TrianglePipeline<V> for TriangluateMesh<SRC, V> {}

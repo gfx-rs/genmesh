@@ -13,28 +13,8 @@ pub use poly::{
     PolyTri,
     PolyQuad,
     Vertices,
-    VerticesPipeline
-};
-
-pub use quad::{
-    QuadVertexMap,
-    QuadPolyMap,
-    QuadPipeline,
-    QuadGenerator
-};
-
-pub use triangle::{
-    TriangleVertexMap,
-    TrianglePolyMap,
-    TrianglePipeline,
-    TriangleGenerator
-};
-
-pub use polygon::{
-    PolygonVertexMap,
-    PolygonPolyMap,
-    PolygonPipeline,
-    PolygonGenerator
+    VerticesPipeline,
+    MapToVertices
 };
 
 pub use triangulate::{
@@ -42,11 +22,8 @@ pub use triangulate::{
     TriangluateMesh
 };
 
-mod poly;
-mod quad;
-mod triangle;
-mod polygon;
 mod triangulate;
+mod poly;
 
 mod cube;
 mod plane;
