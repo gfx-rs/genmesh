@@ -1,6 +1,5 @@
 use Triangle;
 use TriangluateMesh;
-use AsVertices;
 
 pub trait TrianglePipeline<T: Clone> : Iterator<Triangle<T>> {
     fn vertex<'a, U>(self, f: |T|:'a -> U) -> TriangleVertexMap<'a, Self, T, U> {
@@ -19,10 +18,6 @@ pub trait TrianglePipeline<T: Clone> : Iterator<Triangle<T>> {
 
     fn to_triangles(self) -> TriangluateMesh<Self, T> {
         TriangluateMesh::new(self)
-    }
-
-    fn vertices(self) -> AsVertices<Self, T> {
-        AsVertices::new(self)
     }
 }
 

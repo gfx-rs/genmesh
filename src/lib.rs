@@ -13,7 +13,7 @@ pub use poly::{
     PolyTri,
     PolyQuad,
     Vertices,
-    AsVertices
+    VerticesPipeline
 };
 
 pub use quad::{

@@ -108,11 +108,11 @@ impl<T: Clone> Polygon<T> {
 }
 
 pub trait Vertices<T> {
-    fn vertices(self, f: |T|);
+    fn emit_vertices(self, f: |T|);
 }
 
 impl<T> Vertices<T> for Triangle<T> {
-    fn vertices(self, emit: |T|) {
+    fn emit_vertices(self, emit: |T|) {
         let Triangle{x: x, y: y, z: z} = self;
         emit(x);
         emit(y);
@@ -121,7 +121,7 @@ impl<T> Vertices<T> for Triangle<T> {
 }
 
 impl<T> Vertices<T> for Quad<T> {
-    fn vertices(self, emit: |T|) {
+    fn emit_vertices(self, emit: |T|) {
         let Quad{x: x, y: y, z: z, w: w} = self;
         emit(x);
         emit(y);
@@ -131,29 +131,39 @@ impl<T> Vertices<T> for Quad<T> {
 }
 
 impl<T> Vertices<T> for Polygon<T> {
-    fn vertices(self, emit: |T|) {
+    fn emit_vertices(self, emit: |T|) {
         match self {
-            PolyTri(p) => p.vertices(emit),
-            PolyQuad(p) => p.vertices(emit)
+            PolyTri(p) => p.emit_vertices(emit),
+            PolyQuad(p) => p.emit_vertices(emit)
         }
     }
 }
 
-pub struct AsVertices<SRC, V> {
+pub trait AsVertices<SRC, V> {
+    fn vertices(self) -> VerticesPipeline<SRC, V>;
+}
+
+impl<V, P: Vertices<V>, T: Iterator<P>> AsVertices<T, V> for T {
+    fn vertices(self) -> VerticesPipeline<T, V> {
+        VerticesPipeline::new(self)
+    }    
+}
+
+pub struct VerticesPipeline<SRC, V> {
     source: SRC,
     buffer: RingBuf<V>
 }
 
-impl<V, U: Vertices<V>, SRC: Iterator<U>> AsVertices<SRC, V> {
-    pub fn new(src: SRC) -> AsVertices<SRC, V> {
-        AsVertices {
+impl<V, U: Vertices<V>, SRC: Iterator<U>> VerticesPipeline<SRC, V> {
+    pub fn new(src: SRC) -> VerticesPipeline<SRC, V> {
+        VerticesPipeline {
             source: src,
             buffer: RingBuf::new()
         }
     }
 }
 
-impl<V, U: Vertices<V>, SRC: Iterator<U>> Iterator<V> for AsVertices<SRC, V> {
+impl<V, U: Vertices<V>, SRC: Iterator<U>> Iterator<V> for VerticesPipeline<SRC, V> {
     fn next(&mut self) -> Option<V> {
         loop {
             match self.buffer.pop_front() {
@@ -162,7 +172,7 @@ impl<V, U: Vertices<V>, SRC: Iterator<U>> Iterator<V> for AsVertices<SRC, V> {
             }
 
             match self.source.next() {
-                Some(p) => p.vertices(|v| self.buffer.push(v)),
+                Some(p) => p.emit_vertices(|v| self.buffer.push(v)),
                 None => return None
             }
         }

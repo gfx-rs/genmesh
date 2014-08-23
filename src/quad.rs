@@ -1,6 +1,5 @@
 use Quad;
 use TriangluateMesh;
-use AsVertices;
 
 pub trait QuadPipeline<T: Clone> : Iterator<Quad<T>> {
     fn vertex<'a, U>(self, f: |T|:'a -> U) -> QuadVertexMap<'a, Self, T, U> {
@@ -19,11 +18,6 @@ pub trait QuadPipeline<T: Clone> : Iterator<Quad<T>> {
 
     fn to_triangles(self) -> TriangluateMesh<Self, T> {
         TriangluateMesh::new(self)
-    }
-
-
-    fn vertices(self) -> AsVertices<Self, T> {
-        AsVertices::new(self)
     }
 }
 
