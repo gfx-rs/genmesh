@@ -1,5 +1,5 @@
 
-use super::{Quad, Vector2};
+use super::{Quad};
 
 pub struct Plane {
     subdivide_x: uint,
@@ -28,17 +28,17 @@ impl Plane {
         }
     }
 
-    fn vert(&self, x: uint, y: uint) -> Vector2<f32> {
+    fn vert(&self, x: uint, y: uint) -> (f32, f32) {
         let sx = self.subdivide_x as f32;
         let sy = self.subdivide_y as f32;
         let x = (2. / sx) * x as f32 - 1.;
         let y = (2. / sy) * y as f32 - 1.; 
-        Vector2([x, y])
+        (x, y)
     }
 } 
 
-impl Iterator<Quad<Vector2<f32>>> for Plane {
-    fn next(&mut self) -> Option<Quad<Vector2<f32>>> {
+impl Iterator<Quad<(f32, f32)>> for Plane {
+    fn next(&mut self) -> Option<Quad<(f32, f32)>> {
         if self.x == self.subdivide_x {
             self.x = 0;
             self.y += 1;

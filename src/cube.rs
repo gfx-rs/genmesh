@@ -1,6 +1,6 @@
 
 use core::iter::Range;
-use super::{Quad, Vector3};
+use super::Quad;
 
 pub struct Cube {
     range: Range<uint>
@@ -12,14 +12,14 @@ impl Cube {
         Cube { range: range(0, 6) }
     }
 
-    fn vert(&self, idx: uint) -> Vector3<f32> {
+    fn vert(&self, idx: uint) -> (f32, f32, f32) {
         let x = if idx & 4 == 4 { 1.} else { -1. };
         let y = if idx & 2 == 2 { 1.} else { -1. };
         let z = if idx & 1 == 1 { 1.} else { -1. };
-        Vector3([x, y, z])
+        (x, y, z)
     }
 
-    fn face(&self, idx: uint) -> Quad<Vector3<f32>> {
+    fn face(&self, idx: uint) -> Quad<(f32, f32, f32)> {
         match idx {
             0 => Quad::new(self.vert(0b000), self.vert(0b001),
                            self.vert(0b011), self.vert(0b010)),
@@ -38,8 +38,8 @@ impl Cube {
     }
 } 
 
-impl Iterator<Quad<Vector3<f32>>> for Cube {
-    fn next(&mut self) -> Option<Quad<Vector3<f32>>> {
+impl Iterator<Quad<(f32, f32, f32)>> for Cube {
+    fn next(&mut self) -> Option<Quad<(f32, f32, f32)>> {
         self.range.next().map(|idx| self.face(idx))
     }
 }

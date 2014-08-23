@@ -4,7 +4,6 @@ use vertex::{
     Quad,
     EmitTriangles,
     Triangle,
-    Vector2,
     MapToVertices
 };
 
@@ -131,10 +130,10 @@ fn test_plane() {
     let a = plane.next().unwrap();
 
     let Quad {
-        x: Vector2([ax, ay]),
-        y: Vector2([bx, by]),
-        z: Vector2([cx, cy]),
-        w: Vector2([dx, dy])
+        x: (ax, ay),
+        y: (bx, by),
+        z: (cx, cy),
+        w: (dx, dy)
     } = a;
 
     assert_eq!(ax, -1.); assert_eq!(ay, -1.);

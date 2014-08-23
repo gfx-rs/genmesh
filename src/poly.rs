@@ -1,44 +1,5 @@
 use std::collections::{RingBuf, Deque};
 
-pub struct Vector1<T>(pub [T, ..1]);
-pub struct Vector2<T>(pub [T, ..2]);
-pub struct Vector3<T>(pub [T, ..3]);
-pub struct Vector4<T>(pub [T, ..4]);
-
-impl<T: Clone> Clone for Vector1<T> {
-    fn clone(&self) -> Vector1<T> {
-        let &Vector1(ref v) = self;
-        Vector1([v[0].clone()])
-    }
-}
-
-impl<T: Clone> Clone for Vector2<T> {
-    fn clone(&self) -> Vector2<T> {
-        let &Vector2(ref v) = self;
-        Vector2([v[0].clone(),
-                 v[1].clone()])
-    }
-}
-
-impl<T: Clone> Clone for Vector3<T> {
-    fn clone(&self) -> Vector3<T> {
-        let &Vector3(ref v) = self;
-        Vector3([v[0].clone(),
-                 v[1].clone(),
-                 v[2].clone()])
-    }
-}
-
-impl<T: Clone> Clone for Vector4<T> {
-    fn clone(&self) -> Vector4<T> {
-        let &Vector4(ref v) = self;
-        Vector4([v[0].clone(),
-                 v[1].clone(),
-                 v[2].clone(),
-                 v[3].clone()])
-    }
-}
-
 #[deriving(Clone, Show, PartialEq, Eq)]
 pub struct Quad<T> {
     pub x: T,

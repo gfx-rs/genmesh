@@ -3,10 +3,6 @@ extern crate core;
 extern crate debug;
 
 pub use poly::{
-    Vector1,
-    Vector2,
-    Vector3,
-    Vector4,
     Quad,
     Triangle,
     Polygon,
