@@ -1,5 +1,4 @@
 use Triangle;
-use TriangluateMesh;
 
 pub trait TrianglePipeline<T: Clone> : Iterator<Triangle<T>> {
     fn vertex<'a, U>(self, f: |T|:'a -> U) -> TriangleVertexMap<'a, Self, T, U> {
@@ -16,9 +15,6 @@ pub trait TrianglePipeline<T: Clone> : Iterator<Triangle<T>> {
         }
     }
 
-    fn to_triangles(self) -> TriangluateMesh<Self, T> {
-        TriangluateMesh::new(self)
-    }
 }
 
 pub struct TriangleVertexMap<'a, SRC, T, U> {

@@ -1,5 +1,4 @@
 use Quad;
-use TriangluateMesh;
 
 pub trait QuadPipeline<T: Clone> : Iterator<Quad<T>> {
     fn vertex<'a, U>(self, f: |T|:'a -> U) -> QuadVertexMap<'a, Self, T, U> {
@@ -14,10 +13,6 @@ pub trait QuadPipeline<T: Clone> : Iterator<Quad<T>> {
             source: self,
             f: f
         }
-    }
-
-    fn to_triangles(self) -> TriangluateMesh<Self, T> {
-        TriangluateMesh::new(self)
     }
 }
 

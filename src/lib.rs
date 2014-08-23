@@ -38,7 +38,7 @@ pub use polygon::{
 };
 
 pub use triangulate::{
-    ToTriangles,
+    EmitTriangles,
     TriangluateMesh
 };
 

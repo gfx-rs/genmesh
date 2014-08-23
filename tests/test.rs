@@ -4,7 +4,7 @@ use vertex::{
     QuadGenerator,
     QuadPipeline,
     Quad,
-    ToTriangles,
+    EmitTriangles,
     Triangle,
     TriangleGenerator,
     TrianglePipeline,
@@ -115,14 +115,14 @@ fn test_triangle_poly_simple() {
 fn test_to_triangles() {
     let q = Quad::new(0u, 1, 2, 3);
     let mut result = Vec::new();
-    q.to_triangles(|v| result.push(v));
+    q.emit_triangles(|v| result.push(v));
 
     assert_eq!(result, vec![Triangle::new(0u, 1, 2),
                             Triangle::new(2u, 3, 0)]);
 
     let t = Triangle::new(0u, 1, 2);
     let mut result = Vec::new();
-    t.to_triangles(|v| result.push(v));
+    t.emit_triangles(|v| result.push(v));
 
     assert_eq!(result, vec![Triangle::new(0u, 1, 2)]);
 }
