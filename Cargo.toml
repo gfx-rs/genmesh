@@ -5,6 +5,6 @@ authors = [
     "Colin Sherratt <colin.sherratt@gmail.com>",
 ]
 
-[[lib]]
+[lib]
 name = "vertex"
 path = "src/lib.rs"
