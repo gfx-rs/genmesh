@@ -178,7 +178,7 @@ fn test_lru_indexer() {
     let indexes: Vec<uint> = {
         let mut indexer = LruIndexer::new(4, |_, v| vectices.push(v));
 
-        Cube::new().triangluate()
+        Cube::new().triangulate()
                    .vertex(|v| indexer.index(v))
                    .vertices()
                    .collect()

@@ -50,11 +50,11 @@ impl<T: Clone> EmitTriangles<T> for Polygon<T> {
 }
 
 pub trait Triangulate<T, V> {
-    fn triangluate(self) -> TriangulateIterator<T, V>;
+    fn triangulate(self) -> TriangulateIterator<T, V>;
 }
 
 impl<V, P: EmitTriangles<V>, T: Iterator<P>> Triangulate<T, V> for T {
-    fn triangluate(self) -> TriangulateIterator<T, V> {
+    fn triangulate(self) -> TriangulateIterator<T, V> {
         TriangulateIterator::new(self)
     }
 }
