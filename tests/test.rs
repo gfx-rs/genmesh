@@ -12,9 +12,9 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-extern crate vertex;
+extern crate genmesh;
 
-use vertex::{
+use genmesh::{
     Quad,
     EmitTriangles,
     Triangle,
@@ -25,7 +25,7 @@ use vertex::{
     Triangulate
 };
 
-use vertex::generators::{Cube, Plane};
+use genmesh::generators::{Cube, Plane};
 
 #[test]
 fn test_quad_vertex() {
