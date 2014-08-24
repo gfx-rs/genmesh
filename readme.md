@@ -1,6 +1,6 @@
-# Vertex-RS
+# Genmesh
 
-[![Build Status](https://travis-ci.org/csherratt/vertex-rs.svg?branch=master)](https://travis-ci.org/csherratt/vertex-rs)
+[![Build Status](https://travis-ci.org/csherratt/genmesh.svg?branch=master)](https://travis-ci.org/csherratt/vertex-rs)
 
 Vertex-rs is a library for building vertex pipelines. The goal is help facilitate polygon assembly. This is done by building on top of the of the `Iterator` trait. A pipeline stage is a lazy iterator the consumes the input, and produces a new polygon based on its output.
 
@@ -34,7 +34,7 @@ An example:
 
 Here `Cube` generates six faces, one per side this is presented as a `Quad<Vertex3<f32>>`.
 
-`vertex` maps a function to each vertex in each face, in this case we want to convert from `vertex-rs`'s internal vertex format to our own. We now have a `Quad<MyVertex>>`.
+`vertex` maps a function to each vertex in each face, in this case we want to convert from `genmes`'s internal vertex format to our own. We now have a `Quad<MyVertex>>`.
 
 We can do a polygon level transform and modify the polygon as a whole. In the example we add a valid texture coordinate to each face. the `polygon` transform does not require the vertices to be consistent but the Polygon type must be.
 
