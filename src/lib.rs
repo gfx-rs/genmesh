@@ -44,8 +44,10 @@ mod indexer;
 
 mod cube;
 mod plane;
+mod sphere;
 
 pub mod generators {
     pub use cube::Cube;
     pub use plane::Plane;
+    pub use sphere::SphereUV;
 }

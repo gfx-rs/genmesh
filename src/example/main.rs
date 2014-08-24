@@ -13,7 +13,7 @@ use kiss3d::light;
 
 use genmesh::{MapToVertices, Triangulate};
 use genmesh::{LruIndexer, Indexer};
-use genmesh::generators::{Plane, Cube};
+use genmesh::generators::{Plane, Cube, SphereUV};
 
 #[start]
 fn start(argc: int, argv: *const *const u8) -> int {
@@ -62,10 +62,31 @@ fn main() {
     plane.set_local_translation(Vec3::new(0.25f32, 0.0, 0.0));
     plane.prepend_to_local_rotation(&Vec3::new(-0.5f32, 0., 0.));
 
+    let mut sphere_v = Vec::new();
+    let sphere_i: Vec<Vec3<u32>> = {
+        let mut indexer = LruIndexer::new(8, |_, v| sphere_v.push(v));
+        SphereUV::new(8, 8)
+            .triangulate()
+            .vertex(|(a, b, c)| {
+                Vec3::new(a, b, c)
+            })
+            .vertex(|v| indexer.index(v) as u32)
+            .map(|p| Vec3::new(p.x, p.y, p.z) )
+            .collect()
+    };
+    let sphere_mesh = Rc::new(RefCell::new(Mesh::new(sphere_v, sphere_i, None, None, false)));
+    let mut sphere = window.add_mesh(sphere_mesh, na::one());
+
+    sphere.set_color(0.0, 0.0, 1.0);
+    sphere.set_local_scale(0.1, 0.1, 0.1);
+    sphere.set_local_translation(Vec3::new(-0.25f32, 0.0, 0.0));
+    sphere.prepend_to_local_rotation(&Vec3::new(-0.5f32, 0., 0.));
+
     window.set_light(light::StickToCamera);
 
     while window.render() {
         cube.prepend_to_local_rotation(&Vec3::new(0.0f32, 0.014, 0.0));
         plane.prepend_to_local_rotation(&Vec3::new(0.0f32, 0.014, 0.0));
+        sphere.prepend_to_local_rotation(&Vec3::new(0.0f32, 0.014, 0.0))
     }
 }
