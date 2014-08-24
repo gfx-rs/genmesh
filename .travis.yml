@@ -14,6 +14,7 @@ install:
 script:
     - cargo build
     - cargo test
+    - cargo doc
     - cd src/example
     - cargo build
 after_script:
