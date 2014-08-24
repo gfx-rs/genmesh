@@ -1,4 +1,7 @@
 language: rust
+env:
+  global:
+    - secure: nVF8DHCwX+8t1F71bBbg3cHKl+HotTy7gEr7trKukXNEJqfWS3FmLMeSbTEajfXdtIyUU1LUUr/NuFf0VBPYHpeJqayj+PblRqBikPS/idQi1/lPqQK0bqrVDlZoqXpX9C2glRpktqVh3u/eMpXiTgZhcbN8wJVisgwhBRs3eGE=
 install:
     - sudo apt-get install libXxf86vm-dev xdotool
     - git clone https://github.com/glfw/glfw.git
@@ -13,3 +16,5 @@ script:
     - cargo test
     - cd src/example
     - cargo build
+after_script:
+  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
