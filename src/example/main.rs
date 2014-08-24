@@ -13,7 +13,7 @@ use kiss3d::light;
 
 use genmesh::{MapToVertices, Triangulate};
 use genmesh::{LruIndexer, Indexer};
-use genmesh::generators::Cube;
+use genmesh::generators::{Plane, Cube};
 
 #[start]
 fn start(argc: int, argv: *const *const u8) -> int {
@@ -35,19 +35,37 @@ fn main() {
             .map(|p| Vec3::new(p.x, p.y, p.z) )
             .collect()
     };
+    let cube_mesh = Rc::new(RefCell::new(Mesh::new(cube_v, cube_i, None, None, false)));
+    let mut cube = window.add_mesh(cube_mesh, na::one());
 
+    cube.set_color(1.0, 0.0, 0.0);
+    cube.set_local_scale(0.1, 0.1, 0.1);
+    cube.prepend_to_local_rotation(&Vec3::new(-0.5f32, 0., 0.));
 
-    let mesh  = Rc::new(RefCell::new(Mesh::new(cube_v, cube_i, None, None, false)));
-    let mut c = window.add_mesh(mesh, na::one());
+    let mut plane_v = Vec::new();
+    let plane_i: Vec<Vec3<u32>> = {
+        let mut indexer = LruIndexer::new(8, |_, v| plane_v.push(v));
+        Plane::subdivide(8, 8)
+            .triangulate()
+            .vertex(|(a, b)| {
+                Vec3::new(a, b, 0.)
+            })
+            .vertex(|v| indexer.index(v) as u32)
+            .map(|p| Vec3::new(p.x, p.y, p.z) )
+            .collect()
+    };
+    let plane_mesh = Rc::new(RefCell::new(Mesh::new(plane_v, plane_i, None, None, false)));
+    let mut plane = window.add_mesh(plane_mesh, na::one());
 
-    c.set_color(1.0, 0.0, 0.0);
-    c.enable_backface_culling(false);
-    c.set_local_scale(0.1, 0.1, 0.1);
-    c.set_local_translation(Vec3::new(0f32, 0., 0.));
+    plane.set_color(0.0, 1.0, 0.0);
+    plane.set_local_scale(0.1, 0.1, 0.1);
+    plane.set_local_translation(Vec3::new(0.25f32, 0.0, 0.0));
+    plane.prepend_to_local_rotation(&Vec3::new(-0.5f32, 0., 0.));
 
     window.set_light(light::StickToCamera);
 
     while window.render() {
-        c.prepend_to_local_rotation(&Vec3::new(0.0f32, 0.014, 0.01));
+        cube.prepend_to_local_rotation(&Vec3::new(0.0f32, 0.014, 0.0));
+        plane.prepend_to_local_rotation(&Vec3::new(0.0f32, 0.014, 0.0));
     }
 }
