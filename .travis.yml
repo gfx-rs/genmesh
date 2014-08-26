@@ -15,6 +15,7 @@ script:
     - cargo build
     - cargo test
     - cargo doc
+    - cp -r target/doc doc
     - cd src/example
     - cargo build
 after_script:
