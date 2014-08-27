@@ -1,7 +1,7 @@
 language: rust
 env:
   global:
-    - secure: nVF8DHCwX+8t1F71bBbg3cHKl+HotTy7gEr7trKukXNEJqfWS3FmLMeSbTEajfXdtIyUU1LUUr/NuFf0VBPYHpeJqayj+PblRqBikPS/idQi1/lPqQK0bqrVDlZoqXpX9C2glRpktqVh3u/eMpXiTgZhcbN8wJVisgwhBRs3eGE=
+    - secure: CypapAJnmOcE+/5uf2ad944IfJwD20whIIsbG+6nNjP34JDJ6EonP4+TuPFLTtZ4PPe2sUAI39TO97gwna2zOJEtU9qeNigvT9yQnDnvr6jkb4QzNJ6lOd42uwHUPvzD9vSjlGLpbAo2PUq8IKw52ehZtN5KvTLyehSoAc2eO6U=
 install:
     - sudo apt-get install libXxf86vm-dev xdotool
     - git clone https://github.com/glfw/glfw.git
