@@ -67,7 +67,7 @@ impl<T: Clone> Triangle<T> {
     }
 }
 
-#[deriving(Clone, PartialEq)]
+#[deriving(Show, Clone, PartialEq)]
 pub enum Polygon<T> {
     PolyTri(Triangle<T>),
     PolyQuad(Quad<T>)

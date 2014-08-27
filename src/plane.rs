@@ -13,6 +13,7 @@
 //   limitations under the License.
 
 use super::Quad;
+use super::generators::{SharedVertex, IndexedPolygon};
 
 pub struct Plane {
     subdivide_x: uint,
@@ -61,11 +62,57 @@ impl Iterator<Quad<(f32, f32)>> for Plane {
         }
 
         let x = self.vert(self.x,   self.y);
-        let y = self.vert(self.x,   self.y+1);
+        let y = self.vert(self.x+1, self.y);
         let z = self.vert(self.x+1, self.y+1);
-        let w = self.vert(self.x+1, self.y);
+        let w = self.vert(self.x,   self.y+1);
         self.x += 1;
 
         Some(Quad::new(x, y, z, w))
     }
+}
+
+impl SharedVertex<(f32, f32)> for Plane {
+    fn shared_vertex(&self, idx: uint) -> (f32, f32) {
+        let y = idx / (self.subdivide_x + 1);
+        let x = idx % (self.subdivide_x + 1);
+
+        self.vert(x, y)
+    }
+
+    fn shared_vertex_count(&self) -> uint {
+        (self.subdivide_x + 1) * (self.subdivide_y + 1)
+    }
+}
+
+impl IndexedPolygon<Quad<uint>> for Plane {
+    fn indexed_polygon(&self, idx: uint) -> Quad<uint> {
+        let y = idx / (self.subdivide_x);
+        let y = y * (self.subdivide_x+1);
+        let x = idx % self.subdivide_x;
+
+        Quad::new((x+y) + self.subdivide_x + 1,
+                  (x+y),
+                  (x+y) + 1,
+                  (x+y) + self.subdivide_x + 2)
+    }
+
+    fn indexed_polygon_count(&self) -> uint {
+        self.subdivide_x * self.subdivide_y
+    }
+}
+
+#[test]
+fn test_shared_vertex_count() {
+    let plane = Plane::new();
+    assert_eq!(plane.shared_vertex_count(), 4)
+    assert_eq!(plane.indexed_polygon_count(), 1)
+
+    let plane = Plane::subdivide(2, 2);
+    assert_eq!(plane.shared_vertex_count(), 9)
+    assert_eq!(plane.indexed_polygon_count(), 4)
+
+
+    let plane = Plane::subdivide(4, 4);
+    assert_eq!(plane.shared_vertex_count(), 25)
+    assert_eq!(plane.indexed_polygon_count(), 16)
 }

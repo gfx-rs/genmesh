@@ -155,9 +155,9 @@ fn test_plane() {
     } = a;
 
     assert_eq!(ax, -1.); assert_eq!(ay, -1.);
-    assert_eq!(bx, -1.); assert_eq!(by,  1.);
+    assert_eq!(bx,  1.); assert_eq!(by, -1.);
     assert_eq!(cx,  1.); assert_eq!(cy,  1.);
-    assert_eq!(dx,  1.); assert_eq!(dy, -1.);
+    assert_eq!(dx, -1.); assert_eq!(dy,  1.);
 }
 
 #[test]
