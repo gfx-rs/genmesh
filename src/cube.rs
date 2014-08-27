@@ -14,6 +14,7 @@
 
 use core::iter::Range;
 use super::Quad;
+use super::generators::{SharedVertex, IndexedPolygon};
 
 pub struct Cube {
     range: Range<uint>
@@ -32,22 +33,20 @@ impl Cube {
         (x, y, z)
     }
 
-    fn face(&self, idx: uint) -> Quad<(f32, f32, f32)> {
+    fn face_indexed(&self, idx: uint) -> Quad<uint> {
         match idx {
-            0 => Quad::new(self.vert(0b000), self.vert(0b001),
-                           self.vert(0b011), self.vert(0b010)),
-            1 => Quad::new(self.vert(0b110), self.vert(0b111),
-                           self.vert(0b101), self.vert(0b100)),
-            2 => Quad::new(self.vert(0b100), self.vert(0b101),
-                           self.vert(0b001), self.vert(0b000)),
-            3 => Quad::new(self.vert(0b011), self.vert(0b111),
-                           self.vert(0b110), self.vert(0b010)),
-            4 => Quad::new(self.vert(0b000), self.vert(0b010),
-                           self.vert(0b110), self.vert(0b100)),
-            5 => Quad::new(self.vert(0b101), self.vert(0b111),
-                           self.vert(0b011), self.vert(0b001)),
+            0 => Quad::new(0b000, 0b001, 0b011, 0b010),
+            1 => Quad::new(0b110, 0b111, 0b101, 0b100),
+            2 => Quad::new(0b100, 0b101, 0b001, 0b000),
+            3 => Quad::new(0b011, 0b111, 0b110, 0b010),
+            4 => Quad::new(0b000, 0b010, 0b110, 0b100),
+            5 => Quad::new(0b101, 0b111, 0b011, 0b001),
             idx => fail!("{} face is higher then 6", idx)
         }
+    }
+
+    fn face(&self, idx: uint) -> Quad<(f32, f32, f32)> {
+        self.face_indexed(idx).map_vertex(|i| self.vert(i))
     }
 } 
 
@@ -55,4 +54,20 @@ impl Iterator<Quad<(f32, f32, f32)>> for Cube {
     fn next(&mut self) -> Option<Quad<(f32, f32, f32)>> {
         self.range.next().map(|idx| self.face(idx))
     }
+}
+
+impl SharedVertex<(f32, f32, f32)> for Cube {
+    fn shared_vertex(&self, idx: uint) -> (f32, f32, f32) {
+        self.vert(idx)
+    }
+
+    fn shared_vertex_count(&self) -> uint { 8 }
+}
+
+impl IndexedPolygon<Quad<uint>> for Cube {
+    fn indexed_polygon(&self, idx: uint) -> Quad<uint> {
+        self.face_indexed(idx)
+    }
+
+    fn indexed_polygon_count(&self) -> uint { 6 }
 }

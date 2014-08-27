@@ -41,12 +41,17 @@ pub use indexer::{
 mod triangulate;
 mod poly;
 mod indexer;
+mod generator;
 
 mod cube;
 mod plane;
 mod sphere;
 
 pub mod generators {
+    pub use generator::{
+        SharedVertex,
+        IndexedPolygon
+    };
     pub use cube::Cube;
     pub use plane::Plane;
     pub use sphere::SphereUV;
