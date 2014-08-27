@@ -15,8 +15,11 @@ script:
     - cargo build
     - cargo test
     - cargo doc
-    - cp -r target/doc doc
     - cd src/example
     - cargo build
+    - cd ..
 after_script:
+  # the doc directory needs to be in the root for rust-ci
+  - mv target/doc doc
   - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
+
