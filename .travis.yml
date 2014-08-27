@@ -17,7 +17,7 @@ script:
     - cargo doc
     - cd src/example
     - cargo build
-    - cd ..
+    - cd ../..
 after_script:
   # the doc directory needs to be in the root for rust-ci
   - mv target/doc doc
