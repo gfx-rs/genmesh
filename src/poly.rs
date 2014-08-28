@@ -24,7 +24,7 @@ pub struct Quad<T> {
 }
 
 impl<T> Quad<T> {
-    /// create a new `Quad` with supplied vertcies
+    /// create a new `Quad` with supplied vertices
     pub fn new(v0: T, v1: T, v2: T, v3: T) -> Quad<T> {
         Quad {
             x: v0,

@@ -33,6 +33,9 @@ pub struct LruIndexer<'a, T> {
 impl<'a, T> LruIndexer<'a, T> {
     /// create a new `LruIndexer`, the window size is limited by the `size` parameter
     /// it is recommended to keep this small since lookup is done in N time
+    ///
+    /// if a new vertex is found, `emit` will be called. emit will be supplied with a
+    /// vertex and a index that was used.
     pub fn new<'a>(size: uint, emit: |uint, T|:'a) -> LruIndexer<'a, T> {
         LruIndexer {
             index: 0,
