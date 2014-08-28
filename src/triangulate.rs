@@ -22,7 +22,10 @@ use {
     Polygon,
 };
 
+/// provides a way to convert a polygon down to triangles
 pub trait EmitTriangles<T> {
+    /// convert a polygon to one or more triangles, each triangle
+    /// is returned by calling `emit`
     fn emit_triangles(&self, emit: |Triangle<T>|);
 }
 
@@ -49,7 +52,11 @@ impl<T: Clone> EmitTriangles<T> for Polygon<T> {
     }
 }
 
+/// `Triangluate` is a easy to to convert any Polygon stream to
+/// a stream of triangles. This is useful since Quads and other geometry
+/// are not supported by modern graphics pipelines like OpenGL.
 pub trait Triangulate<T, V> {
+    /// convert a stream of Polygons to a stream of triangles
     fn triangulate(self) -> TriangulateIterator<T, V>;
 }
 

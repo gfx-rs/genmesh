@@ -14,14 +14,18 @@
 
 use std::iter::Range;
 
+/// The `SharedVertex` trait is meant to be used with the `IndexedPolygon` trait.
+/// This trait is meant as a way to calculate the shared vertices that are
+/// required to build the implementors mesh.
 pub trait SharedVertex<V> {
-    /// return the shared vertex at offset
-    fn shared_vertex(&self, idx: uint) -> V;
+    /// return the shared vertex at offset `i`
+    fn shared_vertex(&self, i: uint) -> V;
 
-    /// return the number of shared verties
+    /// return the number of shared vertices required to represent the mesh
     fn shared_vertex_count(&self) -> uint;
 
-    /// create an iterator that returns each shared vertex in the generator
+    /// create an iterator that returns each shared vertex that is required to
+    /// build the mesh.
     fn shared_vertex_iter<'a>(&'a self) -> ShareVertexIterator<'a, Self, V> {
         ShareVertexIterator {
             base: self,
@@ -41,14 +45,18 @@ impl<'a, T: SharedVertex<V>, V> Iterator<V> for ShareVertexIterator<'a, T, V> {
     }
 }
 
+/// The `IndexedPolygon` trait is used with the `SharedVertex` trait in order to build
+/// a mesh. `IndexedPolygon` calculates each polygon face required to build an implementors mesh.
+/// each face is always returned in indexed form that points to the correct vertice supplied
+/// by the `SharedVertex` trait.
 pub trait IndexedPolygon<V> {
-    /// return a polygon with indicies to the shared vertex
-    fn indexed_polygon(&self, idx: uint) -> V;
+    /// return a polygon with indices to the shared vertex
+    fn indexed_polygon(&self, i: uint) -> V;
 
-    /// return the number of polygons in the generator
+    /// return the number of polygons that are needed to represent this mesh
     fn indexed_polygon_count(&self) -> uint;
 
-    /// return the number of 
+    /// create a iterator that will return a polygon for each face in the source mesh
     fn indexed_polygon_iter<'a>(&'a self) -> IndexedPolygonIterator<'a, Self, V> {
         IndexedPolygonIterator {
             base: self,

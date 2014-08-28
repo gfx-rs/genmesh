@@ -12,11 +12,16 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
+//!
+//! test?
+//!
+
 use std::f32::consts::{PI, PI_2};
 use super::{Quad, Triangle, Polygon};
 use super::{PolyTri, PolyQuad};
 use super::generators::{SharedVertex, IndexedPolygon};
 
+/// Represents a sphere with radius of 1, centered at (0, 0, 0)
 pub struct SphereUV {
     u: uint,
     v: uint,
@@ -25,6 +30,9 @@ pub struct SphereUV {
 }
 
 impl SphereUV {
+    /// Create a new sphere.
+    /// `u` is the number of points across the equator of the sphere.
+    /// `v` is the number of points from pole to pole.
     pub fn new(u: uint, v: uint) -> SphereUV {
         SphereUV {
             u: 0,

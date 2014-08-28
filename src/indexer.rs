@@ -13,9 +13,16 @@
 //   limitations under the License.
 
 pub trait Indexer<T> {
+    /// convert a vertex into an index.
     fn index(&mut self, v: T) -> uint;
 }
 
+/// An `LruIndexer` is useful for creating indexed steam from a stream of
+/// vertices. Each vertex that is index is only compared against the vetices
+/// contained in the cache. If a vertex is not found the LruIndexer will `emit`
+/// a new vertex and return the index of that new vertex.
+///
+/// The oldest sample by time used will be dropped if a new vertex is found.
 pub struct LruIndexer<'a, T> {
     index: uint,
     max: uint,
@@ -24,6 +31,8 @@ pub struct LruIndexer<'a, T> {
 }
 
 impl<'a, T> LruIndexer<'a, T> {
+    /// create a new `LruIndexer`, the window size is limited by the `size` parameter
+    /// it is recommended to keep this small since lookup is done in N time
     pub fn new<'a>(size: uint, emit: |uint, T|:'a) -> LruIndexer<'a, T> {
         LruIndexer {
             index: 0,

@@ -14,6 +14,7 @@
 
 use std::collections::{RingBuf, Deque};
 
+/// A polygon with 4 points. Maps to `GL_QUADS`
 #[deriving(Clone, Show, PartialEq, Eq)]
 pub struct Quad<T> {
     pub x: T,
@@ -23,6 +24,7 @@ pub struct Quad<T> {
 }
 
 impl<T> Quad<T> {
+    /// create a new `Quad` with supplied vertcies
     pub fn new(v0: T, v1: T, v2: T, v3: T) -> Quad<T> {
         Quad {
             x: v0,
@@ -33,15 +35,7 @@ impl<T> Quad<T> {
     }
 }
 
-impl<T: Clone> Quad<T> {
-    pub fn map_vertex<U>(&self, f: |T| -> U) -> Quad<U> {
-        Quad::new(f(self.x.clone()),
-                  f(self.y.clone()),
-                  f(self.z.clone()),
-                  f(self.w.clone()))
-    }
-}
-
+/// A polygon with 3 points. Maps to `GL_TRIANGLE`
 #[deriving(Clone, Show, PartialEq, Eq)]
 pub struct Triangle<T> {
     pub x: T,
@@ -50,6 +44,7 @@ pub struct Triangle<T> {
 }
 
 impl<T> Triangle<T> {
+    /// create a new `Triangle` with supplied vertcies
     pub fn new(v0: T, v1: T, v2: T) -> Triangle<T> {
         Triangle {
             x: v0,
@@ -59,31 +54,21 @@ impl<T> Triangle<T> {
     }
 }
 
-impl<T: Clone> Triangle<T> {
-    pub fn map_vertex<U>(&self, f: |T| -> U) -> Triangle<U> {
-        Triangle::new(f(self.x.clone()),
-                      f(self.y.clone()),
-                      f(self.z.clone()))
-    }
-}
-
+/// This is All-the-types container. This exists since some generators 
+/// produce both `Triangles` and `Quads`.
 #[deriving(Show, Clone, PartialEq)]
 pub enum Polygon<T> {
     PolyTri(Triangle<T>),
     PolyQuad(Quad<T>)
 }
 
-impl<T: Clone> Polygon<T> {
-    pub fn map_vertex<U>(&self, f: |T| -> U) -> Polygon<U> {
-        match self {
-            &PolyTri(ref t) => PolyTri(t.map_vertex(f)),
-            &PolyQuad(ref q) => PolyQuad(q.map_vertex(f))
-        }
-    }
-}
-
+/// The core mechanism of `Vertices` trait. This is a mechanism for unwraping
+/// a polygon extracting all of the vertices that it bound together.
 pub trait EmitVertices<T> {
-    fn emit_vertices(self, f: |T|);
+    /// Consume a polygon, each
+    /// vertex is emitted to the parent function by calling the supplied
+    /// lambda function
+    fn emit_vertices(self, emit: |T|);
 }
 
 impl<T> EmitVertices<T> for Triangle<T> {
@@ -114,7 +99,11 @@ impl<T> EmitVertices<T> for Polygon<T> {
     }
 }
 
+/// Supplies a way to convert an iterator of polygons to an iterator
+/// of vertices. Useful for when you need to write the vertices into
+/// a graphics pipeline.
 pub trait Vertices<SRC, V> {
+    /// Convert a polygon iterator to a vertices iterator.
     fn vertices(self) -> VerticesIterator<SRC, V>;
 }
 
@@ -148,7 +137,9 @@ impl<V, U: EmitVertices<V>, SRC: Iterator<U>> Iterator<V> for VerticesIterator<S
     }
 }
 
+// equivalent of `map` but per-vertex
 pub trait MapVertex<T, U, P> {
+    /// map a function to each vertex in polygon creating a new polygon
     fn map_vertex(self, f: |T| -> U) -> P;
 }
 
@@ -184,7 +175,13 @@ impl<T: Clone, U> MapVertex<T, U, Polygon<U>> for Polygon<T> {
     }
 }
 
+/// This acts very similar to a vertex shader. It gives a way to manipulate
+/// and modify the vertices in a polygon. This is useful if you need to scale
+/// the mesh using a matrix multiply, or just for modifying the type of each
+/// vertex.
 pub trait MapToVertices<T, U> {
+    /// from a iterator of polygons, produces a iterator of polygons. Each
+    /// vertex in the process is modified with the suppled function.
     fn vertex<'a>(self, map: |T|:'a -> U) -> MapToVerticesIter<'a, Self, T, U>;
 }
 
