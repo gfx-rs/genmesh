@@ -34,7 +34,7 @@ pub trait SharedVertex<V> {
     }
 }
 
-pub struct ShareVertexIterator<'a, T, V> {
+pub struct ShareVertexIterator<'a, T:'a, V> {
     base: &'a T,
     idx: Range<uint>
 }
@@ -65,7 +65,7 @@ pub trait IndexedPolygon<V> {
     }
 }
 
-pub struct IndexedPolygonIterator<'a, T, V> {
+pub struct IndexedPolygonIterator<'a, T:'a, V> {
     base: &'a T,
     idx: Range<uint>
 }
