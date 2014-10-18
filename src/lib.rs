@@ -28,7 +28,6 @@
 
 
 extern crate core;
-extern crate debug;
 
 pub use poly::{
     Quad,
