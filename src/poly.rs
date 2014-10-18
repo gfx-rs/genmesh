@@ -185,9 +185,9 @@ pub trait MapToVertices<T, U> {
     fn vertex<'a>(self, map: |T|:'a -> U) -> MapToVerticesIter<'a, Self, T, U>;
 }
 
-impl<V_IN, V_OUT, P, P_IN: MapVertex<V_IN, V_OUT, P>, T: Iterator<P_IN>>
-    MapToVertices<V_IN, V_OUT> for T {
-    fn vertex<'a>(self, map: |V_IN|:'a -> V_OUT) -> MapToVerticesIter<'a, T, V_IN, V_OUT> {
+impl<VIn, VOut, P, POut: MapVertex<VIn, VOut, P>, T: Iterator<POut>>
+    MapToVertices<VIn, VOut> for T {
+    fn vertex<'a>(self, map: |VIn|:'a -> VOut) -> MapToVerticesIter<'a, T, VIn, VOut> {
         MapToVerticesIter {
             src: self,
             f: map
@@ -200,8 +200,8 @@ struct MapToVerticesIter<'a, SRC, T, U> {
     f: |T|:'a -> U
 }
 
-impl<'a, P_IN: MapVertex<T, U, P>,
-         SRC: Iterator<P_IN>, T, U, P> Iterator<P> for MapToVerticesIter<'a, SRC, T, U> {
+impl<'a, POut: MapVertex<T, U, P>,
+         SRC: Iterator<POut>, T, U, P> Iterator<P> for MapToVerticesIter<'a, SRC, T, U> {
     fn next(&mut self) -> Option<P> {
         self.src.next().map(|x| x.map_vertex(|x| (self.f)(x)))
     }
