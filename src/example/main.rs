@@ -1,12 +1,11 @@
 extern crate native;
 extern crate kiss3d;
-extern crate nalgebra;
+extern crate "nalgebra" as na;
 extern crate genmesh;
 
 use std::rc::Rc;
 use std::cell::RefCell;
-use nalgebra::na::Vec3;
-use nalgebra::na;
+use na::{Pnt3, Vec3};
 use kiss3d::window::Window;
 use kiss3d::resource::Mesh;
 use kiss3d::light;
@@ -28,9 +27,7 @@ fn main() {
     let cube_i: Vec<Vec3<u32>> = {
         let mut indexer = LruIndexer::new(8, |_, v| cube_v.push(v));
         Cube::new()
-            .vertex(|(a, b, c)| {
-                Vec3::new(a, b, c)
-            })
+            .vertex(|(a, b, c)| Pnt3::new(a, b, c))
             .vertex(|v| indexer.index(v) as u32)
             .triangulate()
             .map(|p| Vec3::new(p.x, p.y, p.z) )
@@ -43,9 +40,9 @@ fn main() {
     cube0.set_local_scale(0.1, 0.1, 0.1);
     cube0.prepend_to_local_rotation(&Vec3::new(-0.5f32, 0., 0.));
 
-    let cube_v: Vec<Vec3<f32>> = Cube::new()
+    let cube_v: Vec<Pnt3<f32>> = Cube::new()
         .shared_vertex_iter()
-        .map(|(x, y, z)| Vec3::new(x, y, z))
+        .map(|(x, y, z)| Pnt3::new(x, y, z))
         .collect();
 
     let cube_i: Vec<Vec3<u32>> = Cube::new()
@@ -66,9 +63,7 @@ fn main() {
         let mut indexer = LruIndexer::new(8, |_, v| plane_v.push(v));
         Plane::subdivide(8, 8)
             .triangulate()
-            .vertex(|(a, b)| {
-                Vec3::new(a, b, 0.)
-            })
+            .vertex(|(a, b)| Pnt3::new(a, b, 0.) )
             .vertex(|v| indexer.index(v) as u32)
             .map(|p| Vec3::new(p.x, p.y, p.z) )
             .collect()
@@ -81,9 +76,9 @@ fn main() {
     plane0.set_local_translation(Vec3::new(0.25f32, 0.0, 0.0));
     plane0.prepend_to_local_rotation(&Vec3::new(-0.5f32, 0., 0.));
 
-    let plane_v: Vec<Vec3<f32>> = Plane::subdivide(2, 2)
+    let plane_v: Vec<Pnt3<f32>> = Plane::subdivide(2, 2)
         .shared_vertex_iter()
-        .map(|(x, y)| Vec3::new(x, y, 0.))
+        .map(|(x, y)| Pnt3::new(x, y, 0.))
         .collect();
 
     let plane_i: Vec<Vec3<u32>> = Plane::subdivide(2, 2)
@@ -105,9 +100,7 @@ fn main() {
         let mut indexer = LruIndexer::new(8, |_, v| sphere_v.push(v));
         SphereUV::new(32, 16)
             .triangulate()
-            .vertex(|(a, b, c)| {
-                Vec3::new(a, b, c)
-            })
+            .vertex(|(a, b, c)| Pnt3::new(a, b, c) )
             .vertex(|v| indexer.index(v) as u32)
             .map(|p| Vec3::new(p.x, p.y, p.z) )
             .collect()
@@ -120,9 +113,9 @@ fn main() {
     sphere0.set_local_translation(Vec3::new(-0.25f32, 0.0, 0.0));
     sphere0.prepend_to_local_rotation(&Vec3::new(-0.5f32, 0., 0.));
 
-    let sphere_v: Vec<Vec3<f32>> = SphereUV::new(32, 16)
+    let sphere_v: Vec<Pnt3<f32>> = SphereUV::new(32, 16)
         .shared_vertex_iter()
-        .map(|(x, y, z)| Vec3::new(x, y, z))
+        .map(|(x, y, z)| Pnt3::new(x, y, z))
         .collect();
 
     let sphere_i: Vec<Vec3<u32>> = SphereUV::new(32, 16)
