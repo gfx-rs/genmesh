@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use std::collections::{RingBuf, Deque};
+use std::collections::RingBuf;
 
 /// A polygon with 4 points. Maps to `GL_QUADS`
 #[deriving(Clone, Show, PartialEq, Eq)]
