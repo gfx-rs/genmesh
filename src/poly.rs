@@ -73,7 +73,7 @@ pub trait EmitVertices<T> {
 
 impl<T> EmitVertices<T> for Triangle<T> {
     fn emit_vertices(self, emit: |T|) {
-        let Triangle{x: x, y: y, z: z} = self;
+        let Triangle{x, y, z} = self;
         emit(x);
         emit(y);
         emit(z);
@@ -82,7 +82,7 @@ impl<T> EmitVertices<T> for Triangle<T> {
 
 impl<T> EmitVertices<T> for Quad<T> {
     fn emit_vertices(self, emit: |T|) {
-        let Quad{x: x, y: y, z: z, w: w} = self;
+        let Quad{x, y, z, w} = self;
         emit(x);
         emit(y);
         emit(z);
@@ -130,7 +130,7 @@ impl<V, U: EmitVertices<V>, SRC: Iterator<U>> Iterator<V> for VerticesIterator<S
             }
 
             match self.source.next() {
-                Some(p) => p.emit_vertices(|v| self.buffer.push(v)),
+                Some(p) => p.emit_vertices(|v| self.buffer.push_back(v)),
                 None => return None
             }
         }
@@ -145,7 +145,7 @@ pub trait MapVertex<T, U, P> {
 
 impl<T: Clone, U> MapVertex<T, U, Triangle<U>> for Triangle<T> {
     fn map_vertex(self, map: |T| -> U) -> Triangle<U> {
-        let Triangle{x: x, y: y, z: z} = self;
+        let Triangle{x, y, z} = self;
         Triangle {
             x: map(x),
             y: map(y),
@@ -156,7 +156,7 @@ impl<T: Clone, U> MapVertex<T, U, Triangle<U>> for Triangle<T> {
 
 impl<T: Clone, U> MapVertex<T, U, Quad<U>> for Quad<T> {
     fn map_vertex(self, map: |T| -> U) -> Quad<U> {
-        let Quad{x: x, y: y, z: z, w: w} = self;
+        let Quad{x, y, z, w} = self;
         Quad {
             x: map(x),
             y: map(y),

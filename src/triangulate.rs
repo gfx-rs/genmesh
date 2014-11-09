@@ -31,7 +31,7 @@ pub trait EmitTriangles<T> {
 
 impl<T: Clone> EmitTriangles<T> for Quad<T> {
     fn emit_triangles(&self, emit: |Triangle<T>|) {
-        let &Quad{x: ref x, y: ref y, z: ref z, w: ref w} = self;
+        let &Quad{ref x, ref y, ref z, ref w} = self;
         emit(Triangle::new(x.clone(), y.clone(), z.clone()));
         emit(Triangle::new(z.clone(), w.clone(), x.clone()));
     }
@@ -89,7 +89,7 @@ impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> Iterator<Triangle<V>> for Triangu
             }
 
             match self.source.next() {
-                Some(p) => p.emit_triangles(|v| self.buffer.push(v)),
+                Some(p) => p.emit_triangles(|v| self.buffer.push_back(v)),
                 None => return None
             }
         }
