@@ -1,11 +1,11 @@
 //   Copyright Colin Sherratt 2014
-//   
+//
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
-//   
+//
 //       http://www.apache.org/licenses/LICENSE-2.0
-//   
+//
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,10 +17,14 @@ use std::collections::RingBuf;
 /// A polygon with 4 points. Maps to `GL_QUADS`
 #[deriving(Clone, Show, PartialEq, Eq)]
 pub struct Quad<T> {
+    /// the first point of a quad
     pub x: T,
+    /// the second point of a quad
     pub y: T,
+    /// the third point of a quad
     pub z: T,
-    pub w: T
+    /// the fourth point of a quad
+    pub w: T,
 }
 
 impl<T> Quad<T> {
@@ -38,9 +42,12 @@ impl<T> Quad<T> {
 /// A polygon with 3 points. Maps to `GL_TRIANGLE`
 #[deriving(Clone, Show, PartialEq, Eq)]
 pub struct Triangle<T> {
+    /// the first point of a triangle
     pub x: T,
+    /// the second point of a triangle
     pub y: T,
-    pub z: T
+    /// the third point of a triangle
+    pub z: T,
 }
 
 impl<T> Triangle<T> {
@@ -54,11 +61,13 @@ impl<T> Triangle<T> {
     }
 }
 
-/// This is All-the-types container. This exists since some generators 
+/// This is All-the-types container. This exists since some generators
 /// produce both `Triangles` and `Quads`.
 #[deriving(Show, Clone, PartialEq)]
 pub enum Polygon<T> {
+    /// A wraped triangle
     PolyTri(Triangle<T>),
+    /// A wraped quad
     PolyQuad(Quad<T>)
 }
 
@@ -113,9 +122,11 @@ impl<V, P: EmitVertices<V>, T: Iterator<P>> Vertices<T, V> for T {
             source: self,
             buffer: RingBuf::new()
         }
-    }    
+    }
 }
 
+/// an iterator that breaks a polygon down into its individual
+/// verticies.
 pub struct VerticesIterator<SRC, V> {
     source: SRC,
     buffer: RingBuf<V>
@@ -137,7 +148,7 @@ impl<V, U: EmitVertices<V>, SRC: Iterator<U>> Iterator<V> for VerticesIterator<S
     }
 }
 
-// equivalent of `map` but per-vertex
+/// equivalent of `map` but per-vertex
 pub trait MapVertex<T, U, P> {
     /// map a function to each vertex in polygon creating a new polygon
     fn map_vertex(self, f: |T| -> U) -> P;

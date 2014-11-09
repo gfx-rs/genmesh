@@ -26,6 +26,7 @@
 //! can be used with the built in `Iterator` traits to build the meshes that your engine
 //! needs.
 
+#![deny(missing_docs)]
 
 extern crate core;
 

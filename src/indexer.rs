@@ -12,6 +12,10 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
+/// A trait defining how to defined an Indexer. An indexer is a object
+/// that collects verticies and emits indexes for the vertex. The intent
+/// is that an Indexer can find redundent vertexes and deduplicate them
+/// by returning aliased indexes.
 pub trait Indexer<T> {
     /// convert a vertex into an index.
     fn index(&mut self, v: T) -> uint;

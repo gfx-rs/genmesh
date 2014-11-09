@@ -66,13 +66,14 @@ impl<V, P: EmitTriangles<V>, T: Iterator<P>> Triangulate<T, V> for T {
     }
 }
 
+/// Used to iterator of polygons into a iterator of triangles
 pub struct TriangulateIterator<SRC, V> {
     source: SRC,
     buffer: RingBuf<Triangle<V>>
 }
 
 impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> TriangulateIterator<SRC, V> {
-    pub fn new(src: SRC) -> TriangulateIterator<SRC, V> {
+    fn new(src: SRC) -> TriangulateIterator<SRC, V> {
         TriangulateIterator {
             source: src,
             buffer: RingBuf::new()
