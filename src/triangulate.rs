@@ -14,11 +14,10 @@
 
 use std::collections::RingBuf;
 
+use Polygon::{ PolyQuad, PolyTri };
 use {
     Quad,
     Triangle,
-    PolyTri,
-    PolyQuad,
     Polygon,
 };
 

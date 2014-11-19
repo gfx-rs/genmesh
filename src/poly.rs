@@ -101,6 +101,8 @@ impl<T> EmitVertices<T> for Quad<T> {
 
 impl<T> EmitVertices<T> for Polygon<T> {
     fn emit_vertices(self, emit: |T|) {
+        use self::Polygon::{ PolyQuad, PolyTri };
+
         match self {
             PolyTri(p) => p.emit_vertices(emit),
             PolyQuad(p) => p.emit_vertices(emit)
@@ -179,6 +181,8 @@ impl<T: Clone, U> MapVertex<T, U, Quad<U>> for Quad<T> {
 
 impl<T: Clone, U> MapVertex<T, U, Polygon<U>> for Polygon<T> {
     fn map_vertex(self, map: |T| -> U) -> Polygon<U> {
+        use self::Polygon::{ PolyTri, PolyQuad };        
+
         match self {
             PolyTri(p) => PolyTri(p.map_vertex(map)),
             PolyQuad(p) => PolyQuad(p.map_vertex(map))

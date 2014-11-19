@@ -34,8 +34,6 @@ pub use poly::{
     Quad,
     Triangle,
     Polygon,
-    PolyTri,
-    PolyQuad,
     Vertices,
     VerticesIterator,
     MapToVertices,
