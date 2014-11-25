@@ -1,11 +1,11 @@
 //   Copyright Colin Sherratt 2014
-//   
+//
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
-//   
+//
 //       http://www.apache.org/licenses/LICENSE-2.0
-//   
+//
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,20 +26,21 @@ pub trait SharedVertex<V> {
 
     /// create an iterator that returns each shared vertex that is required to
     /// build the mesh.
-    fn shared_vertex_iter<'a>(&'a self) -> ShareVertexIterator<'a, Self, V> {
-        ShareVertexIterator {
+    fn shared_vertex_iter<'a>(&'a self) -> SharedVertexIterator<'a, Self, V> {
+        SharedVertexIterator {
             base: self,
             idx: range(0, self.shared_vertex_count())
         }
     }
 }
 
-pub struct ShareVertexIterator<'a, T:'a, V> {
+/// An iterator that yields the shared vertices of the mesh
+pub struct SharedVertexIterator<'a, T:'a, V> {
     base: &'a T,
     idx: Range<uint>
 }
 
-impl<'a, T: SharedVertex<V>, V> Iterator<V> for ShareVertexIterator<'a, T, V> {
+impl<'a, T: SharedVertex<V>, V> Iterator<V> for SharedVertexIterator<'a, T, V> {
     fn next(&mut self) -> Option<V> {
         self.idx.next().map(|idx| self.base.shared_vertex(idx))
     }
@@ -65,6 +66,7 @@ pub trait IndexedPolygon<V> {
     }
 }
 
+/// An iterator that yields the indices of the mesh
 pub struct IndexedPolygonIterator<'a, T:'a, V> {
     base: &'a T,
     idx: Range<uint>

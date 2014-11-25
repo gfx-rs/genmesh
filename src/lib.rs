@@ -1,11 +1,11 @@
 //   Copyright Colin Sherratt 2014
-//   
+//
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
-//   
+//
 //       http://www.apache.org/licenses/LICENSE-2.0
-//   
+//
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,9 +13,9 @@
 //   limitations under the License.
 
 //! `Genmesh`'s is a library that offers ways to generate and manipulate vertex streams.
-//! 
+//!
 //! The core problem that this library solves is to find a nice way to build meshes that
-//! does not just result in throwing all the vertices and indices into a `Vec<T>` and 
+//! does not just result in throwing all the vertices and indices into a `Vec<T>` and
 //! calling it done. While doing so is simple from a library writers point of view, the
 //! consumer will often have to translate that buffer to the format that they need before
 //! it can be used. This produces needless buffering that can be avoided.
@@ -60,12 +60,14 @@ mod cube;
 mod plane;
 mod sphere;
 
-/// a collection of utilties that can be used to build 
+/// a collection of utilties that can be used to build
 /// meshes programmatically
 pub mod generators {
     pub use generator::{
         SharedVertex,
-        IndexedPolygon
+        IndexedPolygon,
+        SharedVertexIterator,
+        IndexedPolygonIterator,
     };
     pub use cube::Cube;
     pub use plane::Plane;
