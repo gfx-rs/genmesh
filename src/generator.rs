@@ -26,20 +26,20 @@ pub trait SharedVertex<V> {
 
     /// create an iterator that returns each shared vertex that is required to
     /// build the mesh.
-    fn shared_vertex_iter<'a>(&'a self) -> ShareVertexIterator<'a, Self, V> {
-        ShareVertexIterator {
+    fn shared_vertex_iter<'a>(&'a self) -> SharedVertexIterator<'a, Self, V> {
+        SharedVertexIterator {
             base: self,
             idx: range(0, self.shared_vertex_count())
         }
     }
 }
 
-pub struct ShareVertexIterator<'a, T:'a, V> {
+pub struct SharedVertexIterator<'a, T:'a, V> {
     base: &'a T,
     idx: Range<uint>
 }
 
-impl<'a, T: SharedVertex<V>, V> Iterator<V> for ShareVertexIterator<'a, T, V> {
+impl<'a, T: SharedVertex<V>, V> Iterator<V> for SharedVertexIterator<'a, T, V> {
     fn next(&mut self) -> Option<V> {
         self.idx.next().map(|idx| self.base.shared_vertex(idx))
     }
