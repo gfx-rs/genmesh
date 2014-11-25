@@ -60,12 +60,14 @@ mod cube;
 mod plane;
 mod sphere;
 
-/// a collection of utilties that can be used to build 
+/// a collection of utilties that can be used to build
 /// meshes programmatically
 pub mod generators {
     pub use generator::{
         SharedVertex,
-        IndexedPolygon
+        IndexedPolygon,
+        SharedVertexIterator,
+        IndexedPolygonIterator,
     };
     pub use cube::Cube;
     pub use plane::Plane;
