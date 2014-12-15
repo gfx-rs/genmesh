@@ -1,9 +1,15 @@
 [package]
+
 name = "genmesh"
 version = "0.0.1"
 authors = [
     "Colin Sherratt <colin.sherratt@gmail.com>",
 ]
+
+license = "Apache-2.0"
+description = "A package for generating 3D meshes"
+homepage = "https://github.com/csherratt/genmesh"
+repository = "https://github.com/csherratt/genmesh"
 
 [lib]
 name = "genmesh"
