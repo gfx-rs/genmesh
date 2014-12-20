@@ -111,15 +111,16 @@ impl IndexedPolygon<Quad<uint>> for Plane {
 #[test]
 fn test_shared_vertex_count() {
     let plane = Plane::new();
-    assert_eq!(plane.shared_vertex_count(), 4)
-    assert_eq!(plane.indexed_polygon_count(), 1)
+    assert_eq!(plane.shared_vertex_count(), 4);
+    assert_eq!(plane.indexed_polygon_count(), 1);
 
     let plane = Plane::subdivide(2, 2);
-    assert_eq!(plane.shared_vertex_count(), 9)
-    assert_eq!(plane.indexed_polygon_count(), 4)
+    assert_eq!(plane.shared_vertex_count(), 9);
+    assert_eq!(plane.indexed_polygon_count(), 4);
 
 
     let plane = Plane::subdivide(4, 4);
-    assert_eq!(plane.shared_vertex_count(), 25)
-    assert_eq!(plane.indexed_polygon_count(), 16)
+    assert_eq!(plane.shared_vertex_count(), 25);
+    assert_eq!(plane.indexed_polygon_count(), 16);
 }
+
