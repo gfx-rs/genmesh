@@ -40,7 +40,7 @@ impl<'a, T> LruIndexer<'a, T> {
     ///
     /// if a new vertex is found, `emit` will be called. emit will be supplied with a
     /// vertex and a index that was used.
-    pub fn new<'a>(size: uint, emit: |uint, T|:'a) -> LruIndexer<'a, T> {
+    pub fn new<'b>(size: uint, emit: |uint, T|:'b) -> LruIndexer<'b, T> {
         LruIndexer {
             index: 0,
             max: size,
