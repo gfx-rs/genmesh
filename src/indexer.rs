@@ -62,7 +62,7 @@ impl<'a, T: PartialEq + Clone> Indexer<T> for LruIndexer<'a, T> {
 
         match found {
             Some((index, i)) => {
-                let item = self.cache.remove(i).unwrap();
+                let item = self.cache.remove(i);
                 self.cache.push(item);
                 index
             }
