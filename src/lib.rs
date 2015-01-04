@@ -27,6 +27,7 @@
 //! needs.
 
 #![deny(missing_docs)]
+#![feature(old_orphan_check)]
 
 extern crate core;
 

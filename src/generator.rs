@@ -17,7 +17,7 @@ use std::iter::Range;
 /// The `SharedVertex` trait is meant to be used with the `IndexedPolygon` trait.
 /// This trait is meant as a way to calculate the shared vertices that are
 /// required to build the implementors mesh.
-pub trait SharedVertex<V> {
+pub trait SharedVertex<V>: Sized {
     /// return the shared vertex at offset `i`
     fn shared_vertex(&self, i: uint) -> V;
 
@@ -50,7 +50,7 @@ impl<'a, T: SharedVertex<V>, V> Iterator<V> for SharedVertexIterator<'a, T, V> {
 /// a mesh. `IndexedPolygon` calculates each polygon face required to build an implementors mesh.
 /// each face is always returned in indexed form that points to the correct vertice supplied
 /// by the `SharedVertex` trait.
-pub trait IndexedPolygon<V> {
+pub trait IndexedPolygon<V>: Sized {
     /// return a polygon with indices to the shared vertex
     fn indexed_polygon(&self, i: uint) -> V;
 

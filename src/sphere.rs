@@ -19,7 +19,7 @@ use super::Polygon::{PolyTri, PolyQuad};
 use super::generators::{SharedVertex, IndexedPolygon};
 
 /// Represents a sphere with radius of 1, centered at (0, 0, 0)
-#[deriving(Copy)]
+#[derive(Copy)]
 pub struct SphereUV {
     u: uint,
     v: uint,
