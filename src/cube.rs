@@ -52,7 +52,9 @@ impl Cube {
     }
 } 
 
-impl Iterator<Quad<(f32, f32, f32)>> for Cube {
+impl Iterator for Cube {
+    type Item = Quad<(f32, f32, f32)>;
+
     fn next(&mut self) -> Option<Quad<(f32, f32, f32)>> {
         self.range.next().map(|idx| self.face(idx))
     }

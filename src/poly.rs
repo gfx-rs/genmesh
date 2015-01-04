@@ -118,7 +118,7 @@ pub trait Vertices<SRC, V> {
     fn vertices(self) -> VerticesIterator<SRC, V>;
 }
 
-impl<V, P: EmitVertices<V>, T: Iterator<P>> Vertices<T, V> for T {
+impl<V, P: EmitVertices<V>, T: Iterator<Item=P>> Vertices<T, V> for T {
     fn vertices(self) -> VerticesIterator<T, V> {
         VerticesIterator {
             source: self,
@@ -134,7 +134,9 @@ pub struct VerticesIterator<SRC, V> {
     buffer: RingBuf<V>
 }
 
-impl<V, U: EmitVertices<V>, SRC: Iterator<U>> Iterator<V> for VerticesIterator<SRC, V> {
+impl<V, U: EmitVertices<V>, SRC: Iterator<Item=U>> Iterator for VerticesIterator<SRC, V> {
+    type Item = V;
+
     fn next(&mut self) -> Option<V> {
         loop {
             match self.buffer.pop_front() {
@@ -200,7 +202,8 @@ pub trait MapToVertices<T, U> {
     fn vertex<'a>(self, map: |T|:'a -> U) -> MapToVerticesIter<'a, Self, T, U>;
 }
 
-impl<VIn, VOut, P, POut: MapVertex<VIn, VOut, P>, T: Iterator<POut>>
+impl<VIn, VOut, P, POut: MapVertex<VIn, VOut, P>,
+    T: Iterator<Item=POut>>
     MapToVertices<VIn, VOut> for T {
     fn vertex<'a>(self, map: |VIn|:'a -> VOut) -> MapToVerticesIter<'a, T, VIn, VOut> {
         MapToVerticesIter {
@@ -216,7 +219,10 @@ struct MapToVerticesIter<'a, SRC, T, U> {
 }
 
 impl<'a, POut: MapVertex<T, U, P>,
-         SRC: Iterator<POut>, T, U, P> Iterator<P> for MapToVerticesIter<'a, SRC, T, U> {
+         SRC: Iterator<Item=POut>,
+         T, U, P> Iterator for MapToVerticesIter<'a, SRC, T, U> {
+    type Item = P;
+
     fn next(&mut self) -> Option<P> {
         self.src.next().map(|x| x.map_vertex(|x| (self.f)(x)))
     }

@@ -58,7 +58,9 @@ impl Plane {
     }
 }
 
-impl Iterator<Quad<(f32, f32)>> for Plane {
+impl Iterator for Plane {
+    type Item = Quad<(f32, f32)>;
+
     fn next(&mut self) -> Option<Quad<(f32, f32)>> {
         if self.x == self.subdivide_x {
             self.x = 0;

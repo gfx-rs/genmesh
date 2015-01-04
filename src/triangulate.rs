@@ -22,13 +22,18 @@ use {
 };
 
 /// provides a way to convert a polygon down to triangles
-pub trait EmitTriangles<T> {
+pub trait EmitTriangles {
+    /// The content of each point in the face
+    type Vertex;
+
     /// convert a polygon to one or more triangles, each triangle
     /// is returned by calling `emit`
-    fn emit_triangles(&self, emit: |Triangle<T>|);
+    fn emit_triangles(&self, emit: |Triangle<<Self as EmitTriangles>::Vertex>|);
 }
 
-impl<T: Clone> EmitTriangles<T> for Quad<T> {
+impl<T: Clone> EmitTriangles for Quad<T> {
+    type Vertex = T;
+
     fn emit_triangles(&self, emit: |Triangle<T>|) {
         let &Quad{ref x, ref y, ref z, ref w} = self;
         emit(Triangle::new(x.clone(), y.clone(), z.clone()));
@@ -36,13 +41,17 @@ impl<T: Clone> EmitTriangles<T> for Quad<T> {
     }
 }
 
-impl<T: Clone> EmitTriangles<T> for Triangle<T> {
+impl<T: Clone> EmitTriangles for Triangle<T> {
+    type Vertex = T;
+
     fn emit_triangles(&self, emit: |Triangle<T>|) {
         emit(self.clone());
     }
 }
 
-impl<T: Clone> EmitTriangles<T> for Polygon<T> {
+impl<T: Clone> EmitTriangles for Polygon<T> {
+    type Vertex = T;
+
     fn emit_triangles(&self, emit: |Triangle<T>|) {
         match self {
             &PolyTri(ref t) => t.emit_triangles(emit),
@@ -59,7 +68,7 @@ pub trait Triangulate<T, V> {
     fn triangulate(self) -> TriangulateIterator<T, V>;
 }
 
-impl<V, P: EmitTriangles<V>, T: Iterator<P>> Triangulate<T, V> for T {
+impl<V, P: EmitTriangles<Vertex=V>, T: Iterator<Item=P>> Triangulate<T, V> for T {
     fn triangulate(self) -> TriangulateIterator<T, V> {
         TriangulateIterator::new(self)
     }
@@ -71,7 +80,7 @@ pub struct TriangulateIterator<SRC, V> {
     buffer: RingBuf<Triangle<V>>
 }
 
-impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> TriangulateIterator<SRC, V> {
+impl<V, U: EmitTriangles<Vertex=V>, SRC: Iterator<Item=U>> TriangulateIterator<SRC, V> {
     fn new(src: SRC) -> TriangulateIterator<SRC, V> {
         TriangulateIterator {
             source: src,
@@ -80,7 +89,9 @@ impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> TriangulateIterator<SRC, V> {
     }
 }
 
-impl<V, U: EmitTriangles<V>, SRC: Iterator<U>> Iterator<Triangle<V>> for TriangulateIterator<SRC, V> {
+impl<V, U: EmitTriangles<Vertex=V>, SRC: Iterator<Item=U>> Iterator for TriangulateIterator<SRC, V> {
+    type Item = Triangle<V>;
+
     fn next(&mut self) -> Option<Triangle<V>> {
         loop {
             match self.buffer.pop_front() {

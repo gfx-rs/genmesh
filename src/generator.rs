@@ -40,7 +40,9 @@ pub struct SharedVertexIterator<'a, T:'a, V> {
     idx: Range<uint>
 }
 
-impl<'a, T: SharedVertex<V>, V> Iterator<V> for SharedVertexIterator<'a, T, V> {
+impl<'a, T: SharedVertex<V>, V> Iterator for SharedVertexIterator<'a, T, V> {
+    type Item = V;
+
     fn next(&mut self) -> Option<V> {
         self.idx.next().map(|idx| self.base.shared_vertex(idx))
     }
@@ -73,7 +75,9 @@ pub struct IndexedPolygonIterator<'a, T:'a, V> {
 }
 
 
-impl<'a, T: IndexedPolygon<V>, V> Iterator<V> for IndexedPolygonIterator<'a, T, V> {
+impl<'a, T: IndexedPolygon<V>, V> Iterator for IndexedPolygonIterator<'a, T, V> {
+    type Item = V;
+
     fn next(&mut self) -> Option<V> {
         self.idx.next().map(|idx| self.base.indexed_polygon(idx))
     }

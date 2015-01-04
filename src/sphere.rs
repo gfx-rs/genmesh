@@ -50,7 +50,9 @@ impl SphereUV {
     }
 }
 
-impl Iterator<Polygon<(f32, f32, f32)>> for SphereUV {
+impl Iterator for SphereUV {
+    type Item = Polygon<(f32, f32, f32)>;
+
     fn next(&mut self) -> Option<Polygon<(f32, f32, f32)>> {
         if self.u == self.sub_u {
             self.u = 0;
