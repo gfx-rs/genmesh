@@ -13,7 +13,7 @@
 //   limitations under the License.
 
 use std::f32::consts::{PI, PI_2};
-use std::num::FloatMath;
+use std::num::Float;
 use super::{Quad, Triangle, Polygon};
 use super::Polygon::{PolyTri, PolyQuad};
 use super::generators::{SharedVertex, IndexedPolygon};
@@ -105,7 +105,7 @@ impl IndexedPolygon<Polygon<uint>> for SphereUV {
         let u = idx % self.sub_u;
         let v = idx / self.sub_u;
 
-        let f = |u: uint, v: uint| {
+        let f = |&: u: uint, v: uint| {
             if v == 0 {
                 0
             } else if self.sub_v == v {

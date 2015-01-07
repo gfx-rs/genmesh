@@ -27,20 +27,20 @@ pub trait Indexer<T> {
 /// a new vertex and return the index of that new vertex.
 ///
 /// The oldest sample by time used will be dropped if a new vertex is found.
-pub struct LruIndexer<'a, T> {
+pub struct LruIndexer<T, F: FnMut(uint, T)> {
     index: uint,
     max: uint,
     cache: Vec<(T, uint)>,
-    emit: |uint, T|:'a
+    emit: F
 }
 
-impl<'a, T> LruIndexer<'a, T> {
+impl<T, F: FnMut(uint, T)> LruIndexer<T, F> {
     /// create a new `LruIndexer`, the window size is limited by the `size` parameter
     /// it is recommended to keep this small since lookup is done in N time
     ///
     /// if a new vertex is found, `emit` will be called. emit will be supplied with a
     /// vertex and a index that was used.
-    pub fn new<'b>(size: uint, emit: |uint, T|:'b) -> LruIndexer<'b, T> {
+    pub fn new(size: uint, emit: F) -> LruIndexer<T, F> {
         LruIndexer {
             index: 0,
             max: size,
@@ -50,7 +50,7 @@ impl<'a, T> LruIndexer<'a, T> {
     }
 }
 
-impl<'a, T: PartialEq + Clone> Indexer<T> for LruIndexer<'a, T> {
+impl<T: PartialEq + Clone, F: FnMut(uint, T)> Indexer<T> for LruIndexer<T, F> {
     fn index(&mut self, new: T) -> uint {
         let mut found = None;
         for (i, &(ref v, idx)) in self.cache.iter().enumerate() {

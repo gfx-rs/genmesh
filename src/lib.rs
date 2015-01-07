@@ -27,7 +27,6 @@
 //! needs.
 
 #![deny(missing_docs)]
-#![feature(associated_types)]
 
 extern crate core;
 

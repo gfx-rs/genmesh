@@ -162,7 +162,7 @@ fn test_plane() {
 
 #[test]
 fn test_lru_indexer() {
-    let mut vectices = Vec::new();
+    let mut vectices: Vec<(f32, f32, f32)> = Vec::new();
     let indexes: Vec<uint> = {
         let mut indexer = LruIndexer::new(8, |_, v| vectices.push(v));
 
@@ -174,7 +174,7 @@ fn test_lru_indexer() {
     assert_eq!(8, vectices.len());
     assert_eq!(6*4, indexes.len());
 
-    let mut vectices = Vec::new();
+    let mut vectices: Vec<(f32, f32, f32)> = Vec::new();
     let indexes: Vec<uint> = {
         let mut indexer = LruIndexer::new(4, |_, v| vectices.push(v));
 

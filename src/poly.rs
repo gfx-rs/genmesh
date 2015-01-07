@@ -77,11 +77,11 @@ pub trait EmitVertices<T> {
     /// Consume a polygon, each
     /// vertex is emitted to the parent function by calling the supplied
     /// lambda function
-    fn emit_vertices(self, emit: |T|);
+    fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T);
 }
 
 impl<T> EmitVertices<T> for Triangle<T> {
-    fn emit_vertices(self, emit: |T|) {
+    fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T) {
         let Triangle{x, y, z} = self;
         emit(x);
         emit(y);
@@ -90,7 +90,7 @@ impl<T> EmitVertices<T> for Triangle<T> {
 }
 
 impl<T> EmitVertices<T> for Quad<T> {
-    fn emit_vertices(self, emit: |T|) {
+    fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T) {
         let Quad{x, y, z, w} = self;
         emit(x);
         emit(y);
@@ -100,7 +100,7 @@ impl<T> EmitVertices<T> for Quad<T> {
 }
 
 impl<T> EmitVertices<T> for Polygon<T> {
-    fn emit_vertices(self, emit: |T|) {
+    fn emit_vertices<F>(self, emit: F) where F: FnMut(T) {
         use self::Polygon::{ PolyQuad, PolyTri };
 
         match self {
@@ -155,11 +155,11 @@ impl<V, U: EmitVertices<V>, SRC: Iterator<Item=U>> Iterator for VerticesIterator
 /// equivalent of `map` but per-vertex
 pub trait MapVertex<T, U, P> {
     /// map a function to each vertex in polygon creating a new polygon
-    fn map_vertex(self, f: |T| -> U) -> P;
+    fn map_vertex<F>(self, mut map: F) -> P where F: FnMut(T) -> U;
 }
 
 impl<T: Clone, U> MapVertex<T, U, Triangle<U>> for Triangle<T> {
-    fn map_vertex(self, map: |T| -> U) -> Triangle<U> {
+    fn map_vertex<F>(self, mut map: F) -> Triangle<U> where F: FnMut(T) -> U {
         let Triangle{x, y, z} = self;
         Triangle {
             x: map(x),
@@ -170,7 +170,7 @@ impl<T: Clone, U> MapVertex<T, U, Triangle<U>> for Triangle<T> {
 }
 
 impl<T: Clone, U> MapVertex<T, U, Quad<U>> for Quad<T> {
-    fn map_vertex(self, map: |T| -> U) -> Quad<U> {
+    fn map_vertex<F>(self, mut map: F) -> Quad<U> where F: FnMut(T) -> U {
         let Quad{x, y, z, w} = self;
         Quad {
             x: map(x),
@@ -182,7 +182,7 @@ impl<T: Clone, U> MapVertex<T, U, Quad<U>> for Quad<T> {
 }
 
 impl<T: Clone, U> MapVertex<T, U, Polygon<U>> for Polygon<T> {
-    fn map_vertex(self, map: |T| -> U) -> Polygon<U> {
+    fn map_vertex<F>(self, map: F) -> Polygon<U> where F: FnMut(T) -> U {
         use self::Polygon::{ PolyTri, PolyQuad };
 
         match self {
@@ -199,13 +199,17 @@ impl<T: Clone, U> MapVertex<T, U, Polygon<U>> for Polygon<T> {
 pub trait MapToVertices<T, U> {
     /// from a iterator of polygons, produces a iterator of polygons. Each
     /// vertex in the process is modified with the suppled function.
-    fn vertex<'a>(self, map: |T|:'a -> U) -> MapToVerticesIter<'a, Self, T, U>;
+    fn vertex<F>(self, map: F) -> MapToVerticesIter<Self, T, U, F>
+        where F: FnMut(T) -> U;
 }
 
-impl<VIn, VOut, P, POut: MapVertex<VIn, VOut, P>,
+impl<VIn, VOut,
+    P, POut: MapVertex<VIn, VOut, P>,
     T: Iterator<Item=POut>>
     MapToVertices<VIn, VOut> for T {
-    fn vertex<'a>(self, map: |VIn|:'a -> VOut) -> MapToVerticesIter<'a, T, VIn, VOut> {
+    fn vertex<F>(self, map: F) -> MapToVerticesIter<T, VIn, VOut, F>
+            where F: FnMut(VIn) -> VOut {
+
         MapToVerticesIter {
             src: self,
             f: map
@@ -213,14 +217,14 @@ impl<VIn, VOut, P, POut: MapVertex<VIn, VOut, P>,
     }
 }
 
-struct MapToVerticesIter<'a, SRC, T, U> {
+struct MapToVerticesIter<SRC, T, U, F: FnMut(T) -> U> {
     src: SRC,
-    f: |T|:'a -> U
+    f: F
 }
 
 impl<'a, POut: MapVertex<T, U, P>,
          SRC: Iterator<Item=POut>,
-         T, U, P> Iterator for MapToVerticesIter<'a, SRC, T, U> {
+         T, U, P, F: FnMut(T) -> U> Iterator for MapToVerticesIter<SRC, T, U, F> {
     type Item = P;
 
     fn next(&mut self) -> Option<P> {

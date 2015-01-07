@@ -28,13 +28,13 @@ pub trait EmitTriangles {
 
     /// convert a polygon to one or more triangles, each triangle
     /// is returned by calling `emit`
-    fn emit_triangles(&self, emit: |Triangle<<Self as EmitTriangles>::Vertex>|);
+    fn emit_triangles<F>(&self, mut emit: F) where F: FnMut(Triangle<Self::Vertex>);
 }
 
 impl<T: Clone> EmitTriangles for Quad<T> {
     type Vertex = T;
 
-    fn emit_triangles(&self, emit: |Triangle<T>|) {
+    fn emit_triangles<F>(&self, mut emit: F) where F: FnMut(Triangle<T>) {
         let &Quad{ref x, ref y, ref z, ref w} = self;
         emit(Triangle::new(x.clone(), y.clone(), z.clone()));
         emit(Triangle::new(z.clone(), w.clone(), x.clone()));
@@ -44,7 +44,7 @@ impl<T: Clone> EmitTriangles for Quad<T> {
 impl<T: Clone> EmitTriangles for Triangle<T> {
     type Vertex = T;
 
-    fn emit_triangles(&self, emit: |Triangle<T>|) {
+    fn emit_triangles<F>(&self, mut emit: F) where F: FnMut(Triangle<T>) {
         emit(self.clone());
     }
 }
@@ -52,7 +52,7 @@ impl<T: Clone> EmitTriangles for Triangle<T> {
 impl<T: Clone> EmitTriangles for Polygon<T> {
     type Vertex = T;
 
-    fn emit_triangles(&self, emit: |Triangle<T>|) {
+    fn emit_triangles<F>(&self, emit: F) where F: FnMut(Triangle<T>)  {
         match self {
             &PolyTri(ref t) => t.emit_triangles(emit),
             &PolyQuad(ref q) => q.emit_triangles(emit),
