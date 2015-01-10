@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use std::iter::Range;
+use std::ops::Range;
 
 /// The `SharedVertex` trait is meant to be used with the `IndexedPolygon` trait.
 /// This trait is meant as a way to calculate the shared vertices that are
@@ -29,7 +29,7 @@ pub trait SharedVertex<V>: Sized {
     fn shared_vertex_iter<'a>(&'a self) -> SharedVertexIterator<'a, Self, V> {
         SharedVertexIterator {
             base: self,
-            idx: range(0, self.shared_vertex_count())
+            idx: 0..self.shared_vertex_count()
         }
     }
 }
@@ -63,7 +63,7 @@ pub trait IndexedPolygon<V>: Sized {
     fn indexed_polygon_iter<'a>(&'a self) -> IndexedPolygonIterator<'a, Self, V> {
         IndexedPolygonIterator {
             base: self,
-            idx: range(0, self.indexed_polygon_count())
+            idx: 0..self.indexed_polygon_count()
         }
     }
 }

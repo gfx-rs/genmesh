@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use std::iter::Range;
+use std::ops::Range;
 use super::{MapVertex, Quad};
 use super::generators::{SharedVertex, IndexedPolygon};
 
@@ -25,7 +25,7 @@ pub struct Cube {
 impl Cube {
     /// create a new cube generator
     pub fn new() -> Cube {
-        Cube { range: range(0, 6) }
+        Cube { range: 0..6 }
     }
 
     fn vert(&self, idx: usize) -> (f32, f32, f32) {
