@@ -21,17 +21,17 @@ use super::generators::{SharedVertex, IndexedPolygon};
 /// Represents a sphere with radius of 1, centered at (0, 0, 0)
 #[derive(Copy)]
 pub struct SphereUV {
-    u: uint,
-    v: uint,
-    sub_u: uint,
-    sub_v: uint
+    u: usize,
+    v: usize,
+    sub_u: usize,
+    sub_v: usize
 }
 
 impl SphereUV {
     /// Create a new sphere.
     /// `u` is the number of points across the equator of the sphere.
     /// `v` is the number of points from pole to pole.
-    pub fn new(u: uint, v: uint) -> SphereUV {
+    pub fn new(u: usize, v: usize) -> SphereUV {
         SphereUV {
             u: 0,
             v: 0,
@@ -40,7 +40,7 @@ impl SphereUV {
         }
     }
 
-    fn vert(&self, u: uint, v: uint) -> (f32, f32, f32) {
+    fn vert(&self, u: usize, v: usize) -> (f32, f32, f32) {
         let u = (u as f32 / self.sub_u as f32) * PI_2;
         let v = (v as f32 / self.sub_v as f32) * PI;
 
@@ -80,7 +80,7 @@ impl Iterator for SphereUV {
 }
 
 impl SharedVertex<(f32, f32, f32)> for SphereUV {
-    fn shared_vertex(&self, idx: uint) -> (f32, f32, f32) {
+    fn shared_vertex(&self, idx: usize) -> (f32, f32, f32) {
         if idx == 0 {
             self.vert(0, 0)
         } else if idx == self.shared_vertex_count() - 1 {
@@ -95,17 +95,17 @@ impl SharedVertex<(f32, f32, f32)> for SphereUV {
         }
     }
 
-    fn shared_vertex_count(&self) -> uint {
+    fn shared_vertex_count(&self) -> usize {
         (self.sub_v - 1) * (self.sub_u) + 2
     }
 }
 
-impl IndexedPolygon<Polygon<uint>> for SphereUV {
-    fn indexed_polygon(&self, idx: uint) -> Polygon<uint> {
+impl IndexedPolygon<Polygon<usize>> for SphereUV {
+    fn indexed_polygon(&self, idx: usize) -> Polygon<usize> {
         let u = idx % self.sub_u;
         let v = idx / self.sub_u;
 
-        let f = |&: u: uint, v: uint| {
+        let f = |&: u: usize, v: usize| {
             if v == 0 {
                 0
             } else if self.sub_v == v {
@@ -131,7 +131,7 @@ impl IndexedPolygon<Polygon<uint>> for SphereUV {
         }
     }
 
-    fn indexed_polygon_count(&self) -> uint {
+    fn indexed_polygon_count(&self) -> usize {
         self.sub_v * self.sub_u
     }
 }

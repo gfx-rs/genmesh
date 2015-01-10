@@ -18,10 +18,10 @@ use super::generators::{SharedVertex, IndexedPolygon};
 /// Represents a 2D plane with origin of (0, 0), from 1 to -1
 #[derive(Copy)]
 pub struct Plane {
-    subdivide_x: uint,
-    subdivide_y: uint,
-    x: uint,
-    y: uint
+    subdivide_x: usize,
+    subdivide_y: usize,
+    x: usize,
+    y: usize
 }
 
 impl Plane {
@@ -39,7 +39,7 @@ impl Plane {
     /// a grid of points.
     /// x is the number of subdivisions in the x axis
     /// y is the number of subdivisions in the y axis
-    pub fn subdivide(x: uint, y: uint) -> Plane {
+    pub fn subdivide(x: usize, y: usize) -> Plane {
         assert!(x > 0 && y > 0);
         Plane {
             subdivide_x: x,
@@ -49,7 +49,7 @@ impl Plane {
         }
     }
 
-    fn vert(&self, x: uint, y: uint) -> (f32, f32) {
+    fn vert(&self, x: usize, y: usize) -> (f32, f32) {
         let sx = self.subdivide_x as f32;
         let sy = self.subdivide_y as f32;
         let x = (2. / sx) * x as f32 - 1.;
@@ -81,20 +81,20 @@ impl Iterator for Plane {
 }
 
 impl SharedVertex<(f32, f32)> for Plane {
-    fn shared_vertex(&self, idx: uint) -> (f32, f32) {
+    fn shared_vertex(&self, idx: usize) -> (f32, f32) {
         let y = idx / (self.subdivide_x + 1);
         let x = idx % (self.subdivide_x + 1);
 
         self.vert(x, y)
     }
 
-    fn shared_vertex_count(&self) -> uint {
+    fn shared_vertex_count(&self) -> usize {
         (self.subdivide_x + 1) * (self.subdivide_y + 1)
     }
 }
 
-impl IndexedPolygon<Quad<uint>> for Plane {
-    fn indexed_polygon(&self, idx: uint) -> Quad<uint> {
+impl IndexedPolygon<Quad<usize>> for Plane {
+    fn indexed_polygon(&self, idx: usize) -> Quad<usize> {
         let y = idx / (self.subdivide_x);
         let y = y * (self.subdivide_x+1);
         let x = idx % self.subdivide_x;
@@ -105,7 +105,7 @@ impl IndexedPolygon<Quad<uint>> for Plane {
                   (x+y) + self.subdivide_x + 2)
     }
 
-    fn indexed_polygon_count(&self) -> uint {
+    fn indexed_polygon_count(&self) -> usize {
         self.subdivide_x * self.subdivide_y
     }
 }

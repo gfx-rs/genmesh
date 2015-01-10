@@ -19,10 +19,10 @@ use std::iter::Range;
 /// required to build the implementors mesh.
 pub trait SharedVertex<V>: Sized {
     /// return the shared vertex at offset `i`
-    fn shared_vertex(&self, i: uint) -> V;
+    fn shared_vertex(&self, i: usize) -> V;
 
     /// return the number of shared vertices required to represent the mesh
-    fn shared_vertex_count(&self) -> uint;
+    fn shared_vertex_count(&self) -> usize;
 
     /// create an iterator that returns each shared vertex that is required to
     /// build the mesh.
@@ -37,7 +37,7 @@ pub trait SharedVertex<V>: Sized {
 /// An iterator that yields the shared vertices of the mesh
 pub struct SharedVertexIterator<'a, T:'a, V> {
     base: &'a T,
-    idx: Range<uint>
+    idx: Range<usize>
 }
 
 impl<'a, T: SharedVertex<V>, V> Iterator for SharedVertexIterator<'a, T, V> {
@@ -54,10 +54,10 @@ impl<'a, T: SharedVertex<V>, V> Iterator for SharedVertexIterator<'a, T, V> {
 /// by the `SharedVertex` trait.
 pub trait IndexedPolygon<V>: Sized {
     /// return a polygon with indices to the shared vertex
-    fn indexed_polygon(&self, i: uint) -> V;
+    fn indexed_polygon(&self, i: usize) -> V;
 
     /// return the number of polygons that are needed to represent this mesh
-    fn indexed_polygon_count(&self) -> uint;
+    fn indexed_polygon_count(&self) -> usize;
 
     /// create a iterator that will return a polygon for each face in the source mesh
     fn indexed_polygon_iter<'a>(&'a self) -> IndexedPolygonIterator<'a, Self, V> {
@@ -71,7 +71,7 @@ pub trait IndexedPolygon<V>: Sized {
 /// An iterator that yields the indices of the mesh
 pub struct IndexedPolygonIterator<'a, T:'a, V> {
     base: &'a T,
-    idx: Range<uint>
+    idx: Range<usize>
 }
 
 

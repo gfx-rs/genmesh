@@ -28,8 +28,6 @@
 
 #![deny(missing_docs)]
 
-extern crate core;
-
 pub use poly::{
     Quad,
     Triangle,

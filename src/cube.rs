@@ -12,14 +12,14 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use core::iter::Range;
+use std::iter::Range;
 use super::{MapVertex, Quad};
 use super::generators::{SharedVertex, IndexedPolygon};
 
 /// A perfect cube, centered at (0, 0, 0) with each face starting at 1/-1 away from the origin
 #[derive(Copy)]
 pub struct Cube {
-    range: Range<uint>
+    range: Range<usize>
 }
 
 impl Cube {
@@ -28,14 +28,14 @@ impl Cube {
         Cube { range: range(0, 6) }
     }
 
-    fn vert(&self, idx: uint) -> (f32, f32, f32) {
+    fn vert(&self, idx: usize) -> (f32, f32, f32) {
         let x = if idx & 4 == 4 { 1.} else { -1. };
         let y = if idx & 2 == 2 { 1.} else { -1. };
         let z = if idx & 1 == 1 { 1.} else { -1. };
         (x, y, z)
     }
 
-    fn face_indexed(&self, idx: uint) -> Quad<uint> {
+    fn face_indexed(&self, idx: usize) -> Quad<usize> {
         match idx {
             0 => Quad::new(0b000, 0b001, 0b011, 0b010),
             1 => Quad::new(0b110, 0b111, 0b101, 0b100),
@@ -47,7 +47,7 @@ impl Cube {
         }
     }
 
-    fn face(&self, idx: uint) -> Quad<(f32, f32, f32)> {
+    fn face(&self, idx: usize) -> Quad<(f32, f32, f32)> {
         self.face_indexed(idx).map_vertex(|i| self.vert(i))
     }
 } 
@@ -61,17 +61,17 @@ impl Iterator for Cube {
 }
 
 impl SharedVertex<(f32, f32, f32)> for Cube {
-    fn shared_vertex(&self, idx: uint) -> (f32, f32, f32) {
+    fn shared_vertex(&self, idx: usize) -> (f32, f32, f32) {
         self.vert(idx)
     }
 
-    fn shared_vertex_count(&self) -> uint { 8 }
+    fn shared_vertex_count(&self) -> usize { 8 }
 }
 
-impl IndexedPolygon<Quad<uint>> for Cube {
-    fn indexed_polygon(&self, idx: uint) -> Quad<uint> {
+impl IndexedPolygon<Quad<usize>> for Cube {
+    fn indexed_polygon(&self, idx: usize) -> Quad<usize> {
         self.face_indexed(idx)
     }
 
-    fn indexed_polygon_count(&self) -> uint { 6 }
+    fn indexed_polygon_count(&self) -> usize { 6 }
 }

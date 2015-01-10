@@ -18,7 +18,7 @@
 /// by returning aliased indexes.
 pub trait Indexer<T> {
     /// convert a vertex into an index.
-    fn index(&mut self, v: T) -> uint;
+    fn index(&mut self, v: T) -> usize;
 }
 
 /// An `LruIndexer` is useful for creating indexed steam from a stream of
@@ -27,20 +27,20 @@ pub trait Indexer<T> {
 /// a new vertex and return the index of that new vertex.
 ///
 /// The oldest sample by time used will be dropped if a new vertex is found.
-pub struct LruIndexer<T, F: FnMut(uint, T)> {
-    index: uint,
-    max: uint,
-    cache: Vec<(T, uint)>,
+pub struct LruIndexer<T, F: FnMut(usize, T)> {
+    index: usize,
+    max: usize,
+    cache: Vec<(T, usize)>,
     emit: F
 }
 
-impl<T, F: FnMut(uint, T)> LruIndexer<T, F> {
+impl<T, F: FnMut(usize, T)> LruIndexer<T, F> {
     /// create a new `LruIndexer`, the window size is limited by the `size` parameter
     /// it is recommended to keep this small since lookup is done in N time
     ///
     /// if a new vertex is found, `emit` will be called. emit will be supplied with a
     /// vertex and a index that was used.
-    pub fn new(size: uint, emit: F) -> LruIndexer<T, F> {
+    pub fn new(size: usize, emit: F) -> LruIndexer<T, F> {
         LruIndexer {
             index: 0,
             max: size,
@@ -50,8 +50,8 @@ impl<T, F: FnMut(uint, T)> LruIndexer<T, F> {
     }
 }
 
-impl<T: PartialEq + Clone, F: FnMut(uint, T)> Indexer<T> for LruIndexer<T, F> {
-    fn index(&mut self, new: T) -> uint {
+impl<T: PartialEq + Clone, F: FnMut(usize, T)> Indexer<T> for LruIndexer<T, F> {
+    fn index(&mut self, new: T) -> usize {
         let mut found = None;
         for (i, &(ref v, idx)) in self.cache.iter().enumerate() {
             if v == &new {
