@@ -153,12 +153,15 @@ impl<V, U: EmitVertices<V>, SRC: Iterator<Item=U>> Iterator for VerticesIterator
 }
 
 /// equivalent of `map` but per-vertex
-pub trait MapVertex<T, U, P> {
+pub trait MapVertex<T, U> {
+    type Output;
     /// map a function to each vertex in polygon creating a new polygon
-    fn map_vertex<F>(self, mut map: F) -> P where F: FnMut(T) -> U;
+    fn map_vertex<F>(self, mut map: F) -> Self::Output where F: FnMut(T) -> U;
 }
 
-impl<T: Clone, U> MapVertex<T, U, Triangle<U>> for Triangle<T> {
+impl<T: Clone, U> MapVertex<T, U> for Triangle<T> {
+    type Output = Triangle<U>;
+
     fn map_vertex<F>(self, mut map: F) -> Triangle<U> where F: FnMut(T) -> U {
         let Triangle{x, y, z} = self;
         Triangle {
@@ -169,7 +172,9 @@ impl<T: Clone, U> MapVertex<T, U, Triangle<U>> for Triangle<T> {
     }
 }
 
-impl<T: Clone, U> MapVertex<T, U, Quad<U>> for Quad<T> {
+impl<T: Clone, U> MapVertex<T, U> for Quad<T> {
+    type Output = Quad<U>;
+
     fn map_vertex<F>(self, mut map: F) -> Quad<U> where F: FnMut(T) -> U {
         let Quad{x, y, z, w} = self;
         Quad {
@@ -181,7 +186,9 @@ impl<T: Clone, U> MapVertex<T, U, Quad<U>> for Quad<T> {
     }
 }
 
-impl<T: Clone, U> MapVertex<T, U, Polygon<U>> for Polygon<T> {
+impl<T: Clone, U> MapVertex<T, U> for Polygon<T> {
+    type Output = Polygon<U>;
+
     fn map_vertex<F>(self, map: F) -> Polygon<U> where F: FnMut(T) -> U {
         use self::Polygon::{ PolyTri, PolyQuad };
 
@@ -197,6 +204,8 @@ impl<T: Clone, U> MapVertex<T, U, Polygon<U>> for Polygon<T> {
 /// the mesh using a matrix multiply, or just for modifying the type of each
 /// vertex.
 pub trait MapToVertices<T, U> {
+    type Output;
+
     /// from a iterator of polygons, produces a iterator of polygons. Each
     /// vertex in the process is modified with the suppled function.
     fn vertex<F>(self, map: F) -> MapToVerticesIter<Self, T, U, F>
@@ -204,9 +213,11 @@ pub trait MapToVertices<T, U> {
 }
 
 impl<VIn, VOut,
-    P, POut: MapVertex<VIn, VOut, P>,
+    P, POut: MapVertex<VIn, VOut, Output=P>,
     T: Iterator<Item=POut>>
     MapToVertices<VIn, VOut> for T {
+    type Output = P;
+
     fn vertex<F>(self, map: F) -> MapToVerticesIter<T, VIn, VOut, F>
             where F: FnMut(VIn) -> VOut {
 
@@ -222,9 +233,10 @@ struct MapToVerticesIter<SRC, T, U, F: FnMut(T) -> U> {
     f: F
 }
 
-impl<'a, POut: MapVertex<T, U, P>,
+impl<'a, P,
+         POut: MapVertex<T, U, Output=P>,
          SRC: Iterator<Item=POut>,
-         T, U, P, F: FnMut(T) -> U> Iterator for MapToVerticesIter<SRC, T, U, F> {
+         T, U, F: FnMut(T) -> U> Iterator for MapToVerticesIter<SRC, T, U, F> {
     type Item = P;
 
     fn next(&mut self) -> Option<P> {
