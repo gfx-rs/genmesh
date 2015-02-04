@@ -17,7 +17,7 @@ use super::{MapVertex, Quad};
 use super::generators::{SharedVertex, IndexedPolygon};
 
 /// A perfect cube, centered at (0, 0, 0) with each face starting at 1/-1 away from the origin
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct Cube {
     range: Range<usize>
 }
