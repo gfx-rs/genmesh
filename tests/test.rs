@@ -31,8 +31,8 @@ use genmesh::generators::{Cube, Plane};
 
 #[test]
 fn test_quad_vertex() {
-    let input = &[Quad::new(0u, 1, 2, 3),
-                  Quad::new(1u, 2, 3, 4)];
+    let input = &[Quad::new(0us, 1, 2, 3),
+                  Quad::new(1us, 2, 3, 4)];
 
     let output = &[Quad::new(false, true, false, true),
                    Quad::new(true, false, true, false)];
@@ -47,8 +47,8 @@ fn test_quad_vertex() {
 
 #[test]
 fn test_quad_vertex_two_stages() {
-    let input = &[Quad::new(0u, 1, 2, 3),
-                  Quad::new(1u, 2, 3, 4)];
+    let input = &[Quad::new(0us, 1, 2, 3),
+                  Quad::new(1us, 2, 3, 4)];
 
     let output = &[Quad::new(false, true, false, true),
                    Quad::new(true, false, true, false)];
@@ -64,14 +64,14 @@ fn test_quad_vertex_two_stages() {
 
 #[test]
 fn test_quad_poly_simple() {
-    let input = &[Quad::new(0u, 1, 2, 3),
-                  Quad::new(1u, 2, 3, 4)];
+    let input = &[Quad::new(0us, 1, 2, 3),
+                  Quad::new(1us, 2, 3, 4)];
 
-    let output = &[Quad::new(0i, 1, 2, 0),
-                   Quad::new(0i, 2, 3, 0)];
+    let output = &[Quad::new(0is, 1, 2, 0),
+                   Quad::new(0is, 2, 3, 0)];
 
     let transformed = input.iter().map(|x| x.clone())
-                                  .map(|v| Quad::new(0i, v.y as int, v.z as int, 0));
+                                  .map(|v| Quad::new(0is, v.y as isize, v.z as isize, 0));
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -80,8 +80,8 @@ fn test_quad_poly_simple() {
 
 #[test]
 fn test_triangle_vertex() {
-    let input = &[Triangle::new(0u, 1, 2),
-                  Triangle::new(1u, 2, 3)];
+    let input = &[Triangle::new(0us, 1, 2),
+                  Triangle::new(1us, 2, 3)];
 
     let output = &[Triangle::new(false, true, false),
                    Triangle::new(true, false, true)];
@@ -96,8 +96,8 @@ fn test_triangle_vertex() {
 
 #[test]
 fn test_triangle_vertex_two_stages() {
-    let input = &[Triangle::new(0u, 1, 2),
-                  Triangle::new(1u, 2, 3)];
+    let input = &[Triangle::new(0us, 1, 2),
+                  Triangle::new(1us, 2, 3)];
 
     let output = &[Triangle::new(false, true, false),
                    Triangle::new(true, false, true)];
@@ -113,14 +113,14 @@ fn test_triangle_vertex_two_stages() {
 
 #[test]
 fn test_triangle_poly_simple() {
-    let input = &[Triangle::new(0u, 1, 2),
-                  Triangle::new(1u, 2, 3)];
+    let input = &[Triangle::new(0us, 1, 2),
+                  Triangle::new(1us, 2, 3)];
 
-    let output = &[Triangle::new(0i, 1, 2),
-                   Triangle::new(0i, 2, 3)];
+    let output = &[Triangle::new(0is, 1, 2),
+                   Triangle::new(0is, 2, 3)];
 
     let transformed = input.iter().map(|x| x.clone())
-                           .map(|v| Triangle::new(0i, v.y as int, v.z as int));
+                           .map(|v| Triangle::new(0is, v.y as isize, v.z as isize));
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -129,18 +129,18 @@ fn test_triangle_poly_simple() {
 
 #[test]
 fn test_to_triangles() {
-    let q = Quad::new(0u, 1, 2, 3);
+    let q = Quad::new(0us, 1, 2, 3);
     let mut result = Vec::new();
     q.emit_triangles(|v| result.push(v));
 
-    assert_eq!(result, vec![Triangle::new(0u, 1, 2),
-                            Triangle::new(2u, 3, 0)]);
+    assert_eq!(result, vec![Triangle::new(0us, 1, 2),
+                            Triangle::new(2us, 3, 0)]);
 
-    let t = Triangle::new(0u, 1, 2);
+    let t = Triangle::new(0us, 1, 2);
     let mut result = Vec::new();
     t.emit_triangles(|v| result.push(v));
 
-    assert_eq!(result, vec![Triangle::new(0u, 1, 2)]);
+    assert_eq!(result, vec![Triangle::new(0us, 1, 2)]);
 }
 
 #[test]
@@ -165,7 +165,7 @@ fn test_plane() {
 #[test]
 fn test_lru_indexer() {
     let mut vectices: Vec<(f32, f32, f32)> = Vec::new();
-    let indexes: Vec<uint> = {
+    let indexes: Vec<usize> = {
         let mut indexer = LruIndexer::new(8, |_, v| vectices.push(v));
 
         Cube::new().vertex(|v| indexer.index(v))
@@ -177,7 +177,7 @@ fn test_lru_indexer() {
     assert_eq!(6*4, indexes.len());
 
     let mut vectices: Vec<(f32, f32, f32)> = Vec::new();
-    let indexes: Vec<uint> = {
+    let indexes: Vec<usize> = {
         let mut indexer = LruIndexer::new(4, |_, v| vectices.push(v));
 
         Cube::new().triangulate()
