@@ -15,7 +15,7 @@
 use std::collections::RingBuf;
 
 /// A polygon with 4 points. Maps to `GL_QUADS`
-#[derive(Clone, Show, PartialEq, Eq, Copy)]
+#[derive(Clone, Debug, PartialEq, Eq, Copy)]
 pub struct Quad<T> {
     /// the first point of a quad
     pub x: T,
@@ -40,7 +40,7 @@ impl<T> Quad<T> {
 }
 
 /// A polygon with 3 points. Maps to `GL_TRIANGLE`
-#[derive(Clone, Show, PartialEq, Eq, Copy)]
+#[derive(Clone, Debug, PartialEq, Eq, Copy)]
 pub struct Triangle<T> {
     /// the first point of a triangle
     pub x: T,
@@ -63,7 +63,7 @@ impl<T> Triangle<T> {
 
 /// This is All-the-types container. This exists since some generators
 /// produce both `Triangles` and `Quads`.
-#[derive(Show, Clone, PartialEq, Copy)]
+#[derive(Debug, Clone, PartialEq, Copy)]
 pub enum Polygon<T> {
     /// A wraped triangle
     PolyTri(Triangle<T>),

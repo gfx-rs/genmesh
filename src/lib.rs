@@ -27,6 +27,7 @@
 //! needs.
 
 #![deny(missing_docs)]
+#![feature(core)]
 
 pub use poly::{
     Quad,
