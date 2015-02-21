@@ -12,21 +12,13 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
+#![feature(test)]
+
 extern crate genmesh;
 extern crate test;
 
-use genmesh::{
-    Quad,
-    EmitTriangles,
-    Triangle,
-    MapToVertices,
-    LruIndexer,
-    Indexer,
-    Vertices,
-    Triangulate
-};
-
-use genmesh::generators::{Cube, Plane, SphereUV};
+use genmesh::*;
+use genmesh::generators::{Plane, SphereUV};
 use genmesh::generators::{SharedVertex, IndexedPolygon};
 use test::{Bencher, black_box};
 
