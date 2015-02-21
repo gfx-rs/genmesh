@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use core::marker::PhantomData;
+use std::marker::PhantomData;
 use std::ops::Range;
 
 /// The `SharedVertex` trait is meant to be used with the `IndexedPolygon` trait.
