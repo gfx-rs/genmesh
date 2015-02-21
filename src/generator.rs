@@ -12,6 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
+use core::marker::PhantomData;
 use std::ops::Range;
 
 /// The `SharedVertex` trait is meant to be used with the `IndexedPolygon` trait.
@@ -29,7 +30,8 @@ pub trait SharedVertex<V>: Sized {
     fn shared_vertex_iter<'a>(&'a self) -> SharedVertexIterator<'a, Self, V> {
         SharedVertexIterator {
             base: self,
-            idx: 0..self.shared_vertex_count()
+            idx: 0..self.shared_vertex_count(),
+            phantom_v: PhantomData
         }
     }
 }
@@ -37,7 +39,8 @@ pub trait SharedVertex<V>: Sized {
 /// An iterator that yields the shared vertices of the mesh
 pub struct SharedVertexIterator<'a, T:'a, V> {
     base: &'a T,
-    idx: Range<usize>
+    idx: Range<usize>,
+    phantom_v: PhantomData<V>
 }
 
 impl<'a, T: SharedVertex<V>, V> Iterator for SharedVertexIterator<'a, T, V> {
@@ -63,7 +66,8 @@ pub trait IndexedPolygon<V>: Sized {
     fn indexed_polygon_iter<'a>(&'a self) -> IndexedPolygonIterator<'a, Self, V> {
         IndexedPolygonIterator {
             base: self,
-            idx: 0..self.indexed_polygon_count()
+            idx: 0..self.indexed_polygon_count(),
+            phantom_v: PhantomData
         }
     }
 }
@@ -71,7 +75,8 @@ pub trait IndexedPolygon<V>: Sized {
 /// An iterator that yields the indices of the mesh
 pub struct IndexedPolygonIterator<'a, T:'a, V> {
     base: &'a T,
-    idx: Range<usize>
+    idx: Range<usize>,
+    phantom_v: PhantomData<V>
 }
 
 
