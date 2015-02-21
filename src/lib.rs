@@ -29,6 +29,8 @@
 #![deny(missing_docs)]
 #![feature(core)]
 
+extern crate core;
+
 pub use poly::{
     Quad,
     Triangle,

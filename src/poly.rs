@@ -12,7 +12,8 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use std::collections::RingBuf;
+use core::marker::PhantomData;
+use std::collections::VecDeque;
 
 /// A polygon with 4 points. Maps to `GL_QUADS`
 #[derive(Clone, Debug, PartialEq, Eq, Copy)]
@@ -122,7 +123,7 @@ impl<V, P: EmitVertices<V>, T: Iterator<Item=P>> Vertices<T, V> for T {
     fn vertices(self) -> VerticesIterator<T, V> {
         VerticesIterator {
             source: self,
-            buffer: RingBuf::new()
+            buffer: VecDeque::new()
         }
     }
 }
@@ -131,7 +132,7 @@ impl<V, P: EmitVertices<V>, T: Iterator<Item=P>> Vertices<T, V> for T {
 /// verticies.
 pub struct VerticesIterator<SRC, V> {
     source: SRC,
-    buffer: RingBuf<V>
+    buffer: VecDeque<V>
 }
 
 impl<V, U: EmitVertices<V>, SRC: Iterator<Item=U>> Iterator for VerticesIterator<SRC, V> {
@@ -223,14 +224,18 @@ impl<VIn, VOut,
 
         MapToVerticesIter {
             src: self,
-            f: map
+            f: map,
+            phantom_t: PhantomData,
+            phantom_u: PhantomData
         }
     }
 }
 
 struct MapToVerticesIter<SRC, T, U, F: FnMut(T) -> U> {
     src: SRC,
-    f: F
+    f: F,
+    phantom_t: PhantomData<T>,
+    phantom_u: PhantomData<U>
 }
 
 impl<'a, P,

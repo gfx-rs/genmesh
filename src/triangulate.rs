@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use std::collections::RingBuf;
+use std::collections::VecDeque;
 
 use Polygon::{ PolyQuad, PolyTri };
 use {
@@ -77,14 +77,14 @@ impl<V, P: EmitTriangles<Vertex=V>, T: Iterator<Item=P>> Triangulate<T, V> for T
 /// Used to iterator of polygons into a iterator of triangles
 pub struct TriangulateIterator<SRC, V> {
     source: SRC,
-    buffer: RingBuf<Triangle<V>>
+    buffer: VecDeque<Triangle<V>>
 }
 
 impl<V, U: EmitTriangles<Vertex=V>, SRC: Iterator<Item=U>> TriangulateIterator<SRC, V> {
     fn new(src: SRC) -> TriangulateIterator<SRC, V> {
         TriangulateIterator {
             source: src,
-            buffer: RingBuf::new()
+            buffer: VecDeque::new()
         }
     }
 }
