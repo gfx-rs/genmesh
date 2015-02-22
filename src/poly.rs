@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use core::marker::PhantomData;
+use std::marker::PhantomData;
 use std::collections::VecDeque;
 
 /// A polygon with 4 points. Maps to `GL_QUADS`
