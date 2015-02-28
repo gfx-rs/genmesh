@@ -155,7 +155,9 @@ impl<V, U: EmitVertices<V>, SRC: Iterator<Item=U>> Iterator for VerticesIterator
 
 /// equivalent of `map` but per-vertex
 pub trait MapVertex<T, U> {
+    /// mapping output
     type Output;
+
     /// map a function to each vertex in polygon creating a new polygon
     fn map_vertex<F>(self, mut map: F) -> Self::Output where F: FnMut(T) -> U;
 }
@@ -205,6 +207,7 @@ impl<T: Clone, U> MapVertex<T, U> for Polygon<T> {
 /// the mesh using a matrix multiply, or just for modifying the type of each
 /// vertex.
 pub trait MapToVertices<T, U> {
+    /// output vertex type
     type Output;
 
     /// from a iterator of polygons, produces a iterator of polygons. Each
