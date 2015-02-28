@@ -26,7 +26,7 @@
 //! can be used with the built in `Iterator` traits to build the meshes that your engine
 //! needs.
 
-#![deny(missing_docs)]
+//#![deny(missing_docs)]
 #![feature(core)]
 
 pub use poly::{
