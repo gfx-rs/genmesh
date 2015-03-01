@@ -105,7 +105,7 @@ impl IndexedPolygon<Polygon<usize>> for SphereUV {
         let u = idx % self.sub_u;
         let v = idx / self.sub_u;
 
-        let f = |&: u: usize, v: usize| {
+        let f = |u: usize, v: usize| {
             if v == 0 {
                 0
             } else if self.sub_v == v {
