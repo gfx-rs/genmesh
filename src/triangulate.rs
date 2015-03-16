@@ -92,6 +92,11 @@ impl<V, U: EmitTriangles<Vertex=V>, SRC: Iterator<Item=U>> TriangulateIterator<S
 impl<V, U: EmitTriangles<Vertex=V>, SRC: Iterator<Item=U>> Iterator for TriangulateIterator<SRC, V> {
     type Item = Triangle<V>;
 
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let (n, m) = self.source.size_hint();
+        (n, m.map(|x| x*2))
+    }
+
     fn next(&mut self) -> Option<Triangle<V>> {
         loop {
             match self.buffer.pop_front() {

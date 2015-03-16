@@ -248,6 +248,10 @@ impl<'a, P,
          T, U, F: FnMut(T) -> U> Iterator for MapToVerticesIter<SRC, T, U, F> {
     type Item = P;
 
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.src.size_hint()
+    }
+
     fn next(&mut self) -> Option<P> {
         self.src.next().map(|x| x.map_vertex(|x| (self.f)(x)))
     }

@@ -53,6 +53,12 @@ impl SphereUV {
 impl Iterator for SphereUV {
     type Item = Polygon<(f32, f32, f32)>;
 
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let n = (self.sub_v - self.v) * self.sub_u + (self.sub_u - self.u);
+        (n, Some(n))
+    }
+
+
     fn next(&mut self) -> Option<Polygon<(f32, f32, f32)>> {
         if self.u == self.sub_u {
             self.u = 0;

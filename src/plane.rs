@@ -61,6 +61,11 @@ impl Plane {
 impl Iterator for Plane {
     type Item = Quad<(f32, f32)>;
 
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let n = (self.subdivide_y - self.y) * self.subdivide_x + (self.subdivide_x - self.x);
+        (n, Some(n))
+    }
+
     fn next(&mut self) -> Option<Quad<(f32, f32)>> {
         if self.x == self.subdivide_x {
             self.x = 0;

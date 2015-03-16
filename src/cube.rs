@@ -55,6 +55,10 @@ impl Cube {
 impl Iterator for Cube {
     type Item = Quad<(f32, f32, f32)>;
 
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.range.size_hint()
+    }
+
     fn next(&mut self) -> Option<Quad<(f32, f32, f32)>> {
         self.range.next().map(|idx| self.face(idx))
     }
