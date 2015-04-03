@@ -12,8 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use std::f32::consts::{PI, PI_2};
-use std::num::Float;
+use std::f32::consts::PI;
 use super::{Quad, Triangle, Polygon};
 use super::Polygon::{PolyTri, PolyQuad};
 use super::generators::{SharedVertex, IndexedPolygon};
@@ -41,7 +40,7 @@ impl SphereUV {
     }
 
     fn vert(&self, u: usize, v: usize) -> (f32, f32, f32) {
-        let u = (u as f32 / self.sub_u as f32) * PI_2;
+        let u = (u as f32 / self.sub_u as f32) * PI * 2.;
         let v = (v as f32 / self.sub_v as f32) * PI;
 
         (u.cos() * v.sin(),
