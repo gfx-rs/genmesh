@@ -16,7 +16,7 @@ use super::Quad;
 use super::generators::{SharedVertex, IndexedPolygon};
 
 /// Represents a 2D plane with origin of (0, 0), from 1 to -1
-#[derive(Copy)]
+#[derive(Clone, Copy)]
 pub struct Plane {
     subdivide_x: usize,
     subdivide_y: usize,
