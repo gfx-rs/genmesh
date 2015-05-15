@@ -1,6 +1,6 @@
 # Genmesh
 
-[![Build Status](https://travis-ci.org/csherratt/genmesh.svg?branch=master)](https://travis-ci.org/csherratt/genmesh)
+[![Build Status](https://travis-ci.org/gfx-rs/genmesh.svg?branch=master)](https://travis-ci.org/gfx-rs/genmesh)
 
 `genmesh` is a library for building vertex pipelines. The goal is help facilitate polygon assembly. This is done by building on top of the of the `Iterator` trait. A pipeline stage is a lazy iterator the consumes the input, and produces a new polygon based on the stage.
 
