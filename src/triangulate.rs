@@ -93,8 +93,8 @@ impl<V, U: EmitTriangles<Vertex=V>, SRC: Iterator<Item=U>> Iterator for Triangul
     type Item = Triangle<V>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let (n, m) = self.source.size_hint();
-        (n, m.map(|x| x*2))
+        let (n, _) = self.source.size_hint();
+        (n, None)
     }
 
     fn next(&mut self) -> Option<Triangle<V>> {

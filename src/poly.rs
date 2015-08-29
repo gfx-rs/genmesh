@@ -256,3 +256,125 @@ impl<'a, P,
         self.src.next().map(|x| x.map_vertex(|x| (self.f)(x)))
     }
 }
+
+/// Represents a line
+#[derive(Clone, Debug, PartialEq, Eq, Copy)]
+pub struct Line<T> {
+    /// the first point
+    pub x: T,
+    /// The second point
+    pub y: T
+}
+
+impl<T> Line<T> {
+    /// Create a new line using point x and y
+    pub fn new(x: T, y: T) -> Line<T> {
+        Line{x: x, y: y}
+    }
+}
+
+/// Convert a Polygon into it's fragments
+pub trait EmitLines {
+    /// The Vertex defines the corners of a Polygon
+    type Vertex;
+
+    /// convert a polygon into lines, each line is emitted via
+    /// calling of the callback of `emit` This allow for
+    /// a variable amount of lines to be returned
+    fn emit_lines<E>(self, emit: E)
+        where E: FnMut(Line<Self::Vertex>);
+}
+
+impl<T: Clone> EmitLines for Triangle<T> {
+    type Vertex = T;
+
+    fn emit_lines<E>(self, mut emit: E)
+        where E: FnMut(Line<T>)
+    {
+        emit(Line::new(self.x.clone(), self.y.clone()));
+        emit(Line::new(self.y        , self.z.clone()));
+        emit(Line::new(self.z        , self.x        ));
+    }
+}
+
+impl<T: Clone> EmitLines for Quad<T> {
+    type Vertex = T;
+
+    fn emit_lines<E>(self, mut emit: E)
+        where E: FnMut(Line<T>)
+    {
+        emit(Line::new(self.x.clone(), self.y.clone()));
+        emit(Line::new(self.y        , self.z.clone()));
+        emit(Line::new(self.z        , self.w.clone()));
+        emit(Line::new(self.w        , self.x        ));
+    }
+}
+
+impl<T: Clone> EmitLines for Polygon<T> {
+    type Vertex = T;
+
+    fn emit_lines<E>(self, emit: E)
+        where E: FnMut(Line<T>)
+    {
+        match self {
+            Polygon::PolyTri(x) => x.emit_lines(emit),
+            Polygon::PolyQuad(x) => x.emit_lines(emit)
+        }
+    }
+}
+
+/// Creates an LinesIterator from another Iterator
+pub trait Lines {
+    /// The type of each point in the lines
+    type Vertex;
+
+    /// Convert the iterator into a LinesIterator
+    fn lines(self) -> LinesIterator<Self, Self::Vertex>;
+}
+
+impl<T, P, V> Lines for T
+    where T: Iterator<Item=P>,
+          P: EmitLines<Vertex=V>
+{
+    type Vertex = V;
+
+    fn lines(self) -> LinesIterator<T, V> {
+        LinesIterator {
+            source: self,
+            buffer: VecDeque::new()
+        }
+    }
+}
+
+/// An iterator that turns Polygons into an Iterator of Lines
+pub struct LinesIterator<I, V> {
+    source: I,
+    buffer: VecDeque<Line<V>>,
+}
+
+impl<I, P, V> Iterator for LinesIterator<I, V>
+    where I: Iterator<Item=P>,
+          P: EmitLines<Vertex=V>
+
+{
+    type Item = Line<V>;
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let (n, _) = self.source.size_hint();
+        (n, None)
+    }
+
+    fn next(&mut self) -> Option<Line<V>> {
+        loop {
+            match self.buffer.pop_front() {
+                Some(v) => return Some(v),
+                None => ()
+            }
+
+            match self.source.next() {
+                Some(p) => p.emit_lines(|v| self.buffer.push_back(v)),
+                None => return None
+            }
+        }
+    }
+}
