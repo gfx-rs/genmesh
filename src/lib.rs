@@ -35,7 +35,10 @@ pub use poly::{
     Vertices,
     VerticesIterator,
     MapToVertices,
-    MapVertex
+    MapVertex,
+    Line,
+    Lines,
+    EmitLines,
 };
 
 pub use triangulate::{

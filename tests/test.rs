@@ -28,7 +28,7 @@ use genmesh::{
 use genmesh::generators::{Cube, Plane};
 
 #[test]
-fn test_quad_vertex() {
+fn quad_vertex() {
     let input = &[Quad::new(0usize, 1, 2, 3),
                   Quad::new(1usize, 2, 3, 4)];
 
@@ -44,7 +44,7 @@ fn test_quad_vertex() {
 }
 
 #[test]
-fn test_quad_vertex_two_stages() {
+fn quad_vertex_two_stages() {
     let input = &[Quad::new(0usize, 1, 2, 3),
                   Quad::new(1usize, 2, 3, 4)];
 
@@ -61,7 +61,7 @@ fn test_quad_vertex_two_stages() {
 }
 
 #[test]
-fn test_quad_poly_simple() {
+fn quad_poly_simple() {
     let input = &[Quad::new(0usize, 1, 2, 3),
                   Quad::new(1usize, 2, 3, 4)];
 
@@ -77,7 +77,7 @@ fn test_quad_poly_simple() {
 }
 
 #[test]
-fn test_triangle_vertex() {
+fn triangle_vertex() {
     let input = &[Triangle::new(0usize, 1, 2),
                   Triangle::new(1usize, 2, 3)];
 
@@ -93,7 +93,7 @@ fn test_triangle_vertex() {
 }
 
 #[test]
-fn test_triangle_vertex_two_stages() {
+fn triangle_vertex_two_stages() {
     let input = &[Triangle::new(0usize, 1, 2),
                   Triangle::new(1usize, 2, 3)];
 
@@ -110,7 +110,7 @@ fn test_triangle_vertex_two_stages() {
 }
 
 #[test]
-fn test_triangle_poly_simple() {
+fn triangle_poly_simple() {
     let input = &[Triangle::new(0usize, 1, 2),
                   Triangle::new(1usize, 2, 3)];
 
@@ -126,7 +126,7 @@ fn test_triangle_poly_simple() {
 }
 
 #[test]
-fn test_to_triangles() {
+fn to_triangles() {
     let q = Quad::new(0usize, 1, 2, 3);
     let mut result = Vec::new();
     q.emit_triangles(|v| result.push(v));
@@ -142,7 +142,7 @@ fn test_to_triangles() {
 }
 
 #[test]
-fn test_plane() {
+fn plane() {
     let mut plane = Plane::new();
 
     let a = plane.next().unwrap();
@@ -161,7 +161,7 @@ fn test_plane() {
 }
 
 #[test]
-fn test_lru_indexer() {
+fn lru_indexer() {
     let mut vectices: Vec<(f32, f32, f32)> = Vec::new();
     let indexes: Vec<usize> = {
         let mut indexer = LruIndexer::new(8, |_, v| vectices.push(v));
@@ -186,4 +186,38 @@ fn test_lru_indexer() {
 
     assert_eq!(20, vectices.len());
     assert_eq!(3*6*2, indexes.len());
+}
+
+#[test]
+fn emit_lines() {
+    use genmesh::{Line, Lines, EmitLines};
+
+    let mut lines = Vec::new();
+    let triangle = Triangle::new(0i8, 1, 2); 
+    triangle.emit_lines(|x| lines.push(x));
+
+    assert_eq!(3, lines.len());
+    assert_eq!(Line::new(0, 1), lines[0]);
+    assert_eq!(Line::new(1, 2), lines[1]);
+    assert_eq!(Line::new(2, 0), lines[2]);
+
+    let mut lines = Vec::new();
+    let quad = Quad::new(0i8, 1, 2, 3); 
+    quad.emit_lines(|x| lines.push(x));
+
+    assert_eq!(4, lines.len());
+    assert_eq!(Line::new(0, 1), lines[0]);
+    assert_eq!(Line::new(1, 2), lines[1]);
+    assert_eq!(Line::new(2, 3), lines[2]);
+    assert_eq!(Line::new(3, 0), lines[3]);
+
+    let quads = [Quad::new(0i8, 1, 2, 3),
+                 Quad::new(4i8, 5, 6, 7)];
+    let lines: Vec<Line<i8>> = quads.iter().map(|&x| x).lines().collect();
+
+    assert_eq!(8, lines.len());
+    assert_eq!(Line::new(0, 1), lines[0]);
+    assert_eq!(Line::new(1, 2), lines[1]);
+    assert_eq!(Line::new(2, 3), lines[2]);
+    assert_eq!(Line::new(3, 0), lines[3]);
 }
