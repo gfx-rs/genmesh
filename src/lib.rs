@@ -28,6 +28,8 @@
 
 //#![deny(missing_docs)]
 
+extern crate cgmath;
+
 pub use poly::{
     Quad,
     Triangle,
@@ -52,10 +54,15 @@ pub use indexer::{
     LruIndexer
 };
 
+pub use neighbors::{
+    Neighbors
+};
+
 mod triangulate;
 mod poly;
 mod indexer;
 mod generator;
+mod neighbors;
 
 mod cube;
 mod plane;
