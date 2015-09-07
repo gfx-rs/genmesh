@@ -258,7 +258,7 @@ impl<'a, P,
 }
 
 /// Represents a line
-#[derive(Clone, Debug, PartialEq, Eq, Copy)]
+#[derive(Clone, Debug, PartialEq, Eq, Copy, Hash)]
 pub struct Line<T> {
     /// the first point
     pub x: T,

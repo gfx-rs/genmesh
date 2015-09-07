@@ -13,3 +13,6 @@ repository = "https://github.com/csherratt/genmesh"
 [lib]
 name = "genmesh"
 path = "src/lib.rs"
+
+[dependencies]
+cgmath="*"
