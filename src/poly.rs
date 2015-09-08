@@ -81,6 +81,14 @@ pub trait EmitVertices<T> {
     fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T);
 }
 
+impl<T> EmitVertices<T> for Line<T> {
+    fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T) {
+        let Line{x, y} = self;
+        emit(x);
+        emit(y);
+    }
+}
+
 impl<T> EmitVertices<T> for Triangle<T> {
     fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T) {
         let Triangle{x, y, z} = self;
@@ -160,6 +168,18 @@ pub trait MapVertex<T, U> {
     type Output;
     /// map a function to each vertex in polygon creating a new polygon
     fn map_vertex<F>(self, mut map: F) -> Self::Output where F: FnMut(T) -> U;
+}
+
+impl<T: Clone, U> MapVertex<T, U> for Line<T> {
+    type Output = Line<U>;
+
+    fn map_vertex<F>(self, mut map: F) -> Line<U> where F: FnMut(T) -> U {
+        let Line{x, y} = self;
+        Line {
+            x: map(x),
+            y: map(y),
+        }
+    }
 }
 
 impl<T: Clone, U> MapVertex<T, U> for Triangle<T> {
