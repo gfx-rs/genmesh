@@ -226,7 +226,7 @@ impl<T: Clone, U> MapVertex<T, U> for Polygon<T> {
 /// and modify the vertices in a polygon. This is useful if you need to scale
 /// the mesh using a matrix multiply, or just for modifying the type of each
 /// vertex.
-pub trait MapToVertices<T, U> {
+pub trait MapToVertices<T, U>: Sized {
     /// `Output` should be a a container of the same shape of the type
     /// It's internal values should reflect any transformation the map did.
     type Output;
@@ -344,7 +344,7 @@ impl<T: Clone> EmitLines for Polygon<T> {
 }
 
 /// Creates an LinesIterator from another Iterator
-pub trait Lines {
+pub trait Lines: Sized {
     /// The type of each point in the lines
     type Vertex;
 
