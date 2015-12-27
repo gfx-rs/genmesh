@@ -15,4 +15,4 @@ name = "genmesh"
 path = "src/lib.rs"
 
 [dependencies]
-cgmath="0.3"
+cgmath = "0.7"

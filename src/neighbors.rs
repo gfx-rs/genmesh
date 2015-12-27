@@ -16,7 +16,7 @@
 //! then polygon by polygon.
 
 use std::collections::{HashMap, HashSet};
-use cgmath::{Vector3, FixedArray, EuclideanVector};
+use cgmath::{Vector3, EuclideanVector};
 
 use poly::{Triangle, Line, EmitLines};
 
@@ -104,7 +104,7 @@ impl<T> Neighbors<T> {
         let a = z - x;
         let b = z - y;
 
-        a.cross(&b).normalize().into_fixed()
+        a.cross(b).normalize().into()
     }
 
     /// Calculate the normal for an vertex based on the average
@@ -121,7 +121,7 @@ impl<T> Neighbors<T> {
             normal = normal + to_vec3(self.normal_for_face(*i, &mut f));
         }
 
-        normal.normalize().into_fixed()
+        normal.normalize().into()
     }
 }
 
