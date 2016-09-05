@@ -255,7 +255,7 @@ impl<VIn, VOut,
     }
 }
 
-struct MapToVerticesIter<SRC, T, U, F: FnMut(T) -> U> {
+pub struct MapToVerticesIter<SRC, T, U, F: FnMut(T) -> U> {
     src: SRC,
     f: F,
     phantom_t: PhantomData<T>,
