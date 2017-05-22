@@ -28,7 +28,7 @@ pub trait EmitTriangles {
 
     /// convert a polygon to one or more triangles, each triangle
     /// is returned by calling `emit`
-    fn emit_triangles<F>(&self, mut emit: F) where F: FnMut(Triangle<Self::Vertex>);
+    fn emit_triangles<F>(&self, F) where F: FnMut(Triangle<Self::Vertex>);
 }
 
 impl<T: Clone> EmitTriangles for Quad<T> {
@@ -77,7 +77,7 @@ impl<V, P: EmitTriangles<Vertex=V>, T: Iterator<Item=P>> Triangulate<T, V> for T
 /// Used to iterator of polygons into a iterator of triangles
 pub struct TriangulateIterator<SRC, V> {
     source: SRC,
-    buffer: VecDeque<Triangle<V>>
+    buffer: VecDeque<Triangle<V>>,
 }
 
 impl<V, U: EmitTriangles<Vertex=V>, SRC: Iterator<Item=U>> TriangulateIterator<SRC, V> {
@@ -97,7 +97,7 @@ impl<V, U: EmitTriangles<Vertex=V>, SRC: Iterator<Item=U>> Iterator for Triangul
         (n, None)
     }
 
-    fn next(&mut self) -> Option<Triangle<V>> {
+    fn next(&mut self) -> Option<Self::Item> {
         loop {
             match self.buffer.pop_front() {
                 Some(v) => return Some(v),

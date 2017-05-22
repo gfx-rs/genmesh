@@ -30,12 +30,12 @@ pub struct Quad<T> {
 
 impl<T> Quad<T> {
     /// create a new `Quad` with supplied vertices
-    pub fn new(v0: T, v1: T, v2: T, v3: T) -> Quad<T> {
+    pub fn new(v0: T, v1: T, v2: T, v3: T) -> Self {
         Quad {
             x: v0,
             y: v1,
             z: v2,
-            w: v3
+            w: v3,
         }
     }
 }
@@ -53,11 +53,11 @@ pub struct Triangle<T> {
 
 impl<T> Triangle<T> {
     /// create a new `Triangle` with supplied vertcies
-    pub fn new(v0: T, v1: T, v2: T) -> Triangle<T> {
+    pub fn new(v0: T, v1: T, v2: T) -> Self {
         Triangle {
             x: v0,
             y: v1,
-            z: v2
+            z: v2,
         }
     }
 }
@@ -69,7 +69,7 @@ pub enum Polygon<T> {
     /// A wraped triangle
     PolyTri(Triangle<T>),
     /// A wraped quad
-    PolyQuad(Quad<T>)
+    PolyQuad(Quad<T>),
 }
 
 /// The core mechanism of `Vertices` trait. This is a mechanism for unwraping
@@ -78,7 +78,7 @@ pub trait EmitVertices<T> {
     /// Consume a polygon, each
     /// vertex is emitted to the parent function by calling the supplied
     /// lambda function
-    fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T);
+    fn emit_vertices<F>(self, F) where F: FnMut(T);
 }
 
 impl<T> EmitVertices<T> for Line<T> {
@@ -140,7 +140,7 @@ impl<V, P: EmitVertices<V>, T: Iterator<Item=P>> Vertices<T, V> for T {
 /// verticies.
 pub struct VerticesIterator<SRC, V> {
     source: SRC,
-    buffer: VecDeque<V>
+    buffer: VecDeque<V>,
 }
 
 impl<V, U: EmitVertices<V>, SRC: Iterator<Item=U>> Iterator for VerticesIterator<SRC, V> {
@@ -167,7 +167,7 @@ pub trait MapVertex<T, U> {
     /// It's internal values should reflect any transformation the map did.
     type Output;
     /// map a function to each vertex in polygon creating a new polygon
-    fn map_vertex<F>(self, mut map: F) -> Self::Output where F: FnMut(T) -> U;
+    fn map_vertex<F>(self, F) -> Self::Output where F: FnMut(T) -> U;
 }
 
 impl<T: Clone, U> MapVertex<T, U> for Line<T> {
@@ -190,7 +190,7 @@ impl<T: Clone, U> MapVertex<T, U> for Triangle<T> {
         Triangle {
             x: map(x),
             y: map(y),
-            z: map(z)
+            z: map(z),
         }
     }
 }
@@ -204,7 +204,7 @@ impl<T: Clone, U> MapVertex<T, U> for Quad<T> {
             x: map(x),
             y: map(y),
             z: map(z),
-            w: map(w)
+            w: map(w),
         }
     }
 }
@@ -249,8 +249,7 @@ impl<VIn, VOut,
         MapToVerticesIter {
             src: self,
             f: map,
-            phantom_t: PhantomData,
-            phantom_u: PhantomData
+            phantom: PhantomData,
         }
     }
 }
@@ -258,8 +257,7 @@ impl<VIn, VOut,
 pub struct MapToVerticesIter<SRC, T, U, F: FnMut(T) -> U> {
     src: SRC,
     f: F,
-    phantom_t: PhantomData<T>,
-    phantom_u: PhantomData<U>
+    phantom: PhantomData<(T, U)>,
 }
 
 impl<'a, P,
@@ -283,12 +281,12 @@ pub struct Line<T> {
     /// the first point
     pub x: T,
     /// The second point
-    pub y: T
+    pub y: T,
 }
 
 impl<T> Line<T> {
     /// Create a new line using point x and y
-    pub fn new(x: T, y: T) -> Line<T> {
+    pub fn new(x: T, y: T) -> Self {
         Line{x: x, y: y}
     }
 }

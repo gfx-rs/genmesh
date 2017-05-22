@@ -40,7 +40,7 @@ pub trait SharedVertex<V>: Sized {
 pub struct SharedVertexIterator<'a, T:'a, V> {
     base: &'a T,
     idx: Range<usize>,
-    phantom_v: PhantomData<V>
+    phantom_v: PhantomData<V>,
 }
 
 impl<'a, T: SharedVertex<V>, V> Iterator for SharedVertexIterator<'a, T, V> {
@@ -80,7 +80,7 @@ pub trait IndexedPolygon<V>: Sized {
 pub struct IndexedPolygonIterator<'a, T:'a, V> {
     base: &'a T,
     idx: Range<usize>,
-    phantom_v: PhantomData<V>
+    phantom_v: PhantomData<V>,
 }
 
 

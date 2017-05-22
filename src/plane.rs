@@ -21,7 +21,7 @@ pub struct Plane {
     subdivide_x: usize,
     subdivide_y: usize,
     x: usize,
-    y: usize
+    y: usize,
 }
 
 impl Plane {
@@ -31,7 +31,7 @@ impl Plane {
             subdivide_x: 1,
             subdivide_y: 1,
             x: 0,
-            y: 0
+            y: 0,
         }
     }
 
@@ -45,7 +45,7 @@ impl Plane {
             subdivide_x: x,
             subdivide_y: y,
             x: 0,
-            y: 0
+            y: 0,
         }
     }
 

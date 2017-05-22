@@ -31,7 +31,7 @@ pub struct LruIndexer<T, F: FnMut(usize, T)> {
     index: usize,
     max: usize,
     cache: Vec<(T, usize)>,
-    emit: F
+    emit: F,
 }
 
 impl<T, F: FnMut(usize, T)> LruIndexer<T, F> {
@@ -45,7 +45,7 @@ impl<T, F: FnMut(usize, T)> LruIndexer<T, F> {
             index: 0,
             max: size,
             cache: Vec::new(),
-            emit: emit
+            emit: emit,
         }
     }
 }
