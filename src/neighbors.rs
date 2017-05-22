@@ -16,7 +16,7 @@
 //! then polygon by polygon.
 
 use std::collections::{HashMap, HashSet};
-use cgmath::{Vector3, EuclideanVector};
+use cgmath::{InnerSpace, Vector3};
 
 use poly::{Triangle, Line, EmitLines};
 
@@ -24,14 +24,14 @@ pub struct Neighbors<T> {
     pub vertices: Vec<T>,
     pub polygons: Vec<Triangle<usize>>,
     shares_edge: HashMap<Line<usize>, Vec<usize>>,
-    shares_vertex: HashMap<usize, Vec<usize>>
+    shares_vertex: HashMap<usize, Vec<usize>>,
 }
 
 impl<T> Neighbors<T> {
 
     /// Build a Neighbors search based on the supplied vertices
     /// and supplied triangle list.
-    pub fn new(vertices: Vec<T>, polygons: Vec<Triangle<usize>>) -> Neighbors<T> {
+    pub fn new(vertices: Vec<T>, polygons: Vec<Triangle<usize>>) -> Self {
         let mut shares_edge = HashMap::new();
         let mut shares_vertex = HashMap::new();
 

@@ -24,7 +24,7 @@ pub struct Cube {
 
 impl Cube {
     /// create a new cube generator
-    pub fn new() -> Cube {
+    pub fn new() -> Self {
         Cube { range: 0..6 }
     }
 
@@ -50,7 +50,7 @@ impl Cube {
     fn face(&self, idx: usize) -> Quad<(f32, f32, f32)> {
         self.face_indexed(idx).map_vertex(|i| self.vert(i))
     }
-} 
+}
 
 impl Iterator for Cube {
     type Item = Quad<(f32, f32, f32)>;
