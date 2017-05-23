@@ -3,12 +3,13 @@ name = "genmesh"
 version = "0.4.2"
 authors = [
     "Colin Sherratt <colin.sherratt@gmail.com>",
+    "Dzmitry Malyshau <kvarkus@gmail.com",
 ]
 
 license = "Apache-2.0"
 description = "A package for generating 3D meshes"
-homepage = "https://github.com/csherratt/genmesh"
-repository = "https://github.com/csherratt/genmesh"
+homepage = "https://github.com/gfx-rs/genmesh"
+repository = "https://github.com/gfx-rs/genmesh"
 
 [lib]
 name = "genmesh"
