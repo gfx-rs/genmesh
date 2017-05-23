@@ -1,10 +1,11 @@
 # Genmesh
-
 [![Build Status](https://travis-ci.org/gfx-rs/genmesh.svg?branch=master)](https://travis-ci.org/gfx-rs/genmesh)
+[![Docs](https://docs.rs/genmesh/badge.svg)](https://docs.rs/genmesh)
+[![Crates.io](https://img.shields.io/crates/v/genmesh.svg?maxAge=2592000)](https://crates.io/crates/genmesh)
 
 `genmesh` is a library for building vertex pipelines. The goal is help facilitate polygon assembly. This is done by building on top of the of the `Iterator` trait. A pipeline stage is a lazy iterator the consumes the input, and produces a new polygon based on the stage.
 
-This also provides some `Generators` for creating primitives at runtime.
+This also provides some `generators` for creating primitives at runtime.
 
 **Currently supported stages**
  - `vertex` maps a function to each vertex in a polygon
@@ -14,11 +15,14 @@ This also provides some `Generators` for creating primitives at runtime.
 **Currently Supported Generators**
  - `Plane`
  - `Cube`
+ - `Cylinder`
  - `SphereUV`
 
 **Utility**
- - `LruIndexer` translate a vertex into a index, emitting a new vertex if 
-   The current vertex is not in the `Lru` cache.
+ - `LruIndexer` translate a vertex into a index, emitting a new vertex if
+ the current vertex is not in the `Lru` cache.
+ - `Neighbors` work with mesh as a whole by querying normals and neighbors
+on either vertex or polygon levels.
 
 **Primitives**
  - `Triangle`
