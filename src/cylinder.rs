@@ -29,6 +29,7 @@ impl Cylinder {
     /// Create a new cylinder.
     /// `u` is the number of points across the radius.
     pub fn new(u: usize) -> Self {
+        assert!(u > 1);
         Cylinder {
             u: 0,
             h: -1,
@@ -59,16 +60,21 @@ impl Iterator for Cylinder {
             self.h += 1;
         }
 
-        let x = self.vert(self.u,   self.h);
-        let y = self.vert(self.u,   1);
-        let z = self.vert(self.u+1, 1);
-        let w = self.vert(self.u+1, self.h);
+        let u = self.u;
         self.u += 1;
+        // mathematically, reaching `u + 1 == sub_u` should trivially resolve,
+        // because sin(2pi) == sin(0), but rounding errors go in the way.
+        let u1 = self.u % self.sub_u;
+
+        let x = self.vert(u, -1);
+        let y = self.vert(u1, -1);
+        let z = self.vert(u1, 1);
+        let w = self.vert(u, 1);
 
         Some(match self.h {
-            -1 => Polygon::PolyTri(Triangle::new(x, (0., 0., -1.), w)),
-            0  => Polygon::PolyQuad(Quad::new(x, w, z, y)),
-            1  => Polygon::PolyTri(Triangle::new(x, w, (0., 0., 1.))),
+            -1 => Polygon::PolyTri(Triangle::new(x, (0., 0., -1.), y)),
+            0  => Polygon::PolyQuad(Quad::new(x, y, z, w)),
+            1  => Polygon::PolyTri(Triangle::new(w, z, (0., 0., 1.))),
             _ => unreachable!()
         })
     }
@@ -97,24 +103,24 @@ impl SharedVertex<(f32, f32, f32)> for Cylinder {
 impl IndexedPolygon<Polygon<usize>> for Cylinder {
     fn indexed_polygon(&self, idx: usize) -> Polygon<usize> {
         let u = idx % self.sub_u;
-        let v = (u + 1) % self.sub_u;
+        let u1 = (idx + 1) % self.sub_u;
         match idx / self.sub_u {
             0 => {
                 let base = 1;
                 let start = 0;
-                Polygon::PolyTri(Triangle::new(base + u, start, base + v))
+                Polygon::PolyTri(Triangle::new(base + u, start, base + u1))
             },
             1 => {
                 let base = 1;
                 Polygon::PolyQuad(Quad::new(base + u,
-                                            base + v,
-                                            base + v + self.sub_u,
+                                            base + u1,
+                                            base + u1 + self.sub_u,
                                             base + u + self.sub_u))
             },
             2 => {
                 let base = 1 + self.sub_u;
                 let end = self.shared_vertex_count() - 1;
-                Polygon::PolyTri(Triangle::new(base + u, base + v, end))
+                Polygon::PolyTri(Triangle::new(base + u, base + u1, end))
             },
             _ => unreachable!()
         }

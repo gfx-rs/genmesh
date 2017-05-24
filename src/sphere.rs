@@ -31,6 +31,7 @@ impl SphereUV {
     /// `u` is the number of points across the equator of the sphere.
     /// `v` is the number of points from pole to pole.
     pub fn new(u: usize, v: usize) -> Self {
+        assert!(u > 1 && v > 1);
         SphereUV {
             u: 0,
             v: 0,
@@ -66,16 +67,22 @@ impl Iterator for SphereUV {
             }
         }
 
-        let x = self.vert(self.u,   self.v);
-        let y = self.vert(self.u,   self.v+1);
-        let z = self.vert(self.u+1, self.v+1);
-        let w = self.vert(self.u+1, self.v);
+        // mathematically, reaching `u + 1 == sub_u` should trivially resolve,
+        // because sin(2pi) == sin(0), but rounding errors go in the way.
+        let u1 = (self.u + 1) % self.sub_u;
+
+        let x = self.vert(self.u, self.v);
+        let y = self.vert(self.u, self.v+1);
+        let z = self.vert(u1, self.v+1);
+        let w = self.vert(u1, self.v);
         let v = self.v;
         self.u += 1;
 
         Some(if v == 0 {
             PolyTri(Triangle::new(x, y, z))
         } else if v == self.sub_v - 1 {
+            // overriding z to force u == 0 for consistency
+            let z = self.vert(0, self.sub_v);
             PolyTri(Triangle::new(z, w, x))
         } else {
             PolyQuad(Quad::new(x, y, z, w))
