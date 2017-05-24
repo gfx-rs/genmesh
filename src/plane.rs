@@ -37,8 +37,8 @@ impl Plane {
 
     /// create a subdivided plane. This can be used to build
     /// a grid of points.
-    /// x is the number of subdivisions in the x axis
-    /// y is the number of subdivisions in the y axis
+    /// `x` is the number of subdivisions in the x axis
+    /// `y` is the number of subdivisions in the y axis
     pub fn subdivide(x: usize, y: usize) -> Plane {
         assert!(x > 0 && y > 0);
         Plane {
@@ -62,17 +62,18 @@ impl Iterator for Plane {
     type Item = Quad<(f32, f32)>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let n = (self.subdivide_y - self.y) * self.subdivide_x + (self.subdivide_x - self.x);
+        let n = (self.subdivide_y - self.y) * self.subdivide_x +
+                (self.subdivide_x - self.x);
         (n, Some(n))
     }
 
     fn next(&mut self) -> Option<Quad<(f32, f32)>> {
         if self.x == self.subdivide_x {
-            self.x = 0;
             self.y += 1;
-            if self.y == self.subdivide_y {
+            if self.y >= self.subdivide_y {
                 return None;
             }
+            self.x = 0;
         }
 
         let x = self.vert(self.x,   self.y);
@@ -100,14 +101,14 @@ impl SharedVertex<(f32, f32)> for Plane {
 
 impl IndexedPolygon<Quad<usize>> for Plane {
     fn indexed_polygon(&self, idx: usize) -> Quad<usize> {
-        let y = idx / (self.subdivide_x);
-        let y = y * (self.subdivide_x+1);
+        let y = idx / self.subdivide_x;
         let x = idx % self.subdivide_x;
+        let base = y * (self.subdivide_x + 1) + x;
 
-        Quad::new((x+y) + self.subdivide_x + 1,
-                  (x+y),
-                  (x+y) + 1,
-                  (x+y) + self.subdivide_x + 2)
+        Quad::new(base,
+                  base + 1,
+                  base + self.subdivide_x + 2,
+                  base + self.subdivide_x + 1)
     }
 
     fn indexed_polygon_count(&self) -> usize {
