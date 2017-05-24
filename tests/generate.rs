@@ -18,11 +18,15 @@ extern crate genmesh;
 use std::fmt::Debug;
 use genmesh::{
     generators,
-    Triangle,
     EmitTriangles,
+    MapVertex,
     Triangulate,
 };
 
+/// Test a generator by comparing two triangular meshes:
+/// 1) by using the `Iterator` implementation of the given generator
+/// 2) by producing shared vertices and sampling them with the
+///    produced indexed polygons.
 fn test<F, P, G>(generator: G) where
     F: EmitTriangles,
     F::Vertex: Clone + Copy + Debug + PartialEq,
@@ -33,14 +37,10 @@ fn test<F, P, G>(generator: G) where
 {
     let vertices: Vec<_> = generator.shared_vertex_iter()
                                     .collect();
-    let fun = |f: Triangle<usize>| {
-        Triangle::new(vertices[f.x],
-                      vertices[f.y],
-                      vertices[f.z])
-    };
+
     let f1: Vec<_> = generator.indexed_polygon_iter()
                               .triangulate()
-                              .map(fun)
+                              .map(|f| f.map_vertex(|u| vertices[u]))
                               .collect();
     let f0: Vec<_> = generator.triangulate()
                               .collect();
@@ -52,22 +52,22 @@ fn test<F, P, G>(generator: G) where
 }
 
 #[test]
-fn plane() {
+fn gen_plane() {
     test(generators::Plane::new());
     test(generators::Plane::subdivide(3, 4));
 }
 
 #[test]
-fn cube() {
+fn gen_cube() {
     test(generators::Cube::new());
 }
 
 #[test]
-fn cylinder() {
+fn gen_cylinder() {
     test(generators::Cylinder::new(5));
 }
 
 #[test]
-fn sphere_uv() {
+fn gen_sphere_uv() {
     test(generators::SphereUV::new(4, 3));
 }
