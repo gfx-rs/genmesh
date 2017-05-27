@@ -12,6 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
+use Vertex;
 use super::Quad;
 use super::generators::{SharedVertex, IndexedPolygon};
 
@@ -49,17 +50,17 @@ impl Plane {
         }
     }
 
-    fn vert(&self, x: usize, y: usize) -> (f32, f32) {
+    fn vert(&self, x: usize, y: usize) -> Vertex {
         let sx = self.subdivide_x as f32;
         let sy = self.subdivide_y as f32;
         let x = (2. / sx) * x as f32 - 1.;
         let y = (2. / sy) * y as f32 - 1.;
-        (x, y)
+        [x, y, 0.0]
     }
 }
 
 impl Iterator for Plane {
-    type Item = Quad<(f32, f32)>;
+    type Item = Quad<Vertex>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
         let n = (self.subdivide_y - self.y) * self.subdivide_x +
@@ -67,7 +68,7 @@ impl Iterator for Plane {
         (n, Some(n))
     }
 
-    fn next(&mut self) -> Option<Quad<(f32, f32)>> {
+    fn next(&mut self) -> Option<Quad<Vertex>> {
         if self.x == self.subdivide_x {
             self.y += 1;
             if self.y >= self.subdivide_y {
@@ -86,8 +87,8 @@ impl Iterator for Plane {
     }
 }
 
-impl SharedVertex<(f32, f32)> for Plane {
-    fn shared_vertex(&self, idx: usize) -> (f32, f32) {
+impl SharedVertex<Vertex> for Plane {
+    fn shared_vertex(&self, idx: usize) -> Vertex {
         let y = idx / (self.subdivide_x + 1);
         let x = idx % (self.subdivide_x + 1);
 
@@ -131,4 +132,3 @@ fn test_shared_vertex_count() {
     assert_eq!(plane.shared_vertex_count(), 25);
     assert_eq!(plane.indexed_polygon_count(), 16);
 }
-

@@ -87,3 +87,5 @@ pub mod generators {
 
 /// Common vertex type.
 pub type Vertex = mint::Vector3<f32>;
+/// Common vertex normal type.
+pub type Normal = mint::Vector3<f32>;

@@ -13,6 +13,7 @@
 //   limitations under the License.
 
 use std::f32::consts::PI;
+use Vertex;
 use super::{Quad, Triangle, Polygon};
 use super::Polygon::{PolyTri, PolyQuad};
 use super::generators::{SharedVertex, IndexedPolygon};
@@ -40,18 +41,18 @@ impl SphereUV {
         }
     }
 
-    fn vert(&self, u: usize, v: usize) -> (f32, f32, f32) {
+    fn vert(&self, u: usize, v: usize) -> Vertex {
         let u = (u as f32 / self.sub_u as f32) * PI * 2.;
         let v = (v as f32 / self.sub_v as f32) * PI;
 
-        (u.cos() * v.sin(),
+        [u.cos() * v.sin(),
          u.sin() * v.sin(),
-         v.cos())
+         v.cos()]
     }
 }
 
 impl Iterator for SphereUV {
-    type Item = Polygon<(f32, f32, f32)>;
+    type Item = Polygon<Vertex>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
         let n = (self.sub_v - self.v) * self.sub_u + (self.sub_u - self.u);
@@ -90,8 +91,8 @@ impl Iterator for SphereUV {
     }
 }
 
-impl SharedVertex<(f32, f32, f32)> for SphereUV {
-    fn shared_vertex(&self, idx: usize) -> (f32, f32, f32) {
+impl SharedVertex<Vertex> for SphereUV {
+    fn shared_vertex(&self, idx: usize) -> Vertex {
         if idx == 0 {
             self.vert(0, 0)
         } else if idx == self.shared_vertex_count() - 1 {
