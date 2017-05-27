@@ -20,15 +20,18 @@ use cgmath::{InnerSpace, Vector3};
 
 use poly::{Triangle, Line, EmitLines};
 
+
+/// Neighbors search accelerating structure.
 pub struct Neighbors<T> {
+    /// Mesh vertices.
     pub vertices: Vec<T>,
+    /// Mesh polygons.
     pub polygons: Vec<Triangle<usize>>,
     shares_edge: HashMap<Line<usize>, Vec<usize>>,
     shares_vertex: HashMap<usize, Vec<usize>>,
 }
 
 impl<T> Neighbors<T> {
-
     /// Build a Neighbors search based on the supplied vertices
     /// and supplied triangle list.
     pub fn new(vertices: Vec<T>, polygons: Vec<Triangle<usize>>) -> Self {
