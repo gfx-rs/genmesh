@@ -26,9 +26,10 @@
 //! can be used with the built in `Iterator` traits to build the meshes that your engine
 //! needs.
 
-//#![deny(missing_docs)]
+#![deny(missing_docs)]
 
 extern crate cgmath;
+extern crate mint;
 
 pub use poly::{
     Quad,
@@ -69,8 +70,8 @@ mod cylinder;
 mod plane;
 mod sphere;
 
-/// a collection of utilties that can be used to build
-/// meshes programmatically
+/// A collection of utilties that can be used to build
+/// meshes programmatically.
 pub mod generators {
     pub use generator::{
         SharedVertex,
@@ -83,3 +84,6 @@ pub mod generators {
     pub use plane::Plane;
     pub use sphere::SphereUV;
 }
+
+/// Common vertex type.
+pub type Vertex = mint::Vector3<f32>;
