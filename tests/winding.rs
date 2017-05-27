@@ -23,9 +23,9 @@ use genmesh::{
     Line,
     EmitLines,
     MapVertex,
+    Vertex,
 };
 
-type Vertex = (f32, f32, f32);
 
 struct Edge {
     dir: cgmath::Vector3<f32>,
@@ -35,8 +35,8 @@ struct Edge {
 impl Edge {
     fn new(Line{ x, y }: Line<Vertex>) -> Self {
         Edge {
-            dir: cgmath::vec3(y.0 - x.0, y.1 - x.1, y.2 - x.2),
-            mid: cgmath::vec3(y.0 + x.0, y.1 + x.1, y.2 + x.2) * 0.5,
+            dir: cgmath::vec3(y[0] - x[0], y[1] - x[1], y[2] - x[2]),
+            mid: cgmath::vec3(y[0] + x[0], y[1] + x[1], y[2] + x[2]) * 0.5,
         }
     }
 
@@ -73,9 +73,9 @@ fn test<P, I>(poly_iter: I) where
 #[test]
 fn wind_plane() {
     test(generators::Plane::new()
-        .map(|p| p.map_vertex(|(x, y)| (x, y, 1f32))));
+        .map(|p| p.map_vertex(|v| [v[0], v[1], 1f32])));
     test(generators::Plane::subdivide(3, 4)
-        .map(|p| p.map_vertex(|(x, y)| (x, y, 1f32))));
+        .map(|p| p.map_vertex(|v| [v[0], v[1], 1f32])));
 }
 
 #[test]

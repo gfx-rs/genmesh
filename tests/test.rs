@@ -22,7 +22,8 @@ use genmesh::{
     LruIndexer,
     Indexer,
     Vertices,
-    Triangulate
+    Triangulate,
+    Vertex,
 };
 
 use genmesh::generators::{Cube, Plane};
@@ -144,25 +145,17 @@ fn to_triangles() {
 #[test]
 fn plane() {
     let mut plane = Plane::new();
-
     let a = plane.next().unwrap();
 
-    let Quad {
-        x: (ax, ay),
-        y: (bx, by),
-        z: (cx, cy),
-        w: (dx, dy)
-    } = a;
-
-    assert_eq!(ax, -1.); assert_eq!(ay, -1.);
-    assert_eq!(bx,  1.); assert_eq!(by, -1.);
-    assert_eq!(cx,  1.); assert_eq!(cy,  1.);
-    assert_eq!(dx, -1.); assert_eq!(dy,  1.);
+    assert_eq!(a.x, [-1f32, -1., 0.]);
+    assert_eq!(a.y, [ 1f32, -1., 0.]);
+    assert_eq!(a.z, [ 1f32,  1., 0.]);
+    assert_eq!(a.w, [-1f32,  1., 0.]);
 }
 
 #[test]
 fn lru_indexer() {
-    let mut vectices: Vec<(f32, f32, f32)> = Vec::new();
+    let mut vectices: Vec<Vertex> = Vec::new();
     let indexes: Vec<usize> = {
         let mut indexer = LruIndexer::new(8, |_, v| vectices.push(v));
 
@@ -174,7 +167,7 @@ fn lru_indexer() {
     assert_eq!(8, vectices.len());
     assert_eq!(6*4, indexes.len());
 
-    let mut vectices: Vec<(f32, f32, f32)> = Vec::new();
+    let mut vectices: Vec<Vertex> = Vec::new();
     let indexes: Vec<usize> = {
         let mut indexer = LruIndexer::new(4, |_, v| vectices.push(v));
 

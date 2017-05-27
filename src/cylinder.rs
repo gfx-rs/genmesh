@@ -13,6 +13,7 @@
 //   limitations under the License.
 
 use std::f32::consts::PI;
+use Vertex;
 use super::{Quad, Polygon, Triangle};
 use super::generators::{SharedVertex, IndexedPolygon};
 
@@ -37,14 +38,14 @@ impl Cylinder {
         }
     }
 
-    fn vert(&self, u: usize, h: isize) -> (f32, f32, f32) {
+    fn vert(&self, u: usize, h: isize) -> Vertex {
         let a = (u as f32 / self.sub_u as f32) * PI * 2.;
-        (a.cos(), a.sin(), h as f32)
+        [a.cos(), a.sin(), h as f32]
     }
 }
 
 impl Iterator for Cylinder {
-    type Item = Polygon<(f32, f32, f32)>;
+    type Item = Polygon<Vertex>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
         let n = self.sub_u * (2 - self.h) as usize - self.u;
@@ -72,20 +73,20 @@ impl Iterator for Cylinder {
         let w = self.vert(u, 1);
 
         Some(match self.h {
-            -1 => Polygon::PolyTri(Triangle::new(x, (0., 0., -1.), y)),
+            -1 => Polygon::PolyTri(Triangle::new(x, [0., 0., -1.], y)),
             0  => Polygon::PolyQuad(Quad::new(x, y, z, w)),
-            1  => Polygon::PolyTri(Triangle::new(w, z, (0., 0., 1.))),
+            1  => Polygon::PolyTri(Triangle::new(w, z, [0., 0., 1.])),
             _ => unreachable!()
         })
     }
 }
 
-impl SharedVertex<(f32, f32, f32)> for Cylinder {
-    fn shared_vertex(&self, idx: usize) -> (f32, f32, f32) {
+impl SharedVertex<Vertex> for Cylinder {
+    fn shared_vertex(&self, idx: usize) -> Vertex {
         if idx == 0 {
-            (0., 0., -1.)
+            [0., 0., -1.]
         } else if idx == self.shared_vertex_count() - 1 {
-            (0., 0., 1.)
+            [0., 0., 1.]
         } else {
             // skip the bottom center
             let idx = idx - 1;

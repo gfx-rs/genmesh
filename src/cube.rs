@@ -13,6 +13,7 @@
 //   limitations under the License.
 
 use std::ops::Range;
+use Vertex;
 use super::{MapVertex, Quad};
 use super::generators::{SharedVertex, IndexedPolygon};
 
@@ -28,11 +29,11 @@ impl Cube {
         Cube { range: 0..6 }
     }
 
-    fn vert(&self, idx: usize) -> (f32, f32, f32) {
+    fn vert(&self, idx: usize) -> Vertex {
         let x = if idx & 4 == 4 { 1.} else { -1. };
         let y = if idx & 2 == 2 { 1.} else { -1. };
         let z = if idx & 1 == 1 { 1.} else { -1. };
-        (x, y, z)
+        [x, y, z]
     }
 
     fn face_indexed(&self, idx: usize) -> Quad<usize> {
@@ -47,25 +48,25 @@ impl Cube {
         }
     }
 
-    fn face(&self, idx: usize) -> Quad<(f32, f32, f32)> {
+    fn face(&self, idx: usize) -> Quad<Vertex> {
         self.face_indexed(idx).map_vertex(|i| self.vert(i))
     }
 }
 
 impl Iterator for Cube {
-    type Item = Quad<(f32, f32, f32)>;
+    type Item = Quad<Vertex>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.range.size_hint()
     }
 
-    fn next(&mut self) -> Option<Quad<(f32, f32, f32)>> {
+    fn next(&mut self) -> Option<Quad<Vertex>> {
         self.range.next().map(|idx| self.face(idx))
     }
 }
 
-impl SharedVertex<(f32, f32, f32)> for Cube {
-    fn shared_vertex(&self, idx: usize) -> (f32, f32, f32) {
+impl SharedVertex<Vertex> for Cube {
+    fn shared_vertex(&self, idx: usize) -> Vertex {
         self.vert(idx)
     }
 

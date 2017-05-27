@@ -18,6 +18,7 @@
 use std::collections::{HashMap, HashSet};
 use cgmath::{InnerSpace, Vector3};
 
+use Normal;
 use poly::{Triangle, Line, EmitLines};
 
 
@@ -72,7 +73,7 @@ impl<T> Neighbors<T> {
             .map(|x| &x[..])
     }
 
-    /// looks up the index of every polygon that is a neighbor of 
+    /// looks up the index of every polygon that is a neighbor of
     /// polygon at index i. This can be used to prep data for a Geometry
     /// shader (eg trinagle_adjacency)
     pub fn polygon_neighbors(&self, i: usize) -> Option<HashSet<usize>> {
@@ -95,14 +96,14 @@ impl<T> Neighbors<T> {
     ///
     /// You must supply a function that can be used to lookup
     /// The position which is needed to calculate the normal
-    pub fn normal_for_face<F>(&self, i: usize, mut f: F) -> [f32; 3]
-        where F: FnMut(&T) -> [f32; 3]
+    pub fn normal_for_face<F>(&self, i: usize, mut f: F) -> Normal
+        where F: FnMut(&T) -> Normal
     {
         let Triangle{x, y, z} = self.polygons[i];
 
-        let x = to_vec3(f(&self.vertices[x]));
-        let y = to_vec3(f(&self.vertices[y]));
-        let z = to_vec3(f(&self.vertices[z]));
+        let x = Vector3::from(f(&self.vertices[x]));
+        let y = Vector3::from(f(&self.vertices[y]));
+        let z = Vector3::from(f(&self.vertices[z]));
 
         let a = z - x;
         let b = z - y;
@@ -115,19 +116,15 @@ impl<T> Neighbors<T> {
     ///
     /// You must supply a function that can be used to lookup
     /// The position which is needed to calculate the normal
-    pub fn normal_for_vertex<F>(&self, i: usize, mut f: F) -> [f32; 3]
-        where F: FnMut(&T) -> [f32; 3]
+    pub fn normal_for_vertex<F>(&self, i: usize, mut f: F) -> Normal
+        where F: FnMut(&T) -> Normal
     {
-        let mut normal: Vector3<f32> = Vector3::new(0., 0., 0.);
+        let mut normal = Vector3::new(0f32, 0., 0.);
 
-        for i in &self.shares_vertex[&i] {
-            normal = normal + to_vec3(self.normal_for_face(*i, &mut f));
+        for &face in &self.shares_vertex[&i] {
+            normal += Vector3::from(self.normal_for_face(face, &mut f));
         }
 
         normal.normalize().into()
     }
-}
-
-fn to_vec3(x: [f32; 3]) -> Vector3<f32> {
-    Vector3::new(x[0], x[1], x[2])
 }
