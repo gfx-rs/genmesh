@@ -13,7 +13,7 @@
 //   limitations under the License.
 
 use std::ops::Range;
-use Vertex;
+use {Normal, Position, Vertex};
 use super::{MapVertex, Quad};
 use super::generators::{SharedVertex, IndexedPolygon};
 
@@ -29,27 +29,31 @@ impl Cube {
         Cube { range: 0..6 }
     }
 
-    fn vert(&self, idx: usize) -> Vertex {
+    fn vert(&self, idx: usize) -> Position {
         let x = if idx & 4 == 4 { 1.} else { -1. };
         let y = if idx & 2 == 2 { 1.} else { -1. };
         let z = if idx & 1 == 1 { 1.} else { -1. };
         [x, y, z]
     }
 
-    fn face_indexed(&self, idx: usize) -> Quad<usize> {
+    fn face_indexed(&self, idx: usize) -> (Normal, Quad<usize>) {
         match idx {
-            0 => Quad::new(0b000, 0b001, 0b011, 0b010),
-            1 => Quad::new(0b110, 0b111, 0b101, 0b100),
-            2 => Quad::new(0b100, 0b101, 0b001, 0b000),
-            3 => Quad::new(0b011, 0b111, 0b110, 0b010),
-            4 => Quad::new(0b000, 0b010, 0b110, 0b100),
-            5 => Quad::new(0b101, 0b111, 0b011, 0b001),
+            0 => ([ 1.,  0.,  0.], Quad::new(0b110, 0b111, 0b101, 0b100)),
+            1 => ([-1.,  0.,  0.], Quad::new(0b000, 0b001, 0b011, 0b010)),
+            2 => ([ 0.,  1.,  0.], Quad::new(0b011, 0b111, 0b110, 0b010)),
+            3 => ([ 0., -1.,  0.], Quad::new(0b100, 0b101, 0b001, 0b000)),
+            4 => ([ 0.,  0.,  1.], Quad::new(0b101, 0b111, 0b011, 0b001)),
+            5 => ([ 0.,  0., -1.], Quad::new(0b000, 0b010, 0b110, 0b100)),
             idx => panic!("{} face is higher then 6", idx)
         }
     }
 
     fn face(&self, idx: usize) -> Quad<Vertex> {
-        self.face_indexed(idx).map_vertex(|i| self.vert(i))
+        let (no, quad) = self.face_indexed(idx);
+        quad.map_vertex(|i| Vertex {
+            pos: self.vert(i),
+            normal: no,
+        })
     }
 }
 
@@ -67,15 +71,26 @@ impl Iterator for Cube {
 
 impl SharedVertex<Vertex> for Cube {
     fn shared_vertex(&self, idx: usize) -> Vertex {
-        self.vert(idx)
+        let (no, quad) = self.face_indexed(idx / 4);
+        let vid = match idx % 4 {
+            0 => quad.x,
+            1 => quad.y,
+            2 => quad.z,
+            3 => quad.w,
+            _ => unreachable!()
+        };
+        Vertex{
+            pos: self.vert(vid),
+            normal: no,
+        }
     }
 
-    fn shared_vertex_count(&self) -> usize { 8 }
+    fn shared_vertex_count(&self) -> usize { 24 }
 }
 
 impl IndexedPolygon<Quad<usize>> for Cube {
     fn indexed_polygon(&self, idx: usize) -> Quad<usize> {
-        self.face_indexed(idx)
+        self.face_indexed(idx).1
     }
 
     fn indexed_polygon_count(&self) -> usize { 6 }
