@@ -26,7 +26,7 @@ use genmesh::{
     Vertex,
 };
 
-use genmesh::generators::{Cube, Plane};
+use genmesh::generators::{Plane};
 
 #[test]
 fn quad_vertex() {
@@ -147,38 +147,40 @@ fn plane() {
     let mut plane = Plane::new();
     let a = plane.next().unwrap();
 
-    assert_eq!(a.x, [-1f32, -1., 0.]);
-    assert_eq!(a.y, [ 1f32, -1., 0.]);
-    assert_eq!(a.z, [ 1f32,  1., 0.]);
-    assert_eq!(a.w, [-1f32,  1., 0.]);
+    assert_eq!(a.x.pos, [-1f32, -1., 0.]);
+    assert_eq!(a.y.pos, [ 1f32, -1., 0.]);
+    assert_eq!(a.z.pos, [ 1f32,  1., 0.]);
+    assert_eq!(a.w.pos, [-1f32,  1., 0.]);
 }
 
+//TODO: LRU tests changed once the normals got introduced to the `Cube`.
+// these tests may need to be revised now.
 #[test]
 fn lru_indexer() {
     let mut vectices: Vec<Vertex> = Vec::new();
     let indexes: Vec<usize> = {
         let mut indexer = LruIndexer::new(8, |_, v| vectices.push(v));
 
-        Cube::new().vertex(|v| indexer.index(v))
-                   .vertices()
-                   .collect()
+        Plane::subdivide(1, 3).vertex(|v| indexer.index(v))
+                              .vertices()
+                              .collect()
     };
 
     assert_eq!(8, vectices.len());
-    assert_eq!(6*4, indexes.len());
+    assert_eq!(3*4, indexes.len());
 
     let mut vectices: Vec<Vertex> = Vec::new();
     let indexes: Vec<usize> = {
         let mut indexer = LruIndexer::new(4, |_, v| vectices.push(v));
 
-        Cube::new().triangulate()
-                   .vertex(|v| indexer.index(v))
-                   .vertices()
-                   .collect()
+        Plane::subdivide(1, 3).triangulate()
+                              .vertex(|v| indexer.index(v))
+                              .vertices()
+                              .collect()
     };
 
-    assert_eq!(20, vectices.len());
-    assert_eq!(3*6*2, indexes.len());
+    assert_eq!(8, vectices.len());
+    assert_eq!(3*3*2, indexes.len());
 }
 
 #[test]

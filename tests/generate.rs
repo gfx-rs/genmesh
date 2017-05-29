@@ -65,6 +65,7 @@ fn gen_cube() {
 #[test]
 fn gen_cylinder() {
     test(generators::Cylinder::new(5));
+    test(generators::Cylinder::subdivide(3, 4));
 }
 
 #[test]

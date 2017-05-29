@@ -55,7 +55,10 @@ impl Plane {
         let sy = self.subdivide_y as f32;
         let x = (2. / sx) * x as f32 - 1.;
         let y = (2. / sy) * y as f32 - 1.;
-        [x, y, 0.0]
+        Vertex {
+            pos: [x, y, 0.0],
+            normal: [0., 0., 1.],
+        }
     }
 }
 

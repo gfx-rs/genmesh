@@ -90,7 +90,7 @@ impl SharedVertex<Vertex> for Cube {
 
 impl IndexedPolygon<Quad<usize>> for Cube {
     fn indexed_polygon(&self, idx: usize) -> Quad<usize> {
-        self.face_indexed(idx).1
+        Quad::new(idx*4+0, idx*4+1, idx*4+2, idx*4+3)
     }
 
     fn indexed_polygon_count(&self) -> usize { 6 }
