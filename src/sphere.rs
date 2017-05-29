@@ -45,9 +45,13 @@ impl SphereUV {
         let u = (u as f32 / self.sub_u as f32) * PI * 2.;
         let v = (v as f32 / self.sub_v as f32) * PI;
 
-        [u.cos() * v.sin(),
-         u.sin() * v.sin(),
-         v.cos()]
+        let p = [u.cos() * v.sin(),
+                 u.sin() * v.sin(),
+                 v.cos()];
+        Vertex {
+            pos: p,
+            normal: p,
+        }
     }
 }
 

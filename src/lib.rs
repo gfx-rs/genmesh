@@ -85,6 +85,7 @@ pub mod generators {
     pub use sphere::SphereUV;
 }
 
+/// Common vertex position type.
 pub type Position = mint::Vector3<f32>;
 /// Common vertex normal type.
 pub type Normal = mint::Vector3<f32>;
@@ -92,7 +93,7 @@ pub type Normal = mint::Vector3<f32>;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Vertex {
     /// Vertex position
-    pos: Position,
+    pub pos: Position,
     /// Vertex normal
-    normal: Normal,
+    pub normal: Normal,
 }

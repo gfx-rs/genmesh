@@ -12,7 +12,6 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use std::cmp;
 use std::f32::consts::PI;
 use Vertex;
 use super::{Quad, Polygon, Triangle};
@@ -51,6 +50,9 @@ impl Cylinder {
         }
     }
 
+    /// Create a new subdivided cylinder.
+    /// `u` is the number of points across the radius.
+    /// `h` is the number of segments across the height.
     pub fn subdivide(u: usize, h: usize) -> Self {
         assert!(u > 1 && h > 0);
         Cylinder {
@@ -77,7 +79,7 @@ impl Cylinder {
         let z = (hc as f32 / self.sub_h as f32) * 2. - 1.;
         Vertex {
             pos: [n[0], n[1], z],
-            normal: n,
+            normal,
         }
     }
 }
@@ -92,7 +94,7 @@ impl Iterator for Cylinder {
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.u == self.sub_u {
-            if self.h > self.sub_h {
+            if self.h >= self.sub_h {
                 return None;
             }
             self.u = 0;
@@ -110,7 +112,7 @@ impl Iterator for Cylinder {
 
         Some(if self.h < 0 {
             Polygon::PolyTri(Triangle::new(x, BOT, y))
-        } else if self.h > self.sub_h {
+        } else if self.h == self.sub_h {
             Polygon::PolyTri(Triangle::new(x, y, TOP))
         } else {
             let z = self.vert(u1, self.h + 1);
@@ -149,7 +151,7 @@ impl IndexedPolygon<Polygon<usize>> for Cylinder {
         if h < 0 {
             let start = 0;
             Polygon::PolyTri(Triangle::new(base + u, start, base + u1))
-        } else if h > self.sub_h {
+        } else if h == self.sub_h {
             let end = self.shared_vertex_count() - 1;
             Polygon::PolyTri(Triangle::new(base + u, base + u1, end))
         } else {

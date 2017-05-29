@@ -22,7 +22,7 @@ use genmesh::{
     generators,
     Line,
     EmitLines,
-    MapVertex,
+    MapToVertices,
     Vertex,
 };
 
@@ -30,13 +30,16 @@ use genmesh::{
 struct Edge {
     dir: cgmath::Vector3<f32>,
     mid: cgmath::Vector3<f32>,
+    nor: cgmath::Vector3<f32>,
 }
 
 impl Edge {
-    fn new(Line{ x, y }: Line<Vertex>) -> Self {
+    fn new(line: Line<Vertex>) -> Self {
+        let Line{ x: Vertex{ pos: x, normal: nx }, y: Vertex{ pos: y, normal: ny } } = line;
         Edge {
             dir: cgmath::vec3(y[0] - x[0], y[1] - x[1], y[2] - x[2]),
             mid: cgmath::vec3(y[0] + x[0], y[1] + x[1], y[2] + x[2]) * 0.5,
+            nor: cgmath::vec3(nx[0] + ny[0], nx[1] + ny[1], nx[2] + ny[2]),
         }
     }
 
@@ -45,7 +48,7 @@ impl Edge {
     fn check_to(&self, e: &Edge) {
         let normal = self.dir.cross(e.dir);
         let mid = (self.mid + e.mid) * 0.5;
-        assert!(normal.dot(mid) > 0.0);
+        assert!(normal.dot(mid) > 0.0 && e.nor.dot(mid) > 0.0);
     }
 }
 
@@ -73,9 +76,9 @@ fn test<P, I>(poly_iter: I) where
 #[test]
 fn wind_plane() {
     test(generators::Plane::new()
-        .map(|p| p.map_vertex(|v| [v[0], v[1], 1f32])));
+        .vertex(|mut v| {v.pos[2] = 1.; v}));
     test(generators::Plane::subdivide(3, 4)
-        .map(|p| p.map_vertex(|v| [v[0], v[1], 1f32])));
+        .vertex(|mut v| {v.pos[2] = 1.; v}));
 }
 
 #[test]
@@ -86,6 +89,7 @@ fn gen_cube() {
 #[test]
 fn gen_cylinder() {
     test(generators::Cylinder::new(5));
+    test(generators::Cylinder::subdivide(3, 4));
 }
 
 #[test]

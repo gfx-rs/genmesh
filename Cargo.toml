@@ -17,4 +17,4 @@ path = "src/lib.rs"
 
 [dependencies]
 cgmath = "0.14"
-mint = "0.1"
+mint = "0.2"
