@@ -12,11 +12,15 @@ This also provides some `generators` for creating primitives at runtime.
  - `triangulate` triangles Quads to Triangles
  - `vertices` turns a poly pipeline into a vertices pipeline
 
-**Currently Supported Generators**
+**Primitive generators**
  - `Plane`
  - `Cube`
  - `Cylinder`
  - `SphereUV`
+
+ **Vertex attributes**
+ - `pos`: position
+ - `normal`: normal
 
 **Utility**
  - `LruIndexer` translate a vertex into a index, emitting a new vertex if
@@ -33,7 +37,7 @@ on either vertex or polygon levels.
 
 ```rust
     let vertex_data: Vec<MyVertex> = Cube::new()
-        .vertex(|(x, y, z)| MyVertex::new([x, y, z], [0., 0.]))
+        .vertex(|v| MyVertex::new(v.pos, [0., 0.]))
         .map(|Quad{x: v0, y: v1, z: v2, w: v3}| {
             Quad::new(MyVertex::new(v0.a_Pos, [0., 0.]),
                       MyVertex::new(v1.a_Pos, [1., 0.]),
