@@ -107,14 +107,17 @@ impl Iterator for Cylinder {
         // because sin(2pi) == sin(0), but rounding errors go in the way.
         let u1 = self.u % self.sub_u;
 
-        let x = self.vert(u, self.h);
-        let y = self.vert(u1, self.h);
-
         Some(if self.h < 0 {
+            let x = self.vert(u, self.h);
+            let y = self.vert(u1, self.h);
             Polygon::PolyTri(Triangle::new(x, BOT, y))
         } else if self.h == self.sub_h {
+            let x = self.vert(u, self.h+1);
+            let y = self.vert(u1, self.h+1);
             Polygon::PolyTri(Triangle::new(x, y, TOP))
         } else {
+            let x = self.vert(u, self.h);
+            let y = self.vert(u1, self.h);
             let z = self.vert(u1, self.h + 1);
             let w = self.vert(u, self.h + 1);
             Polygon::PolyQuad(Quad::new(x, y, z, w))
