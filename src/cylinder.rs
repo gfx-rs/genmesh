@@ -152,6 +152,9 @@ impl IndexedPolygon<Polygon<usize>> for Cylinder {
             let start = 0;
             Polygon::PolyTri(Triangle::new(base + u, start, base + u1))
         } else if h == self.sub_h {
+            // We need to to select the next vertex loop over, which
+            // has the correct normals.
+            let base = base + self.sub_u;
             let end = self.shared_vertex_count() - 1;
             Polygon::PolyTri(Triangle::new(base + u, base + u1, end))
         } else {
