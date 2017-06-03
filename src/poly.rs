@@ -1,4 +1,4 @@
-//   Copyright Colin Sherratt 2014
+//   Copyright GFX Developers 2014-2017
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -82,16 +82,20 @@ pub trait EmitVertices<T> {
 }
 
 impl<T> EmitVertices<T> for Line<T> {
-    fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T) {
-        let Line{x, y} = self;
+    fn emit_vertices<F>(self, mut emit: F)
+        where F: FnMut(T)
+    {
+        let Line { x, y } = self;
         emit(x);
         emit(y);
     }
 }
 
 impl<T> EmitVertices<T> for Triangle<T> {
-    fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T) {
-        let Triangle{x, y, z} = self;
+    fn emit_vertices<F>(self, mut emit: F)
+        where F: FnMut(T)
+    {
+        let Triangle { x, y, z } = self;
         emit(x);
         emit(y);
         emit(z);
@@ -99,8 +103,10 @@ impl<T> EmitVertices<T> for Triangle<T> {
 }
 
 impl<T> EmitVertices<T> for Quad<T> {
-    fn emit_vertices<F>(self, mut emit: F) where F: FnMut(T) {
-        let Quad{x, y, z, w} = self;
+    fn emit_vertices<F>(self, mut emit: F)
+        where F: FnMut(T)
+    {
+        let Quad { x, y, z, w } = self;
         emit(x);
         emit(y);
         emit(z);
@@ -109,12 +115,14 @@ impl<T> EmitVertices<T> for Quad<T> {
 }
 
 impl<T> EmitVertices<T> for Polygon<T> {
-    fn emit_vertices<F>(self, emit: F) where F: FnMut(T) {
-        use self::Polygon::{ PolyQuad, PolyTri };
+    fn emit_vertices<F>(self, emit: F)
+        where F: FnMut(T)
+    {
+        use self::Polygon::{PolyQuad, PolyTri};
 
         match self {
             PolyTri(p) => p.emit_vertices(emit),
-            PolyQuad(p) => p.emit_vertices(emit)
+            PolyQuad(p) => p.emit_vertices(emit),
         }
     }
 }
@@ -127,11 +135,11 @@ pub trait Vertices<SRC, V> {
     fn vertices(self) -> VerticesIterator<SRC, V>;
 }
 
-impl<V, P: EmitVertices<V>, T: Iterator<Item=P>> Vertices<T, V> for T {
+impl<V, P: EmitVertices<V>, T: Iterator<Item = P>> Vertices<T, V> for T {
     fn vertices(self) -> VerticesIterator<T, V> {
         VerticesIterator {
             source: self,
-            buffer: VecDeque::new()
+            buffer: VecDeque::new(),
         }
     }
 }
@@ -143,19 +151,19 @@ pub struct VerticesIterator<SRC, V> {
     buffer: VecDeque<V>,
 }
 
-impl<V, U: EmitVertices<V>, SRC: Iterator<Item=U>> Iterator for VerticesIterator<SRC, V> {
+impl<V, U: EmitVertices<V>, SRC: Iterator<Item = U>> Iterator for VerticesIterator<SRC, V> {
     type Item = V;
 
     fn next(&mut self) -> Option<V> {
         loop {
             match self.buffer.pop_front() {
                 Some(v) => return Some(v),
-                None => ()
+                None => (),
             }
 
             match self.source.next() {
                 Some(p) => p.emit_vertices(|v| self.buffer.push_back(v)),
-                None => return None
+                None => return None,
             }
         }
     }
@@ -173,8 +181,10 @@ pub trait MapVertex<T, U> {
 impl<T: Clone, U> MapVertex<T, U> for Line<T> {
     type Output = Line<U>;
 
-    fn map_vertex<F>(self, mut map: F) -> Line<U> where F: FnMut(T) -> U {
-        let Line{x, y} = self;
+    fn map_vertex<F>(self, mut map: F) -> Line<U>
+        where F: FnMut(T) -> U
+    {
+        let Line { x, y } = self;
         Line {
             x: map(x),
             y: map(y),
@@ -185,8 +195,10 @@ impl<T: Clone, U> MapVertex<T, U> for Line<T> {
 impl<T: Clone, U> MapVertex<T, U> for Triangle<T> {
     type Output = Triangle<U>;
 
-    fn map_vertex<F>(self, mut map: F) -> Triangle<U> where F: FnMut(T) -> U {
-        let Triangle{x, y, z} = self;
+    fn map_vertex<F>(self, mut map: F) -> Triangle<U>
+        where F: FnMut(T) -> U
+    {
+        let Triangle { x, y, z } = self;
         Triangle {
             x: map(x),
             y: map(y),
@@ -198,8 +210,10 @@ impl<T: Clone, U> MapVertex<T, U> for Triangle<T> {
 impl<T: Clone, U> MapVertex<T, U> for Quad<T> {
     type Output = Quad<U>;
 
-    fn map_vertex<F>(self, mut map: F) -> Quad<U> where F: FnMut(T) -> U {
-        let Quad{x, y, z, w} = self;
+    fn map_vertex<F>(self, mut map: F) -> Quad<U>
+        where F: FnMut(T) -> U
+    {
+        let Quad { x, y, z, w } = self;
         Quad {
             x: map(x),
             y: map(y),
@@ -212,12 +226,14 @@ impl<T: Clone, U> MapVertex<T, U> for Quad<T> {
 impl<T: Clone, U> MapVertex<T, U> for Polygon<T> {
     type Output = Polygon<U>;
 
-    fn map_vertex<F>(self, map: F) -> Polygon<U> where F: FnMut(T) -> U {
-        use self::Polygon::{ PolyTri, PolyQuad };
+    fn map_vertex<F>(self, map: F) -> Polygon<U>
+        where F: FnMut(T) -> U
+    {
+        use self::Polygon::{PolyTri, PolyQuad};
 
         match self {
             PolyTri(p) => PolyTri(p.map_vertex(map)),
-            PolyQuad(p) => PolyQuad(p.map_vertex(map))
+            PolyQuad(p) => PolyQuad(p.map_vertex(map)),
         }
     }
 }
@@ -233,8 +249,7 @@ pub trait MapToVertices<T, U>: Sized {
 
     /// from a iterator of polygons, produces a iterator of polygons. Each
     /// vertex in the process is modified with the suppled function.
-    fn vertex<F>(self, map: F) -> MapToVerticesIter<Self, T, U, F>
-        where F: FnMut(T) -> U;
+    fn vertex<F>(self, map: F) -> MapToVerticesIter<Self, T, U, F> where F: FnMut(T) -> U;
 }
 
 impl<VIn, VOut,
@@ -287,7 +302,7 @@ pub struct Line<T> {
 impl<T> Line<T> {
     /// Create a new line using point x and y
     pub fn new(x: T, y: T) -> Self {
-        Line{x: x, y: y}
+        Line { x: x, y: y }
     }
 }
 
@@ -299,8 +314,7 @@ pub trait EmitLines {
     /// convert a polygon into lines, each line is emitted via
     /// calling of the callback of `emit` This allow for
     /// a variable amount of lines to be returned
-    fn emit_lines<E>(self, emit: E)
-        where E: FnMut(Line<Self::Vertex>);
+    fn emit_lines<E>(self, emit: E) where E: FnMut(Line<Self::Vertex>);
 }
 
 impl<T: Clone> EmitLines for Triangle<T> {
@@ -310,8 +324,8 @@ impl<T: Clone> EmitLines for Triangle<T> {
         where E: FnMut(Line<T>)
     {
         emit(Line::new(self.x.clone(), self.y.clone()));
-        emit(Line::new(self.y        , self.z.clone()));
-        emit(Line::new(self.z        , self.x        ));
+        emit(Line::new(self.y, self.z.clone()));
+        emit(Line::new(self.z, self.x));
     }
 }
 
@@ -322,9 +336,9 @@ impl<T: Clone> EmitLines for Quad<T> {
         where E: FnMut(Line<T>)
     {
         emit(Line::new(self.x.clone(), self.y.clone()));
-        emit(Line::new(self.y        , self.z.clone()));
-        emit(Line::new(self.z        , self.w.clone()));
-        emit(Line::new(self.w        , self.x        ));
+        emit(Line::new(self.y, self.z.clone()));
+        emit(Line::new(self.z, self.w.clone()));
+        emit(Line::new(self.w, self.x));
     }
 }
 
@@ -336,7 +350,7 @@ impl<T: Clone> EmitLines for Polygon<T> {
     {
         match self {
             Polygon::PolyTri(x) => x.emit_lines(emit),
-            Polygon::PolyQuad(x) => x.emit_lines(emit)
+            Polygon::PolyQuad(x) => x.emit_lines(emit),
         }
     }
 }
@@ -351,15 +365,15 @@ pub trait Lines: Sized {
 }
 
 impl<T, P, V> Lines for T
-    where T: Iterator<Item=P>,
-          P: EmitLines<Vertex=V>
+    where T: Iterator<Item = P>,
+          P: EmitLines<Vertex = V>
 {
     type Vertex = V;
 
     fn lines(self) -> LinesIterator<T, V> {
         LinesIterator {
             source: self,
-            buffer: VecDeque::new()
+            buffer: VecDeque::new(),
         }
     }
 }
@@ -371,9 +385,8 @@ pub struct LinesIterator<I, V> {
 }
 
 impl<I, P, V> Iterator for LinesIterator<I, V>
-    where I: Iterator<Item=P>,
-          P: EmitLines<Vertex=V>
-
+    where I: Iterator<Item = P>,
+          P: EmitLines<Vertex = V>
 {
     type Item = Line<V>;
 
@@ -386,12 +399,12 @@ impl<I, P, V> Iterator for LinesIterator<I, V>
         loop {
             match self.buffer.pop_front() {
                 Some(v) => return Some(v),
-                None => ()
+                None => (),
             }
 
             match self.source.next() {
                 Some(p) => p.emit_lines(|v| self.buffer.push_back(v)),
-                None => return None
+                None => return None,
             }
         }
     }

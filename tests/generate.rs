@@ -1,11 +1,11 @@
 //   Copyright Dzmitry Malyshau 2017
-//   
+//
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
-//   
+//
 //       http://www.apache.org/licenses/LICENSE-2.0
-//   
+//
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,12 +16,7 @@ extern crate cgmath;
 extern crate genmesh;
 
 use std::fmt::Debug;
-use genmesh::{
-    generators,
-    EmitTriangles,
-    MapVertex,
-    Triangulate,
-};
+use genmesh::{generators, EmitTriangles, MapVertex, Triangulate};
 
 /// Test a generator by comparing two triangular meshes:
 /// 1) by using the `Iterator` implementation of the given generator
@@ -35,15 +30,14 @@ fn test<F, P, G>(generator: G) where
        generators::IndexedPolygon<P> +
        Iterator<Item = F>,
 {
-    let vertices: Vec<_> = generator.shared_vertex_iter()
-                                    .collect();
+    let vertices: Vec<_> = generator.shared_vertex_iter().collect();
 
-    let f1: Vec<_> = generator.indexed_polygon_iter()
-                              .triangulate()
-                              .map(|f| f.map_vertex(|u| vertices[u]))
-                              .collect();
-    let f0: Vec<_> = generator.triangulate()
-                              .collect();
+    let f1: Vec<_> = generator
+        .indexed_polygon_iter()
+        .triangulate()
+        .map(|f| f.map_vertex(|u| vertices[u]))
+        .collect();
+    let f0: Vec<_> = generator.triangulate().collect();
 
     assert_eq!(f0.len(), f1.len());
     for (i, (p0, p1)) in f0.iter().zip(f1.iter()).enumerate() {

@@ -1,4 +1,4 @@
-//   Copyright Colin Sherratt 2014
+//   Copyright GFX Developers 2014-2017
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -66,8 +66,7 @@ impl Iterator for Plane {
     type Item = Quad<Vertex>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let n = (self.subdivide_y - self.y) * self.subdivide_x +
-                (self.subdivide_x - self.x);
+        let n = (self.subdivide_y - self.y) * self.subdivide_x + (self.subdivide_x - self.x);
         (n, Some(n))
     }
 
@@ -80,10 +79,10 @@ impl Iterator for Plane {
             self.x = 0;
         }
 
-        let x = self.vert(self.x,   self.y);
-        let y = self.vert(self.x+1, self.y);
-        let z = self.vert(self.x+1, self.y+1);
-        let w = self.vert(self.x,   self.y+1);
+        let x = self.vert(self.x, self.y);
+        let y = self.vert(self.x + 1, self.y);
+        let z = self.vert(self.x + 1, self.y + 1);
+        let w = self.vert(self.x, self.y + 1);
         self.x += 1;
 
         Some(Quad::new(x, y, z, w))

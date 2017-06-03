@@ -1,4 +1,4 @@
-//   Copyright Colin Sherratt 2014
+//   Copyright GFX Developers 2014-2017
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -31,33 +31,14 @@
 extern crate cgmath;
 extern crate mint;
 
-pub use poly::{
-    Quad,
-    Triangle,
-    Polygon,
-    Vertices,
-    VerticesIterator,
-    MapToVertices,
-    MapVertex,
-    Line,
-    Lines,
-    EmitLines,
-};
+pub use poly::{Quad, Triangle, Polygon, Vertices, VerticesIterator, MapToVertices, MapVertex,
+               Line, Lines, EmitLines};
 
-pub use triangulate::{
-    EmitTriangles,
-    Triangulate,
-    TriangulateIterator
-};
+pub use triangulate::{EmitTriangles, Triangulate, TriangulateIterator};
 
-pub use indexer::{
-    Indexer,
-    LruIndexer
-};
+pub use indexer::{Indexer, LruIndexer};
 
-pub use neighbors::{
-    Neighbors
-};
+pub use neighbors::Neighbors;
 
 mod triangulate;
 mod poly;
@@ -73,12 +54,7 @@ mod sphere;
 /// A collection of utilties that can be used to build
 /// meshes programmatically.
 pub mod generators {
-    pub use generator::{
-        SharedVertex,
-        IndexedPolygon,
-        SharedVertexIterator,
-        IndexedPolygonIterator,
-    };
+    pub use generator::{SharedVertex, IndexedPolygon, SharedVertexIterator, IndexedPolygonIterator};
     pub use cube::Cube;
     pub use cylinder::Cylinder;
     pub use plane::Plane;
