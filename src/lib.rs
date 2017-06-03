@@ -46,6 +46,7 @@ mod indexer;
 mod generator;
 mod neighbors;
 
+mod cone;
 mod cube;
 mod cylinder;
 mod plane;
@@ -55,6 +56,7 @@ mod sphere;
 /// meshes programmatically.
 pub mod generators {
     pub use generator::{SharedVertex, IndexedPolygon, SharedVertexIterator, IndexedPolygonIterator};
+    pub use cone::Cone;
     pub use cube::Cube;
     pub use cylinder::Cylinder;
     pub use plane::Plane;

@@ -14,6 +14,7 @@ This also provides some `generators` for creating primitives at runtime.
 
 **Primitive generators**
  - `Plane`
+ - `Cone`
  - `Cube`
  - `Cylinder`
  - `SphereUV`

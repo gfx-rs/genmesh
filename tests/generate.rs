@@ -66,3 +66,8 @@ fn gen_cylinder() {
 fn gen_sphere_uv() {
     test(generators::SphereUV::new(4, 3));
 }
+
+#[test]
+fn gen_cone() {
+    test(generators::Cone::new(8));
+}
