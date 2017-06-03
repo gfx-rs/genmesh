@@ -1,11 +1,11 @@
 //   Copyright Colin Sherratt 2015
-//   
+//
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
-//   
+//
 //       http://www.apache.org/licenses/LICENSE-2.0
-//   
+//
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,17 +40,18 @@ impl<T> Neighbors<T> {
         let mut shares_vertex = HashMap::new();
 
         for (i, p) in polygons.iter().enumerate() {
-            p.clone().emit_lines(|line| {
-                shares_vertex.entry(line.x.clone())
-                    .or_insert(Vec::new())
-                    .push(i);
-                shares_vertex.entry(line.y.clone())
-                    .or_insert(Vec::new())
-                    .push(i);
-                shares_edge.entry(line)
-                    .or_insert(Vec::new())
-                    .push(i);
-            });
+            p.clone()
+                .emit_lines(|line| {
+                    shares_vertex
+                        .entry(line.x.clone())
+                        .or_insert(Vec::new())
+                        .push(i);
+                    shares_vertex
+                        .entry(line.y.clone())
+                        .or_insert(Vec::new())
+                        .push(i);
+                    shares_edge.entry(line).or_insert(Vec::new()).push(i);
+                });
         }
 
         Neighbors {
@@ -69,23 +70,25 @@ impl<T> Neighbors<T> {
     /// looks up the index of every polygon that contains
     /// vertex t, this can be used to calculate new faces
     pub fn vertex_neighbors(&self, t: &usize) -> Option<&[usize]> {
-        self.shares_vertex.get(t)
-            .map(|x| &x[..])
+        self.shares_vertex.get(t).map(|x| &x[..])
     }
 
     /// looks up the index of every polygon that is a neighbor of
     /// polygon at index i. This can be used to prep data for a Geometry
     /// shader (eg trinagle_adjacency)
     pub fn polygon_neighbors(&self, i: usize) -> Option<HashSet<usize>> {
-        self.polygons.get(i)
+        self.polygons
+            .get(i)
             .map(|x| {
                 let mut v = HashSet::new();
-                x.clone().emit_lines(|line| {
-                    self.shares_edge.get(&line)
-                        .map(|x| {
-                            for &i in x { v.insert(i); }
-                        });
-                });
+                x.clone()
+                    .emit_lines(|line| {
+                                    self.shares_edge
+                                        .get(&line)
+                                        .map(|x| for &i in x {
+                                                 v.insert(i);
+                                             });
+                                });
                 v.remove(&i);
                 v
             })
@@ -99,7 +102,7 @@ impl<T> Neighbors<T> {
     pub fn normal_for_face<F>(&self, i: usize, mut f: F) -> Normal
         where F: FnMut(&T) -> Normal
     {
-        let Triangle{x, y, z} = self.polygons[i];
+        let Triangle { x, y, z } = self.polygons[i];
 
         let x = Vector3::from(f(&self.vertices[x]));
         let y = Vector3::from(f(&self.vertices[y]));

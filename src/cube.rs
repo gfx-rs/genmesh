@@ -20,7 +20,7 @@ use super::generators::{SharedVertex, IndexedPolygon};
 /// A perfect cube, centered at (0, 0, 0) with each face starting at 1/-1 away from the origin
 #[derive(Clone)]
 pub struct Cube {
-    range: Range<usize>
+    range: Range<usize>,
 }
 
 impl Cube {
@@ -30,30 +30,32 @@ impl Cube {
     }
 
     fn vert(&self, idx: usize) -> Position {
-        let x = if idx & 4 == 4 { 1.} else { -1. };
-        let y = if idx & 2 == 2 { 1.} else { -1. };
-        let z = if idx & 1 == 1 { 1.} else { -1. };
+        let x = if idx & 4 == 4 { 1. } else { -1. };
+        let y = if idx & 2 == 2 { 1. } else { -1. };
+        let z = if idx & 1 == 1 { 1. } else { -1. };
         [x, y, z]
     }
 
     fn face_indexed(&self, idx: usize) -> (Normal, Quad<usize>) {
         match idx {
-            0 => ([ 1.,  0.,  0.], Quad::new(0b110, 0b111, 0b101, 0b100)),
-            1 => ([-1.,  0.,  0.], Quad::new(0b000, 0b001, 0b011, 0b010)),
-            2 => ([ 0.,  1.,  0.], Quad::new(0b011, 0b111, 0b110, 0b010)),
-            3 => ([ 0., -1.,  0.], Quad::new(0b100, 0b101, 0b001, 0b000)),
-            4 => ([ 0.,  0.,  1.], Quad::new(0b101, 0b111, 0b011, 0b001)),
-            5 => ([ 0.,  0., -1.], Quad::new(0b000, 0b010, 0b110, 0b100)),
-            idx => panic!("{} face is higher then 6", idx)
+            0 => ([1., 0., 0.], Quad::new(0b110, 0b111, 0b101, 0b100)),
+            1 => ([-1., 0., 0.], Quad::new(0b000, 0b001, 0b011, 0b010)),
+            2 => ([0., 1., 0.], Quad::new(0b011, 0b111, 0b110, 0b010)),
+            3 => ([0., -1., 0.], Quad::new(0b100, 0b101, 0b001, 0b000)),
+            4 => ([0., 0., 1.], Quad::new(0b101, 0b111, 0b011, 0b001)),
+            5 => ([0., 0., -1.], Quad::new(0b000, 0b010, 0b110, 0b100)),
+            idx => panic!("{} face is higher then 6", idx),
         }
     }
 
     fn face(&self, idx: usize) -> Quad<Vertex> {
         let (no, quad) = self.face_indexed(idx);
-        quad.map_vertex(|i| Vertex {
-            pos: self.vert(i),
-            normal: no,
-        })
+        quad.map_vertex(|i| {
+                            Vertex {
+                                pos: self.vert(i),
+                                normal: no,
+                            }
+                        })
     }
 }
 
@@ -77,21 +79,25 @@ impl SharedVertex<Vertex> for Cube {
             1 => quad.y,
             2 => quad.z,
             3 => quad.w,
-            _ => unreachable!()
+            _ => unreachable!(),
         };
-        Vertex{
+        Vertex {
             pos: self.vert(vid),
             normal: no,
         }
     }
 
-    fn shared_vertex_count(&self) -> usize { 24 }
+    fn shared_vertex_count(&self) -> usize {
+        24
+    }
 }
 
 impl IndexedPolygon<Quad<usize>> for Cube {
     fn indexed_polygon(&self, idx: usize) -> Quad<usize> {
-        Quad::new(idx*4+0, idx*4+1, idx*4+2, idx*4+3)
+        Quad::new(idx * 4 + 0, idx * 4 + 1, idx * 4 + 2, idx * 4 + 3)
     }
 
-    fn indexed_polygon_count(&self) -> usize { 6 }
+    fn indexed_polygon_count(&self) -> usize {
+        6
+    }
 }

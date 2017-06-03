@@ -1,11 +1,11 @@
 //   Copyright GFX Developers 2014-2017
-//   
+//
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
-//   
+//
 //       http://www.apache.org/licenses/LICENSE-2.0
-//   
+//
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,30 +14,19 @@
 
 extern crate genmesh;
 
-use genmesh::{
-    Quad,
-    EmitTriangles,
-    Triangle,
-    MapToVertices,
-    LruIndexer,
-    Indexer,
-    Vertices,
-    Triangulate,
-    Vertex,
-};
+use genmesh::{Quad, EmitTriangles, Triangle, MapToVertices, LruIndexer, Indexer, Vertices,
+              Triangulate, Vertex};
 
-use genmesh::generators::{Plane};
+use genmesh::generators::Plane;
 
 #[test]
 fn quad_vertex() {
-    let input = &[Quad::new(0usize, 1, 2, 3),
-                  Quad::new(1usize, 2, 3, 4)];
+    let input = &[Quad::new(0usize, 1, 2, 3), Quad::new(1usize, 2, 3, 4)];
 
     let output = &[Quad::new(false, true, false, true),
                    Quad::new(true, false, true, false)];
 
-    let transformed = input.iter().map(|x| x.clone())
-                                  .vertex(|v| v % 2 != 0);
+    let transformed = input.iter().map(|x| x.clone()).vertex(|v| v % 2 != 0);
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -46,15 +35,16 @@ fn quad_vertex() {
 
 #[test]
 fn quad_vertex_two_stages() {
-    let input = &[Quad::new(0usize, 1, 2, 3),
-                  Quad::new(1usize, 2, 3, 4)];
+    let input = &[Quad::new(0usize, 1, 2, 3), Quad::new(1usize, 2, 3, 4)];
 
     let output = &[Quad::new(false, true, false, true),
                    Quad::new(true, false, true, false)];
 
-    let transformed = input.iter().map(|x| x.clone())
-                                  .vertex(|v| v as u8)
-                                  .vertex(|v| v % 2 != 0);
+    let transformed = input
+        .iter()
+        .map(|x| x.clone())
+        .vertex(|v| v as u8)
+        .vertex(|v| v % 2 != 0);
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -63,14 +53,14 @@ fn quad_vertex_two_stages() {
 
 #[test]
 fn quad_poly_simple() {
-    let input = &[Quad::new(0usize, 1, 2, 3),
-                  Quad::new(1usize, 2, 3, 4)];
+    let input = &[Quad::new(0usize, 1, 2, 3), Quad::new(1usize, 2, 3, 4)];
 
-    let output = &[Quad::new(0isize, 1, 2, 0),
-                   Quad::new(0isize, 2, 3, 0)];
+    let output = &[Quad::new(0isize, 1, 2, 0), Quad::new(0isize, 2, 3, 0)];
 
-    let transformed = input.iter().map(|x| x.clone())
-                                  .map(|v| Quad::new(0isize, v.y as isize, v.z as isize, 0));
+    let transformed = input
+        .iter()
+        .map(|x| x.clone())
+        .map(|v| Quad::new(0isize, v.y as isize, v.z as isize, 0));
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -79,14 +69,12 @@ fn quad_poly_simple() {
 
 #[test]
 fn triangle_vertex() {
-    let input = &[Triangle::new(0usize, 1, 2),
-                  Triangle::new(1usize, 2, 3)];
+    let input = &[Triangle::new(0usize, 1, 2), Triangle::new(1usize, 2, 3)];
 
     let output = &[Triangle::new(false, true, false),
                    Triangle::new(true, false, true)];
 
-    let transformed = input.iter().map(|x| x.clone())
-                           .vertex(|v| v % 2 != 0);
+    let transformed = input.iter().map(|x| x.clone()).vertex(|v| v % 2 != 0);
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -95,15 +83,16 @@ fn triangle_vertex() {
 
 #[test]
 fn triangle_vertex_two_stages() {
-    let input = &[Triangle::new(0usize, 1, 2),
-                  Triangle::new(1usize, 2, 3)];
+    let input = &[Triangle::new(0usize, 1, 2), Triangle::new(1usize, 2, 3)];
 
     let output = &[Triangle::new(false, true, false),
                    Triangle::new(true, false, true)];
 
-    let transformed = input.iter().map(|x| x.clone())
-                           .vertex(|v| v as u8)
-                           .vertex(|v| v % 2 != 0);
+    let transformed = input
+        .iter()
+        .map(|x| x.clone())
+        .vertex(|v| v as u8)
+        .vertex(|v| v % 2 != 0);
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -112,14 +101,14 @@ fn triangle_vertex_two_stages() {
 
 #[test]
 fn triangle_poly_simple() {
-    let input = &[Triangle::new(0usize, 1, 2),
-                  Triangle::new(1usize, 2, 3)];
+    let input = &[Triangle::new(0usize, 1, 2), Triangle::new(1usize, 2, 3)];
 
-    let output = &[Triangle::new(0isize, 1, 2),
-                   Triangle::new(0isize, 2, 3)];
+    let output = &[Triangle::new(0isize, 1, 2), Triangle::new(0isize, 2, 3)];
 
-    let transformed = input.iter().map(|x| x.clone())
-                           .map(|v| Triangle::new(0isize, v.y as isize, v.z as isize));
+    let transformed = input
+        .iter()
+        .map(|x| x.clone())
+        .map(|v| Triangle::new(0isize, v.y as isize, v.z as isize));
 
     for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
         assert_eq!(x, y);
@@ -132,8 +121,8 @@ fn to_triangles() {
     let mut result = Vec::new();
     q.emit_triangles(|v| result.push(v));
 
-    assert_eq!(result, vec![Triangle::new(0usize, 1, 2),
-                            Triangle::new(2usize, 3, 0)]);
+    assert_eq!(result,
+               vec![Triangle::new(0usize, 1, 2), Triangle::new(2usize, 3, 0)]);
 
     let t = Triangle::new(0usize, 1, 2);
     let mut result = Vec::new();
@@ -148,9 +137,9 @@ fn plane() {
     let a = plane.next().unwrap();
 
     assert_eq!(a.x.pos, [-1f32, -1., 0.]);
-    assert_eq!(a.y.pos, [ 1f32, -1., 0.]);
-    assert_eq!(a.z.pos, [ 1f32,  1., 0.]);
-    assert_eq!(a.w.pos, [-1f32,  1., 0.]);
+    assert_eq!(a.y.pos, [1f32, -1., 0.]);
+    assert_eq!(a.z.pos, [1f32, 1., 0.]);
+    assert_eq!(a.w.pos, [-1f32, 1., 0.]);
 }
 
 //TODO: LRU tests changed once the normals got introduced to the `Cube`.
@@ -161,26 +150,28 @@ fn lru_indexer() {
     let indexes: Vec<usize> = {
         let mut indexer = LruIndexer::new(8, |_, v| vectices.push(v));
 
-        Plane::subdivide(1, 3).vertex(|v| indexer.index(v))
-                              .vertices()
-                              .collect()
+        Plane::subdivide(1, 3)
+            .vertex(|v| indexer.index(v))
+            .vertices()
+            .collect()
     };
 
     assert_eq!(8, vectices.len());
-    assert_eq!(3*4, indexes.len());
+    assert_eq!(3 * 4, indexes.len());
 
     let mut vectices: Vec<Vertex> = Vec::new();
     let indexes: Vec<usize> = {
         let mut indexer = LruIndexer::new(4, |_, v| vectices.push(v));
 
-        Plane::subdivide(1, 3).triangulate()
-                              .vertex(|v| indexer.index(v))
-                              .vertices()
-                              .collect()
+        Plane::subdivide(1, 3)
+            .triangulate()
+            .vertex(|v| indexer.index(v))
+            .vertices()
+            .collect()
     };
 
     assert_eq!(8, vectices.len());
-    assert_eq!(3*3*2, indexes.len());
+    assert_eq!(3 * 3 * 2, indexes.len());
 }
 
 #[test]
@@ -188,7 +179,7 @@ fn emit_lines() {
     use genmesh::{Line, Lines, EmitLines};
 
     let mut lines = Vec::new();
-    let triangle = Triangle::new(0i8, 1, 2); 
+    let triangle = Triangle::new(0i8, 1, 2);
     triangle.emit_lines(|x| lines.push(x));
 
     assert_eq!(3, lines.len());
@@ -197,7 +188,7 @@ fn emit_lines() {
     assert_eq!(Line::new(2, 0), lines[2]);
 
     let mut lines = Vec::new();
-    let quad = Quad::new(0i8, 1, 2, 3); 
+    let quad = Quad::new(0i8, 1, 2, 3);
     quad.emit_lines(|x| lines.push(x));
 
     assert_eq!(4, lines.len());
@@ -206,8 +197,7 @@ fn emit_lines() {
     assert_eq!(Line::new(2, 3), lines[2]);
     assert_eq!(Line::new(3, 0), lines[3]);
 
-    let quads = [Quad::new(0i8, 1, 2, 3),
-                 Quad::new(4i8, 5, 6, 7)];
+    let quads = [Quad::new(0i8, 1, 2, 3), Quad::new(4i8, 5, 6, 7)];
     let lines: Vec<Line<i8>> = quads.iter().map(|&x| x).lines().collect();
 
     assert_eq!(8, lines.len());

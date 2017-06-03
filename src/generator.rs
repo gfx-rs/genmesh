@@ -31,13 +31,13 @@ pub trait SharedVertex<V>: Sized {
         SharedVertexIterator {
             base: self,
             idx: 0..self.shared_vertex_count(),
-            phantom_v: PhantomData
+            phantom_v: PhantomData,
         }
     }
 }
 
 /// An iterator that yields the shared vertices of the mesh
-pub struct SharedVertexIterator<'a, T:'a, V> {
+pub struct SharedVertexIterator<'a, T: 'a, V> {
     base: &'a T,
     idx: Range<usize>,
     phantom_v: PhantomData<V>,
@@ -71,13 +71,13 @@ pub trait IndexedPolygon<V>: Sized {
         IndexedPolygonIterator {
             base: self,
             idx: 0..self.indexed_polygon_count(),
-            phantom_v: PhantomData
+            phantom_v: PhantomData,
         }
     }
 }
 
 /// An iterator that yields the indices of the mesh
-pub struct IndexedPolygonIterator<'a, T:'a, V> {
+pub struct IndexedPolygonIterator<'a, T: 'a, V> {
     base: &'a T,
     idx: Range<usize>,
     phantom_v: PhantomData<V>,

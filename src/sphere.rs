@@ -45,13 +45,8 @@ impl SphereUV {
         let u = (u as f32 / self.sub_u as f32) * PI * 2.;
         let v = (v as f32 / self.sub_v as f32) * PI;
 
-        let p = [u.cos() * v.sin(),
-                 u.sin() * v.sin(),
-                 v.cos()];
-        Vertex {
-            pos: p,
-            normal: p,
-        }
+        let p = [u.cos() * v.sin(), u.sin() * v.sin(), v.cos()];
+        Vertex { pos: p, normal: p }
     }
 }
 
@@ -77,21 +72,21 @@ impl Iterator for SphereUV {
         let u1 = (self.u + 1) % self.sub_u;
 
         let x = self.vert(self.u, self.v);
-        let y = self.vert(self.u, self.v+1);
-        let z = self.vert(u1, self.v+1);
+        let y = self.vert(self.u, self.v + 1);
+        let z = self.vert(u1, self.v + 1);
         let w = self.vert(u1, self.v);
         let v = self.v;
         self.u += 1;
 
         Some(if v == 0 {
-            PolyTri(Triangle::new(x, y, z))
-        } else if v == self.sub_v - 1 {
-            // overriding z to force u == 0 for consistency
-            let z = self.vert(0, self.sub_v);
-            PolyTri(Triangle::new(z, w, x))
-        } else {
-            PolyQuad(Quad::new(x, y, z, w))
-        })
+                 PolyTri(Triangle::new(x, y, z))
+             } else if v == self.sub_v - 1 {
+                 // overriding z to force u == 0 for consistency
+                 let z = self.vert(0, self.sub_v);
+                 PolyTri(Triangle::new(z, w, x))
+             } else {
+                 PolyQuad(Quad::new(x, y, z, w))
+             })
     }
 }
 
@@ -107,7 +102,7 @@ impl SharedVertex<Vertex> for SphereUV {
             let idx = idx - 1;
             let u = idx % self.sub_u;
             let v = idx / self.sub_u;
-            self.vert(u, v+1)
+            self.vert(u, v + 1)
         }
     }
 
@@ -118,32 +113,23 @@ impl SharedVertex<Vertex> for SphereUV {
 
 impl IndexedPolygon<Polygon<usize>> for SphereUV {
     fn indexed_polygon(&self, idx: usize) -> Polygon<usize> {
-        let f = |u: usize, v: usize| {
-            if v == 0 {
-                0
-            } else if self.sub_v == v {
-                (self.sub_v-1) * (self.sub_u) + 1
-            } else {
-                (v-1) * self.sub_u + (u % self.sub_u) + 1
-            }
+        let f = |u: usize, v: usize| if v == 0 {
+            0
+        } else if self.sub_v == v {
+            (self.sub_v - 1) * (self.sub_u) + 1
+        } else {
+            (v - 1) * self.sub_u + (u % self.sub_u) + 1
         };
 
         let u = idx % self.sub_u;
         let v = idx / self.sub_u;
 
         if v == 0 {
-            PolyTri(Triangle::new(f(u,   v),
-                                  f(u,   v+1),
-                                  f(u+1, v+1)))
+            PolyTri(Triangle::new(f(u, v), f(u, v + 1), f(u + 1, v + 1)))
         } else if self.sub_v - 1 == v {
-            PolyTri(Triangle::new(f(u+1, v+1),
-                                  f(u+1, v),
-                                  f(u,   v)))
+            PolyTri(Triangle::new(f(u + 1, v + 1), f(u + 1, v), f(u, v)))
         } else {
-            PolyQuad(Quad::new(f(u,   v),
-                               f(u,   v+1),
-                               f(u+1, v+1),
-                               f(u+1, v)))
+            PolyQuad(Quad::new(f(u, v), f(u, v + 1), f(u + 1, v + 1), f(u + 1, v)))
         }
     }
 
@@ -151,4 +137,3 @@ impl IndexedPolygon<Polygon<usize>> for SphereUV {
         self.sub_v * self.sub_u
     }
 }
-
