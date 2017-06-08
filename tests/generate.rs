@@ -71,3 +71,8 @@ fn gen_sphere_uv() {
 fn gen_cone() {
     test(generators::Cone::new(8));
 }
+
+#[test]
+fn gen_torus() {
+    test(generators::Torus::new(1., 0.5, 8, 8));
+}
