@@ -51,6 +51,7 @@ mod cube;
 mod cylinder;
 mod plane;
 mod sphere;
+mod torus;
 
 /// A collection of utilties that can be used to build
 /// meshes programmatically.
@@ -61,6 +62,7 @@ pub mod generators {
     pub use cylinder::Cylinder;
     pub use plane::Plane;
     pub use sphere::SphereUV;
+    pub use torus::Torus;
 }
 
 /// Common vertex position type.

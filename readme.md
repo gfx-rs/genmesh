@@ -13,11 +13,12 @@ This also provides some `generators` for creating primitives at runtime.
  - `vertices` turns a poly pipeline into a vertices pipeline
 
 **Primitive generators**
- - `Plane`
  - `Cone`
  - `Cube`
  - `Cylinder`
+ - `Plane`
  - `SphereUV`
+ - `Torus`
 
  **Vertex attributes**
  - `pos`: position
