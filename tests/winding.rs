@@ -18,7 +18,7 @@ extern crate genmesh;
 use std::collections::HashSet;
 
 use cgmath::InnerSpace;
-use genmesh::{generators, Line, EmitLines, MapToVertices, Vertex, Lines};
+use genmesh::{generators, EmitLines, Line, Lines, MapToVertices, Vertex};
 
 #[derive(Debug)]
 struct Edge {
@@ -54,8 +54,9 @@ impl Edge {
 /// winding order relative to the origin of the coordinate system.
 /// This is a simplified (and incomplete) convex shape test.
 fn test_outward<P, I>(poly_iter: I)
-    where P: EmitLines<Vertex = Vertex> + ::std::fmt::Debug,
-          I: Iterator<Item = P>
+where
+    P: EmitLines<Vertex = Vertex> + ::std::fmt::Debug,
+    I: Iterator<Item = P>,
 {
     let mut edges = Vec::new();
     for poly in poly_iter {
@@ -65,7 +66,6 @@ fn test_outward<P, I>(poly_iter: I)
         edges.last().unwrap().check_to(&edges[0]);
         // check all the non-wrapping corners
         for (a, b) in edges.iter().zip(edges[1..].iter()) {
-
             a.check_to(b);
         }
     }
@@ -79,16 +79,19 @@ fn test_outward<P, I>(poly_iter: I)
 // This is based on ftp://ftp.sgi.com/opengl/contrib/blythe/advanced99/notes/node16.html
 //
 fn test_closed<P, I>(poly_iter: I)
-    where P: EmitLines<Vertex = Vertex> + ::std::fmt::Debug,
-          I: Iterator<Item = P>
+where
+    P: EmitLines<Vertex = Vertex> + ::std::fmt::Debug,
+    I: Iterator<Item = P>,
 {
     // convert the vertex to something that we can use to find approximate
     // polygons. This is mostly to get past the fact that f32 is a cursed
     // type in rust and can not be used as a key.
     fn to_checkable(vertex: Vertex) -> [i32; 3] {
-        [(vertex.pos[0] * 1000000.) as i32,
-         (vertex.pos[1] * 1000000.) as i32,
-         (vertex.pos[2] * 1000000.) as i32]
+        [
+            (vertex.pos[0] * 1000000.) as i32,
+            (vertex.pos[1] * 1000000.) as i32,
+            (vertex.pos[2] * 1000000.) as i32,
+        ]
     }
 
     let mut lines = HashSet::new();
@@ -99,9 +102,9 @@ fn test_closed<P, I>(poly_iter: I)
             // if didn't find the pair, we flip the line around and put it into
             // the search table.
             lines.insert(Line {
-                             x: line.y,
-                             y: line.x,
-                         });
+                x: line.y,
+                y: line.x,
+            });
         }
     }
 
@@ -119,13 +122,13 @@ fn wind_plane() {
     // shape.
 
     test_outward(generators::Plane::new().vertex(|mut v| {
-                                                     v.pos[2] = 1.;
-                                                     v
-                                                 }));
+        v.pos[2] = 1.;
+        v
+    }));
     test_outward(generators::Plane::subdivide(3, 4).vertex(|mut v| {
-                                                               v.pos[2] = 1.;
-                                                               v
-                                                           }));
+        v.pos[2] = 1.;
+        v
+    }));
 }
 
 #[test]
@@ -146,6 +149,14 @@ fn gen_cylinder() {
 fn gen_sphere_uv() {
     test_outward(generators::SphereUV::new(4, 3));
     test_closed(generators::SphereUV::new(4, 3));
+}
+
+#[test]
+fn gen_ico_sphere() {
+    test_outward(generators::IcoSphere::new());
+    test_closed(generators::IcoSphere::new());
+    test_outward(generators::IcoSphere::subdivide(3));
+    test_closed(generators::IcoSphere::subdivide(3));
 }
 
 #[test]

@@ -31,8 +31,8 @@
 extern crate cgmath;
 extern crate mint;
 
-pub use poly::{Quad, Triangle, Polygon, Vertices, VerticesIterator, MapToVertices, MapVertex,
-               Line, Lines, EmitLines};
+pub use poly::{EmitLines, Line, Lines, MapToVertices, MapVertex, Polygon, Quad, Triangle,
+               Vertices, VerticesIterator};
 
 pub use triangulate::{EmitTriangles, Triangulate, TriangulateIterator};
 
@@ -52,17 +52,19 @@ mod cylinder;
 mod plane;
 mod sphere;
 mod torus;
+mod icosphere;
 
 /// A collection of utilties that can be used to build
 /// meshes programmatically.
 pub mod generators {
-    pub use generator::{SharedVertex, IndexedPolygon, SharedVertexIterator, IndexedPolygonIterator};
+    pub use generator::{IndexedPolygon, IndexedPolygonIterator, SharedVertex, SharedVertexIterator};
     pub use cone::Cone;
     pub use cube::Cube;
     pub use cylinder::Cylinder;
     pub use plane::Plane;
     pub use sphere::SphereUV;
     pub use torus::Torus;
+    pub use icosphere::IcoSphere;
 }
 
 /// Common vertex position type.
