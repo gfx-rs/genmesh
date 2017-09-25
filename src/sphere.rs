@@ -20,20 +20,20 @@ use super::generators::{SharedVertex, IndexedPolygon};
 
 /// Represents a sphere with radius of 1, centered at (0, 0, 0)
 #[derive(Clone, Copy)]
-pub struct SphereUV {
+pub struct SphereUv {
     u: usize,
     v: usize,
     sub_u: usize,
     sub_v: usize,
 }
 
-impl SphereUV {
+impl SphereUv {
     /// Create a new sphere.
     /// `u` is the number of points across the equator of the sphere.
     /// `v` is the number of points from pole to pole.
     pub fn new(u: usize, v: usize) -> Self {
         assert!(u > 1 && v > 1);
-        SphereUV {
+        SphereUv {
             u: 0,
             v: 0,
             sub_u: u,
@@ -50,7 +50,7 @@ impl SphereUV {
     }
 }
 
-impl Iterator for SphereUV {
+impl Iterator for SphereUv {
     type Item = Polygon<Vertex>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -90,7 +90,7 @@ impl Iterator for SphereUV {
     }
 }
 
-impl SharedVertex<Vertex> for SphereUV {
+impl SharedVertex<Vertex> for SphereUv {
     fn shared_vertex(&self, idx: usize) -> Vertex {
         if idx == 0 {
             self.vert(0, 0)
@@ -111,7 +111,7 @@ impl SharedVertex<Vertex> for SphereUV {
     }
 }
 
-impl IndexedPolygon<Polygon<usize>> for SphereUV {
+impl IndexedPolygon<Polygon<usize>> for SphereUv {
     fn indexed_polygon(&self, idx: usize) -> Polygon<usize> {
         let f = |u: usize, v: usize| if v == 0 {
             0
