@@ -61,7 +61,7 @@ pub mod generators {
     pub use cube::Cube;
     pub use cylinder::Cylinder;
     pub use plane::Plane;
-    pub use sphere::SphereUV;
+    pub use sphere::SphereUv;
     pub use torus::Torus;
 }
 

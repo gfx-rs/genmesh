@@ -144,8 +144,8 @@ fn gen_cylinder() {
 
 #[test]
 fn gen_sphere_uv() {
-    test_outward(generators::SphereUV::new(4, 3));
-    test_closed(generators::SphereUV::new(4, 3));
+    test_outward(generators::SphereUv::new(4, 3));
+    test_closed(generators::SphereUv::new(4, 3));
 }
 
 #[test]

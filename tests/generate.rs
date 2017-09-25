@@ -64,7 +64,7 @@ fn gen_cylinder() {
 
 #[test]
 fn gen_sphere_uv() {
-    test(generators::SphereUV::new(4, 3));
+    test(generators::SphereUv::new(4, 3));
 }
 
 #[test]
