@@ -29,13 +29,18 @@ pub struct IcoSphere {
     faces: Vec<[usize; 3]>,
 }
 
-const T: f32 = 0.85065080835204;
-const X: f32 = 0.5257311121191336;
-
 // The vertices of a regular icosahedron can be visualised as lying at the corner points of 3
 // orthogonal rectangles in 3D space.
 // https://en.wikipedia.org/wiki/Regular_icosahedron#/media/File:Icosahedron-golden-rectangles.svg
-// for a visualisation of this
+// for a visualisation of this.
+// These rectangles are all the same size, and are golden rectangles, which means their sides have
+// the golden ratio: 1 : (1 + sqrt(5)) / 2. If we take those values directly however, we will not
+// get a unit sphere, therefore we need to normalize the vector (0, 1, (1 + sqrt(5)) / 2). This
+// gives us the values below. These values are the half dimensions of the orthogonal rectangles
+// from which we get the corner points that define a unit icosahedral sphere.
+const T: f32 = 0.85065080835204;
+const X: f32 = 0.5257311121191336;
+
 const VERTICES: [[f32; 3]; 12] = [
     // corners of the rectangle in the XY plane
     [-X, T, 0.],
