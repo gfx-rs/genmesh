@@ -1,16 +1,27 @@
-//! Icosahedral sphere
+//   Copyright GFX Developers 2014-2017
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
 
-#![allow(missing_docs)]
+//! Icosahedral sphere
 
 use std::collections::HashMap;
 
 use cgmath::{InnerSpace, Vector3};
 
-use Vertex;
-use super::Triangle;
-use super::generators::{IndexedPolygon, SharedVertex};
+use {Vertex, Triangle};
+use generators::{IndexedPolygon, SharedVertex};
 
-/// Icosahedral sphere, no support for subdivision at this point.
+/// Icosahedral sphere with radius 1, centered at (0., 0., 0.)
 #[derive(Clone, Debug)]
 pub struct IcoSphere {
     i: usize,
@@ -18,21 +29,31 @@ pub struct IcoSphere {
     faces: Vec<[usize; 3]>,
 }
 
-const T: f32 = 1.61803398874989484820;
+const T: f32 = 0.85065080835204;
+const X: f32 = 0.5257311121191336;
 
+// The vertices of a regular icosahedron can be visualised as lying at the corner points of 3
+// orthogonal rectangles in 3D space.
+// https://en.wikipedia.org/wiki/Regular_icosahedron#/media/File:Icosahedron-golden-rectangles.svg
+// for a visualisation of this
 const VERTICES: [[f32; 3]; 12] = [
-    [-1., T, 0.],
-    [1., T, 0.],
-    [-1., -T, 0.],
-    [1., -T, 0.],
-    [0., -1., T],
-    [0., 1., T],
-    [0., -1., -T],
-    [0., 1., -T],
-    [T, 0., -1.],
-    [T, 0., 1.],
-    [-T, 0., -1.],
-    [-T, 0., 1.],
+    // corners of the rectangle in the XY plane
+    [-X, T, 0.],
+    [X, T, 0.],
+    [-X, -T, 0.],
+    [X, -T, 0.],
+
+    // corners of the rectangle in the YZ plane
+    [0., -X, T],
+    [0., X, T],
+    [0., -X, -T],
+    [0., X, -T],
+
+    // corners of the rectangle in the XZ plane
+    [T, 0., -X],
+    [T, 0., X],
+    [-T, 0., -X],
+    [-T, 0., X],
 ];
 
 const FACES: [[usize; 3]; 20] = [
@@ -42,18 +63,21 @@ const FACES: [[usize; 3]; 20] = [
     [0, 1, 7],
     [0, 7, 10],
     [0, 10, 11],
+
     // 5 faces adjacent to the faces around point 0
     [1, 5, 9],
     [5, 11, 4],
     [11, 10, 2],
     [10, 7, 6],
     [7, 1, 8],
+
     // 5 faces around point 3
     [3, 9, 4],
     [3, 4, 2],
     [3, 2, 6],
     [3, 6, 8],
     [3, 8, 9],
+
     // 5 faces adjacent to the faces around point 3
     [4, 9, 5],
     [2, 4, 11],
@@ -62,24 +86,25 @@ const FACES: [[usize; 3]; 20] = [
     [9, 8, 1],
 ];
 
-fn base_vertices() -> Vec<[f32; 3]> {
-    VERTICES
-        .iter()
-        .map(|p| Vector3::from(*p).normalize().into())
-        .collect::<Vec<[f32; 3]>>()
-}
-
 impl IcoSphere {
+
+    /// Create a unit sphere with 20 faces and 12 vertices.
     pub fn new() -> Self {
         Self {
             i: 0,
-            vertices: base_vertices(),
+            vertices: VERTICES.to_vec(),
             faces: FACES.to_vec(),
         }
     }
 
+    /// Create a unit sphere with subdivision, resulting in 20 * 4^N faces, where N is the number of
+    /// subdivisions.
+    ///
+    /// ## Parameters
+    ///
+    /// - `subdivides`: Number of subdivisions to perform.
     pub fn subdivide(subdivides: usize) -> Self {
-        let mut vertices = base_vertices();
+        let mut vertices = VERTICES.to_vec();
         let mut faces = FACES.to_vec();
 
         for _ in 0..subdivides {
@@ -95,7 +120,7 @@ impl IcoSphere {
         }
     }
 
-    pub fn vert(&self, index: usize) -> Vertex {
+    fn vert(&self, index: usize) -> Vertex {
         Vertex {
             pos: self.vertices[index],
             normal: self.vertices[index],
@@ -120,7 +145,7 @@ fn subdivide_impl(
             };
             if mid[i] == vertices.len() {
                 lookup.insert(pair, mid[i]);
-                lookup.insert((face[(i + 1) % 3], face[i]), mid[i]);
+                lookup.insert((pair.1, pair.0), mid[i]);
                 let new = new_point(vertices[pair.0], vertices[pair.1]);
                 vertices.push(new);
             }
