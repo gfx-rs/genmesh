@@ -3,7 +3,7 @@ name = "genmesh"
 version = "0.5.0"
 authors = [
     "Coraline Sherratt <cora.sherratt@gmail.com>",
-    "Dzmitry Malyshau <kvarkus@gmail.com",
+    "Dzmitry Malyshau <kvarkus@gmail.com>",
 ]
 
 license = "Apache-2.0"
