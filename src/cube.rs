@@ -19,17 +19,17 @@ impl Cube {
         let x = if idx & 4 == 4 { 1. } else { -1. };
         let y = if idx & 2 == 2 { 1. } else { -1. };
         let z = if idx & 1 == 1 { 1. } else { -1. };
-        [x, y, z]
+        [x, y, z].into()
     }
 
     fn face_indexed(&self, idx: usize) -> (Normal, Quad<usize>) {
         match idx {
-            0 => ([1., 0., 0.], Quad::new(0b110, 0b111, 0b101, 0b100)),
-            1 => ([-1., 0., 0.], Quad::new(0b000, 0b001, 0b011, 0b010)),
-            2 => ([0., 1., 0.], Quad::new(0b011, 0b111, 0b110, 0b010)),
-            3 => ([0., -1., 0.], Quad::new(0b100, 0b101, 0b001, 0b000)),
-            4 => ([0., 0., 1.], Quad::new(0b101, 0b111, 0b011, 0b001)),
-            5 => ([0., 0., -1.], Quad::new(0b000, 0b010, 0b110, 0b100)),
+            0 => ([1., 0., 0.].into(), Quad::new(0b110, 0b111, 0b101, 0b100)),
+            1 => ([-1., 0., 0.].into(), Quad::new(0b000, 0b001, 0b011, 0b010)),
+            2 => ([0., 1., 0.].into(), Quad::new(0b011, 0b111, 0b110, 0b010)),
+            3 => ([0., -1., 0.].into(), Quad::new(0b100, 0b101, 0b001, 0b000)),
+            4 => ([0., 0., 1.].into(), Quad::new(0b101, 0b111, 0b011, 0b001)),
+            5 => ([0., 0., -1.].into(), Quad::new(0b000, 0b010, 0b110, 0b100)),
             idx => panic!("{} face is higher then 6", idx),
         }
     }
@@ -48,12 +48,12 @@ impl Cube {
 impl Iterator for Cube {
     type Item = Quad<Vertex>;
 
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        self.range.size_hint()
-    }
-
     fn next(&mut self) -> Option<Quad<Vertex>> {
         self.range.next().map(|idx| self.face(idx))
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.range.size_hint()
     }
 }
 

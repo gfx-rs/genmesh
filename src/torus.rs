@@ -30,10 +30,10 @@ impl Torus {
         assert!(tubular_segments > 2 && radial_segments > 2);
         Torus {
             idx: 0,
-            radius: radius,
-            tubular_radius: tubular_radius,
-            radial_segments: radial_segments,
-            tubular_segments: tubular_segments,
+            radius,
+            tubular_radius,
+            radial_segments,
+            tubular_segments,
         }
     }
 }
@@ -63,7 +63,7 @@ impl SharedVertex<Vertex> for Torus {
         Vertex {
             pos: [gamma * beta.cos(),
                   self.tubular_radius * alpha.sin(),
-                  -gamma * beta.sin()],
+                  -gamma * beta.sin()].into(),
             normal: Vector3::new(alpha.cos() * beta.cos(),
                                  alpha.sin(),
                                  -alpha.cos() * beta.sin())

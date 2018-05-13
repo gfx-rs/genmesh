@@ -21,9 +21,9 @@ impl Edge {
         } = line;
 
         Edge {
-            dir: cgmath::vec3(y[0] - x[0], y[1] - x[1], y[2] - x[2]),
-            mid: cgmath::vec3(y[0] + x[0], y[1] + x[1], y[2] + x[2]) * 0.5,
-            nor: cgmath::vec3(nx[0] + ny[0], nx[1] + ny[1], nx[2] + ny[2]),
+            dir: cgmath::vec3(y.x - x.x, y.y - x.y, y.z - x.z),
+            mid: cgmath::vec3(y.x + x.x, y.y + x.y, y.z + x.z) * 0.5,
+            nor: cgmath::vec3(nx.x + ny.x, nx.y + ny.y, nx.z + ny.z),
         }
     }
 
@@ -74,9 +74,9 @@ where
     // type in rust and can not be used as a key.
     fn to_checkable(vertex: Vertex) -> [i32; 3] {
         [
-            (vertex.pos[0] * 1000000.) as i32,
-            (vertex.pos[1] * 1000000.) as i32,
-            (vertex.pos[2] * 1000000.) as i32,
+            (vertex.pos.x * 1000000.) as i32,
+            (vertex.pos.y * 1000000.) as i32,
+            (vertex.pos.z * 1000000.) as i32,
         ]
     }
 
@@ -108,11 +108,11 @@ fn wind_plane() {
     // shape.
 
     test_outward(generators::Plane::new().vertex(|mut v| {
-        v.pos[2] = 1.;
+        v.pos.z = 1.;
         v
     }));
     test_outward(generators::Plane::subdivide(3, 4).vertex(|mut v| {
-        v.pos[2] = 1.;
+        v.pos.z = 1.;
         v
     }));
 }

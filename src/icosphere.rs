@@ -113,8 +113,8 @@ impl IcoSphere {
 
     fn vert(&self, index: usize) -> Vertex {
         Vertex {
-            pos: self.vertices[index],
-            normal: self.vertices[index],
+            pos: self.vertices[index].into(),
+            normal: self.vertices[index].into(),
         }
     }
 }

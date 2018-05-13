@@ -38,36 +38,36 @@ impl Cone {
 
         match sec {
             VertexSection::Tip(i) => {
-                /// the normal is in the middle of the two divisions
-                /// so we add half a subdivision
+                // the normal is in the middle of the two divisions
+                // so we add half a subdivision
                 let pos = divisions * i as f32 + divisions / 2.;
                 Vertex {
-                    pos: [0., 0., 1.],
+                    pos: [0., 0., 1.].into(),
                     normal: [pos.cos() * FRAC_1_SQRT_2,
                              pos.sin() * FRAC_1_SQRT_2,
-                             -FRAC_1_SQRT_2],
+                             -FRAC_1_SQRT_2].into(),
                 }
             }
             VertexSection::TopRadius(i) => {
                 let pos = divisions * i as f32;
                 Vertex {
-                    pos: [pos.cos(), pos.sin(), -1.],
+                    pos: [pos.cos(), pos.sin(), -1.].into(),
                     normal: [pos.cos() * FRAC_1_SQRT_2,
                              pos.sin() * FRAC_1_SQRT_2,
-                             -FRAC_1_SQRT_2],
+                             -FRAC_1_SQRT_2].into(),
                 }
             }
             VertexSection::BottomRadius(i) => {
                 let pos = divisions * i as f32;
                 Vertex {
-                    pos: [pos.cos(), pos.sin(), -1.],
-                    normal: [0., 0., -1.],
+                    pos: [pos.cos(), pos.sin(), -1.].into(),
+                    normal: [0., 0., -1.].into(),
                 }
             }
             VertexSection::BottomCenter => {
                 Vertex {
-                    pos: [0., 0., -1.],
-                    normal: [0., 0., -1.],
+                    pos: [0., 0., -1.].into(),
+                    normal: [0., 0., -1.].into(),
                 }
             }
         }

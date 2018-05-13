@@ -1,6 +1,6 @@
 [package]
 name = "genmesh"
-version = "0.5.0"
+version = "0.6.0"
 authors = [
     "Coraline Sherratt <cora.sherratt@gmail.com>",
     "Dzmitry Malyshau <kvarkus@gmail.com>",
@@ -16,5 +16,5 @@ name = "genmesh"
 path = "src/lib.rs"
 
 [dependencies]
-cgmath = "0.14"
-mint = "0.2"
+cgmath = { version = "0.16", features = ["mint"] }
+mint = "0.5"

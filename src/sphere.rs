@@ -32,17 +32,12 @@ impl SphereUv {
         let v = (v as f32 / self.sub_v as f32) * PI;
 
         let p = [u.cos() * v.sin(), u.sin() * v.sin(), v.cos()];
-        Vertex { pos: p, normal: p }
+        Vertex { pos: p.into(), normal: p.into() }
     }
 }
 
 impl Iterator for SphereUv {
     type Item = Polygon<Vertex>;
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let n = (self.sub_v - self.v) * self.sub_u + (self.sub_u - self.u);
-        (n, Some(n))
-    }
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.u == self.sub_u {
@@ -73,6 +68,11 @@ impl Iterator for SphereUv {
              } else {
                  PolyQuad(Quad::new(x, y, z, w))
              })
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let n = (self.sub_v - self.v) * self.sub_u + (self.sub_u - self.u);
+        (n, Some(n))
     }
 }
 
