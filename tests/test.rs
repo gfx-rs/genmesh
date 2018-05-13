@@ -122,10 +122,10 @@ fn plane() {
     let mut plane = Plane::new();
     let a = plane.next().unwrap();
 
-    assert_eq!(a.x.pos, [-1f32, -1., 0.]);
-    assert_eq!(a.y.pos, [1f32, -1., 0.]);
-    assert_eq!(a.z.pos, [1f32, 1., 0.]);
-    assert_eq!(a.w.pos, [-1f32, 1., 0.]);
+    assert_eq!(a.x.pos, [-1f32, -1., 0.].into());
+    assert_eq!(a.y.pos, [1f32, -1., 0.].into());
+    assert_eq!(a.z.pos, [1f32, 1., 0.].into());
+    assert_eq!(a.w.pos, [-1f32, 1., 0.].into());
 }
 
 //TODO: LRU tests changed once the normals got introduced to the `Cube`.

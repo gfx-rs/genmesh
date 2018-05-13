@@ -42,19 +42,14 @@ impl Plane {
         let x = (2. / sx) * x as f32 - 1.;
         let y = (2. / sy) * y as f32 - 1.;
         Vertex {
-            pos: [x, y, 0.0],
-            normal: [0., 0., 1.],
+            pos: [x, y, 0.0].into(),
+            normal: [0., 0., 1.].into(),
         }
     }
 }
 
 impl Iterator for Plane {
     type Item = Quad<Vertex>;
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let n = (self.subdivide_y - self.y) * self.subdivide_x + (self.subdivide_x - self.x);
-        (n, Some(n))
-    }
 
     fn next(&mut self) -> Option<Quad<Vertex>> {
         if self.x == self.subdivide_x {
@@ -72,6 +67,11 @@ impl Iterator for Plane {
         self.x += 1;
 
         Some(Quad::new(x, y, z, w))
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let n = (self.subdivide_y - self.y) * self.subdivide_x + (self.subdivide_x - self.x);
+        (n, Some(n))
     }
 }
 

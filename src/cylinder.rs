@@ -1,5 +1,5 @@
 use std::f32::consts::PI;
-use Vertex;
+use {Position, Normal, Vertex};
 use super::{Quad, Polygon, Triangle};
 use super::generators::{SharedVertex, IndexedPolygon};
 
@@ -14,13 +14,13 @@ pub struct Cylinder {
 }
 
 const TOP: Vertex = Vertex {
-    pos: [0., 0., 1.],
-    normal: [0., 0., 1.],
+    pos: Position { x: 0., y: 0., z: 1. },
+    normal: Normal { x: 0., y: 0., z: 1. },
 };
 
 const BOT: Vertex = Vertex {
-    pos: [0., 0., -1.],
-    normal: [0., 0., -1.],
+    pos: Position { x: 0., y: 0., z: -1. },
+    normal: Normal { x: 0., y: 0., z: -1. },
 };
 
 impl Cylinder {
@@ -64,19 +64,14 @@ impl Cylinder {
         };
         let z = (hc as f32 / self.sub_h as f32) * 2. - 1.;
         Vertex {
-            pos: [n[0], n[1], z],
-            normal,
+            pos: [n[0], n[1], z].into(),
+            normal: normal.into(),
         }
     }
 }
 
 impl Iterator for Cylinder {
     type Item = Polygon<Vertex>;
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let n = self.sub_u * (1 + self.sub_h - self.h) as usize - self.u;
-        (n, Some(n))
-    }
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.u == self.sub_u {
@@ -108,6 +103,11 @@ impl Iterator for Cylinder {
                  let w = self.vert(u, self.h + 1);
                  Polygon::PolyQuad(Quad::new(x, y, z, w))
              })
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let n = self.sub_u * (1 + self.sub_h - self.h) as usize - self.u;
+        (n, Some(n))
     }
 }
 
