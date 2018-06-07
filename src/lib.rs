@@ -32,6 +32,7 @@ mod neighbors;
 mod poly;
 mod triangulate;
 
+mod circle;
 mod cone;
 mod cube;
 mod cylinder;
@@ -43,6 +44,7 @@ mod torus;
 /// A collection of utilties that can be used to build
 /// meshes programmatically.
 pub mod generators {
+    pub use circle::Circle;
     pub use cone::Cone;
     pub use cube::Cube;
     pub use cylinder::Cylinder;

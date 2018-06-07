@@ -67,3 +67,8 @@ fn gen_cone() {
 fn gen_torus() {
     test(generators::Torus::new(1., 0.5, 8, 8));
 }
+
+#[test]
+fn gen_circle() {
+    test(generators::Circle::new(4))
+}
