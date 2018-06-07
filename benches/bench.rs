@@ -17,10 +17,10 @@
 extern crate genmesh;
 extern crate test;
 
-use genmesh::*;
+use genmesh::generators::{IndexedPolygon, SharedVertex};
 use genmesh::generators::{Plane, SphereUV};
-use genmesh::generators::{SharedVertex, IndexedPolygon};
-use test::{Bencher, black_box};
+use genmesh::*;
+use test::{black_box, Bencher};
 
 #[bench]
 fn plane(bench: &mut Bencher) {
@@ -38,119 +38,119 @@ fn plane(bench: &mut Bencher) {
 #[bench]
 fn plane_16x16_index(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = Plane::subdivide(16, 16);
-                   for i in plane.indexed_polygon_iter() {
-                       black_box(i);
-                   }
-               });
+        let plane = Plane::subdivide(16, 16);
+        for i in plane.indexed_polygon_iter() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn plane_256x256_index(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = Plane::subdivide(256, 256);
-                   for i in plane.indexed_polygon_iter() {
-                       black_box(i);
-                   }
-               });
+        let plane = Plane::subdivide(256, 256);
+        for i in plane.indexed_polygon_iter() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn plane_16x16_vertex(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = Plane::subdivide(16, 16);
-                   for i in plane.shared_vertex_iter() {
-                       black_box(i);
-                   }
-               });
+        let plane = Plane::subdivide(16, 16);
+        for i in plane.shared_vertex_iter() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn plane_256x256_vertex(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = Plane::subdivide(256, 256);
-                   for i in plane.shared_vertex_iter() {
-                       black_box(i);
-                   }
-               });
+        let plane = Plane::subdivide(256, 256);
+        for i in plane.shared_vertex_iter() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn plane_16x16_index_triangulate(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = Plane::subdivide(16, 16);
-                   for i in plane.indexed_polygon_iter().triangulate() {
-                       black_box(i);
-                   }
-               });
+        let plane = Plane::subdivide(16, 16);
+        for i in plane.indexed_polygon_iter().triangulate() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn plane_256x256_index_triangulate(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = Plane::subdivide(256, 256);
-                   for i in plane.indexed_polygon_iter().triangulate() {
-                       black_box(i);
-                   }
-               });
+        let plane = Plane::subdivide(256, 256);
+        for i in plane.indexed_polygon_iter().triangulate() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn sphere_16x16_index(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = SphereUV::new(16, 16);
-                   for i in plane.indexed_polygon_iter() {
-                       black_box(i);
-                   }
-               });
+        let plane = SphereUV::new(16, 16);
+        for i in plane.indexed_polygon_iter() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn sphere_256x256_index(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = SphereUV::new(256, 256);
-                   for i in plane.indexed_polygon_iter() {
-                       black_box(i);
-                   }
-               });
+        let plane = SphereUV::new(256, 256);
+        for i in plane.indexed_polygon_iter() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn sphere_16x16_vertex(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = SphereUV::new(16, 16);
-                   for i in plane.shared_vertex_iter() {
-                       black_box(i);
-                   }
-               });
+        let plane = SphereUV::new(16, 16);
+        for i in plane.shared_vertex_iter() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn sphere_256x256_vertex(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = SphereUV::new(256, 256);
-                   for i in plane.shared_vertex_iter() {
-                       black_box(i);
-                   }
-               });
+        let plane = SphereUV::new(256, 256);
+        for i in plane.shared_vertex_iter() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn sphere_16x16_index_triangulate(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = SphereUV::new(16, 16);
-                   for i in plane.indexed_polygon_iter().triangulate() {
-                       black_box(i);
-                   }
-               });
+        let plane = SphereUV::new(16, 16);
+        for i in plane.indexed_polygon_iter().triangulate() {
+            black_box(i);
+        }
+    });
 }
 
 #[bench]
 fn sphere_256x256_index_triangulate(bench: &mut Bencher) {
     bench.iter(|| {
-                   let plane = SphereUV::new(256, 256);
-                   for i in plane.indexed_polygon_iter().triangulate() {
-                       black_box(i);
-                   }
-               });
+        let plane = SphereUV::new(256, 256);
+        for i in plane.indexed_polygon_iter().triangulate() {
+            black_box(i);
+        }
+    });
 }

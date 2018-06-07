@@ -4,8 +4,8 @@ use std::collections::HashMap;
 
 use cgmath::{InnerSpace, Vector3};
 
-use {Vertex, Triangle};
 use generators::{IndexedPolygon, SharedVertex};
+use {Triangle, Vertex};
 
 /// Icosahedral sphere with radius 1, centered at (0., 0., 0.)
 #[derive(Clone, Debug)]
@@ -33,13 +33,11 @@ const VERTICES: [[f32; 3]; 12] = [
     [X, T, 0.],
     [-X, -T, 0.],
     [X, -T, 0.],
-
     // corners of the rectangle in the YZ plane
     [0., -X, T],
     [0., X, T],
     [0., -X, -T],
     [0., X, -T],
-
     // corners of the rectangle in the XZ plane
     [T, 0., -X],
     [T, 0., X],
@@ -54,21 +52,18 @@ const FACES: [[usize; 3]; 20] = [
     [0, 1, 7],
     [0, 7, 10],
     [0, 10, 11],
-
     // 5 faces adjacent to the faces around point 0
     [1, 5, 9],
     [5, 11, 4],
     [11, 10, 2],
     [10, 7, 6],
     [7, 1, 8],
-
     // 5 faces around point 3
     [3, 9, 4],
     [3, 4, 2],
     [3, 2, 6],
     [3, 6, 8],
     [3, 8, 9],
-
     // 5 faces adjacent to the faces around point 3
     [4, 9, 5],
     [2, 4, 11],
@@ -78,7 +73,6 @@ const FACES: [[usize; 3]; 20] = [
 ];
 
 impl IcoSphere {
-
     /// Create a unit sphere with 20 faces and 12 vertices.
     pub fn new() -> Self {
         Self {

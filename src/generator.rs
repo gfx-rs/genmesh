@@ -69,7 +69,6 @@ pub struct IndexedPolygonIterator<'a, T: 'a, V> {
     phantom_v: PhantomData<V>,
 }
 
-
 impl<'a, T: IndexedPolygon<V>, V> Iterator for IndexedPolygonIterator<'a, T, V> {
     type Item = V;
 

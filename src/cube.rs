@@ -1,7 +1,7 @@
+use super::generators::{IndexedPolygon, SharedVertex};
+use super::{MapVertex, Quad};
 use std::ops::Range;
 use {Normal, Position, Vertex};
-use super::{MapVertex, Quad};
-use super::generators::{SharedVertex, IndexedPolygon};
 
 /// A perfect cube, centered at (0, 0, 0) with each face starting at 1/-1 away from the origin
 #[derive(Clone)]
@@ -36,12 +36,10 @@ impl Cube {
 
     fn face(&self, idx: usize) -> Quad<Vertex> {
         let (no, quad) = self.face_indexed(idx);
-        quad.map_vertex(|i| {
-                            Vertex {
-                                pos: self.vert(i),
-                                normal: no,
-                            }
-                        })
+        quad.map_vertex(|i| Vertex {
+            pos: self.vert(i),
+            normal: no,
+        })
     }
 }
 

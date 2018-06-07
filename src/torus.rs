@@ -1,9 +1,9 @@
 use std::f32::consts::PI;
 
-use cgmath::{Vector3, InnerSpace};
+use cgmath::{InnerSpace, Vector3};
 
-use super::{Quad, Vertex, MapVertex};
-use super::generators::{SharedVertex, IndexedPolygon};
+use super::generators::{IndexedPolygon, SharedVertex};
+use super::{MapVertex, Quad, Vertex};
 
 ///
 #[derive(Clone, Copy)]
@@ -22,11 +22,12 @@ impl Torus {
     /// `tubular_radius` is the radius to the surface from the toridal
     /// `tubular_segments` the number of segments that wrap around the tube, must be at least 3
     /// `radial_segments` the number of tube segments requested to generate, must be at least 3
-    pub fn new(radius: f32,
-               tubular_radius: f32,
-               radial_segments: usize,
-               tubular_segments: usize)
-               -> Self {
+    pub fn new(
+        radius: f32,
+        tubular_radius: f32,
+        radial_segments: usize,
+        tubular_segments: usize,
+    ) -> Self {
         assert!(tubular_segments > 2 && radial_segments > 2);
         Torus {
             idx: 0,
@@ -45,8 +46,10 @@ impl Iterator for Torus {
         if self.idx < self.indexed_polygon_count() {
             let idx = self.idx;
             self.idx += 1;
-            Some(self.indexed_polygon(idx)
-                     .map_vertex(|i| self.shared_vertex(i)))
+            Some(
+                self.indexed_polygon(idx)
+                    .map_vertex(|i| self.shared_vertex(i)),
+            )
         } else {
             None
         }
@@ -55,20 +58,26 @@ impl Iterator for Torus {
 
 impl SharedVertex<Vertex> for Torus {
     fn shared_vertex(&self, idx: usize) -> Vertex {
-        let (h, u) = ((idx / self.tubular_segments) as f32, (idx % self.tubular_segments) as f32);
+        let (h, u) = (
+            (idx / self.tubular_segments) as f32,
+            (idx % self.tubular_segments) as f32,
+        );
         let alpha = u * 2. * PI / self.tubular_segments as f32;
         let beta = h * 2. * PI / self.radial_segments as f32;
         let gamma = self.radius + self.tubular_radius * alpha.cos();
 
         Vertex {
-            pos: [gamma * beta.cos(),
-                  self.tubular_radius * alpha.sin(),
-                  -gamma * beta.sin()].into(),
-            normal: Vector3::new(alpha.cos() * beta.cos(),
-                                 alpha.sin(),
-                                 -alpha.cos() * beta.sin())
-                    .normalize()
-                    .into(),
+            pos: [
+                gamma * beta.cos(),
+                self.tubular_radius * alpha.sin(),
+                -gamma * beta.sin(),
+            ].into(),
+            normal: Vector3::new(
+                alpha.cos() * beta.cos(),
+                alpha.sin(),
+                -alpha.cos() * beta.sin(),
+            ).normalize()
+                .into(),
         }
     }
 

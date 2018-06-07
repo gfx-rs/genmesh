@@ -1,7 +1,7 @@
 extern crate genmesh;
 
-use genmesh::{Quad, EmitTriangles, Triangle, MapToVertices, LruIndexer, Indexer, Vertices,
-              Triangulate, Vertex};
+use genmesh::{EmitTriangles, Indexer, LruIndexer, MapToVertices, Quad, Triangle, Triangulate,
+              Vertex, Vertices};
 
 use genmesh::generators::Plane;
 
@@ -9,8 +9,10 @@ use genmesh::generators::Plane;
 fn quad_vertex() {
     let input = &[Quad::new(0usize, 1, 2, 3), Quad::new(1usize, 2, 3, 4)];
 
-    let output = &[Quad::new(false, true, false, true),
-                   Quad::new(true, false, true, false)];
+    let output = &[
+        Quad::new(false, true, false, true),
+        Quad::new(true, false, true, false),
+    ];
 
     let transformed = input.iter().map(|x| x.clone()).vertex(|v| v % 2 != 0);
 
@@ -23,8 +25,10 @@ fn quad_vertex() {
 fn quad_vertex_two_stages() {
     let input = &[Quad::new(0usize, 1, 2, 3), Quad::new(1usize, 2, 3, 4)];
 
-    let output = &[Quad::new(false, true, false, true),
-                   Quad::new(true, false, true, false)];
+    let output = &[
+        Quad::new(false, true, false, true),
+        Quad::new(true, false, true, false),
+    ];
 
     let transformed = input
         .iter()
@@ -57,8 +61,10 @@ fn quad_poly_simple() {
 fn triangle_vertex() {
     let input = &[Triangle::new(0usize, 1, 2), Triangle::new(1usize, 2, 3)];
 
-    let output = &[Triangle::new(false, true, false),
-                   Triangle::new(true, false, true)];
+    let output = &[
+        Triangle::new(false, true, false),
+        Triangle::new(true, false, true),
+    ];
 
     let transformed = input.iter().map(|x| x.clone()).vertex(|v| v % 2 != 0);
 
@@ -71,8 +77,10 @@ fn triangle_vertex() {
 fn triangle_vertex_two_stages() {
     let input = &[Triangle::new(0usize, 1, 2), Triangle::new(1usize, 2, 3)];
 
-    let output = &[Triangle::new(false, true, false),
-                   Triangle::new(true, false, true)];
+    let output = &[
+        Triangle::new(false, true, false),
+        Triangle::new(true, false, true),
+    ];
 
     let transformed = input
         .iter()
@@ -107,8 +115,10 @@ fn to_triangles() {
     let mut result = Vec::new();
     q.emit_triangles(|v| result.push(v));
 
-    assert_eq!(result,
-               vec![Triangle::new(0usize, 1, 2), Triangle::new(2usize, 3, 0)]);
+    assert_eq!(
+        result,
+        vec![Triangle::new(0usize, 1, 2), Triangle::new(2usize, 3, 0)]
+    );
 
     let t = Triangle::new(0usize, 1, 2);
     let mut result = Vec::new();
@@ -162,7 +172,7 @@ fn lru_indexer() {
 
 #[test]
 fn emit_lines() {
-    use genmesh::{Line, Lines, EmitLines};
+    use genmesh::{EmitLines, Line, Lines};
 
     let mut lines = Vec::new();
     let triangle = Triangle::new(0i8, 1, 2);

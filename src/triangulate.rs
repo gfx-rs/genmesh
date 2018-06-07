@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 
 use Polygon::{PolyQuad, PolyTri};
-use {Quad, Triangle, Polygon};
+use {Polygon, Quad, Triangle};
 
 /// provides a way to convert a polygon down to triangles
 pub trait EmitTriangles {
@@ -10,14 +10,17 @@ pub trait EmitTriangles {
 
     /// convert a polygon to one or more triangles, each triangle
     /// is returned by calling `emit`
-    fn emit_triangles<F>(&self, F) where F: FnMut(Triangle<Self::Vertex>);
+    fn emit_triangles<F>(&self, F)
+    where
+        F: FnMut(Triangle<Self::Vertex>);
 }
 
 impl<T: Clone> EmitTriangles for Quad<T> {
     type Vertex = T;
 
     fn emit_triangles<F>(&self, mut emit: F)
-        where F: FnMut(Triangle<T>)
+    where
+        F: FnMut(Triangle<T>),
     {
         let &Quad {
             ref x,
@@ -34,7 +37,8 @@ impl<T: Clone> EmitTriangles for Triangle<T> {
     type Vertex = T;
 
     fn emit_triangles<F>(&self, mut emit: F)
-        where F: FnMut(Triangle<T>)
+    where
+        F: FnMut(Triangle<T>),
     {
         emit(self.clone());
     }
@@ -44,7 +48,8 @@ impl<T: Clone> EmitTriangles for Polygon<T> {
     type Vertex = T;
 
     fn emit_triangles<F>(&self, emit: F)
-        where F: FnMut(Triangle<T>)
+    where
+        F: FnMut(Triangle<T>),
     {
         match self {
             &PolyTri(ref t) => t.emit_triangles(emit),
@@ -83,7 +88,8 @@ impl<V, U: EmitTriangles<Vertex = V>, SRC: Iterator<Item = U>> TriangulateIterat
 }
 
 impl<V, U: EmitTriangles<Vertex = V>, SRC: Iterator<Item = U>> Iterator
-    for TriangulateIterator<SRC, V> {
+    for TriangulateIterator<SRC, V>
+{
     type Item = Triangle<V>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {

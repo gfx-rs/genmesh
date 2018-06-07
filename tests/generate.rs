@@ -1,8 +1,8 @@
 extern crate cgmath;
 extern crate genmesh;
 
-use std::fmt::Debug;
 use genmesh::{generators, EmitTriangles, MapVertex, Triangulate};
+use std::fmt::Debug;
 
 /// Test a generator by comparing two triangular meshes:
 /// 1) by using the `Iterator` implementation of the given generator
