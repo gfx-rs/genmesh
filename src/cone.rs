@@ -1,8 +1,7 @@
 use std::f32::consts::{self, FRAC_1_SQRT_2};
 
-use super::{Triangle, Vertex, MapVertex};
-use super::generators::{SharedVertex, IndexedPolygon};
-
+use super::generators::{IndexedPolygon, SharedVertex};
+use super::{MapVertex, Triangle, Vertex};
 
 const TWO_PI: f32 = consts::PI * 2.;
 
@@ -43,18 +42,22 @@ impl Cone {
                 let pos = divisions * i as f32 + divisions / 2.;
                 Vertex {
                     pos: [0., 0., 1.].into(),
-                    normal: [pos.cos() * FRAC_1_SQRT_2,
-                             pos.sin() * FRAC_1_SQRT_2,
-                             -FRAC_1_SQRT_2].into(),
+                    normal: [
+                        pos.cos() * FRAC_1_SQRT_2,
+                        pos.sin() * FRAC_1_SQRT_2,
+                        -FRAC_1_SQRT_2,
+                    ].into(),
                 }
             }
             VertexSection::TopRadius(i) => {
                 let pos = divisions * i as f32;
                 Vertex {
                     pos: [pos.cos(), pos.sin(), -1.].into(),
-                    normal: [pos.cos() * FRAC_1_SQRT_2,
-                             pos.sin() * FRAC_1_SQRT_2,
-                             -FRAC_1_SQRT_2].into(),
+                    normal: [
+                        pos.cos() * FRAC_1_SQRT_2,
+                        pos.sin() * FRAC_1_SQRT_2,
+                        -FRAC_1_SQRT_2,
+                    ].into(),
                 }
             }
             VertexSection::BottomRadius(i) => {
@@ -64,12 +67,10 @@ impl Cone {
                     normal: [0., 0., -1.].into(),
                 }
             }
-            VertexSection::BottomCenter => {
-                Vertex {
-                    pos: [0., 0., -1.].into(),
-                    normal: [0., 0., -1.].into(),
-                }
-            }
+            VertexSection::BottomCenter => Vertex {
+                pos: [0., 0., -1.].into(),
+                normal: [0., 0., -1.].into(),
+            },
         }
     }
 
@@ -102,14 +103,15 @@ impl Iterator for Cone {
         if self.u < self.sub_u * 2 {
             let idx = self.u;
             self.u += 1;
-            Some(self.indexed_polygon(idx)
-                     .map_vertex(|i| self.shared_vertex(i)))
+            Some(
+                self.indexed_polygon(idx)
+                    .map_vertex(|i| self.shared_vertex(i)),
+            )
         } else {
             None
         }
     }
 }
-
 
 impl SharedVertex<Vertex> for Cone {
     fn shared_vertex(&self, idx: usize) -> Vertex {
@@ -130,16 +132,20 @@ impl IndexedPolygon<Triangle<usize>> for Cone {
         // top
         if idx < self.sub_u {
             let next = if idx != self.sub_u - 1 { idx + 1 } else { 0 };
-            Triangle::new(self.index(VertexSection::Tip(idx)),
-                          self.index(VertexSection::TopRadius(idx)),
-                          self.index(VertexSection::TopRadius(next)))
-            // bottom
+            Triangle::new(
+                self.index(VertexSection::Tip(idx)),
+                self.index(VertexSection::TopRadius(idx)),
+                self.index(VertexSection::TopRadius(next)),
+            )
+        // bottom
         } else {
             let idx = idx - self.sub_u;
             let next = if idx != self.sub_u - 1 { idx + 1 } else { 0 };
-            Triangle::new(self.index(VertexSection::BottomCenter),
-                          self.index(VertexSection::BottomRadius(next)),
-                          self.index(VertexSection::BottomRadius(idx)))
+            Triangle::new(
+                self.index(VertexSection::BottomCenter),
+                self.index(VertexSection::BottomRadius(next)),
+                self.index(VertexSection::BottomRadius(idx)),
+            )
         }
     }
 

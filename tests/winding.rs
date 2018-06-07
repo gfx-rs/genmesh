@@ -101,7 +101,6 @@ where
     assert!(lines.len() == 0);
 }
 
-
 #[test]
 fn wind_plane() {
     // the plane is not closed, so no point in testing for a closed

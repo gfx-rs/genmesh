@@ -1,8 +1,8 @@
+use super::generators::{IndexedPolygon, SharedVertex};
+use super::Polygon::{PolyQuad, PolyTri};
+use super::{Polygon, Quad, Triangle};
 use std::f32::consts::PI;
 use Vertex;
-use super::{Quad, Triangle, Polygon};
-use super::Polygon::{PolyTri, PolyQuad};
-use super::generators::{SharedVertex, IndexedPolygon};
 
 /// Represents a sphere with radius of 1, centered at (0, 0, 0)
 #[derive(Clone, Copy)]
@@ -32,7 +32,10 @@ impl SphereUv {
         let v = (v as f32 / self.sub_v as f32) * PI;
 
         let p = [u.cos() * v.sin(), u.sin() * v.sin(), v.cos()];
-        Vertex { pos: p.into(), normal: p.into() }
+        Vertex {
+            pos: p.into(),
+            normal: p.into(),
+        }
     }
 }
 
@@ -60,14 +63,14 @@ impl Iterator for SphereUv {
         self.u += 1;
 
         Some(if v == 0 {
-                 PolyTri(Triangle::new(x, y, z))
-             } else if v == self.sub_v - 1 {
-                 // overriding z to force u == 0 for consistency
-                 let z = self.vert(0, self.sub_v);
-                 PolyTri(Triangle::new(z, w, x))
-             } else {
-                 PolyQuad(Quad::new(x, y, z, w))
-             })
+            PolyTri(Triangle::new(x, y, z))
+        } else if v == self.sub_v - 1 {
+            // overriding z to force u == 0 for consistency
+            let z = self.vert(0, self.sub_v);
+            PolyTri(Triangle::new(z, w, x))
+        } else {
+            PolyQuad(Quad::new(x, y, z, w))
+        })
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -99,12 +102,14 @@ impl SharedVertex<Vertex> for SphereUv {
 
 impl IndexedPolygon<Polygon<usize>> for SphereUv {
     fn indexed_polygon(&self, idx: usize) -> Polygon<usize> {
-        let f = |u: usize, v: usize| if v == 0 {
-            0
-        } else if self.sub_v == v {
-            (self.sub_v - 1) * (self.sub_u) + 1
-        } else {
-            (v - 1) * self.sub_u + (u % self.sub_u) + 1
+        let f = |u: usize, v: usize| {
+            if v == 0 {
+                0
+            } else if self.sub_v == v {
+                (self.sub_v - 1) * (self.sub_u) + 1
+            } else {
+                (v - 1) * self.sub_u + (u % self.sub_u) + 1
+            }
         };
 
         let u = idx % self.sub_u;
@@ -115,7 +120,12 @@ impl IndexedPolygon<Polygon<usize>> for SphereUv {
         } else if self.sub_v - 1 == v {
             PolyTri(Triangle::new(f(u + 1, v + 1), f(u + 1, v), f(u, v)))
         } else {
-            PolyQuad(Quad::new(f(u, v), f(u, v + 1), f(u + 1, v + 1), f(u + 1, v)))
+            PolyQuad(Quad::new(
+                f(u, v),
+                f(u, v + 1),
+                f(u + 1, v + 1),
+                f(u + 1, v),
+            ))
         }
     }
 

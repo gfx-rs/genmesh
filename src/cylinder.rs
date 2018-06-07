@@ -1,7 +1,7 @@
+use super::generators::{IndexedPolygon, SharedVertex};
+use super::{Polygon, Quad, Triangle};
 use std::f32::consts::PI;
-use {Position, Normal, Vertex};
-use super::{Quad, Polygon, Triangle};
-use super::generators::{SharedVertex, IndexedPolygon};
+use {Normal, Position, Vertex};
 
 /// Represents a cylinder with radius of 1, height of 2,
 /// and centered at (0, 0, 0) pointing up (to 0, 0, 1).
@@ -14,13 +14,29 @@ pub struct Cylinder {
 }
 
 const TOP: Vertex = Vertex {
-    pos: Position { x: 0., y: 0., z: 1. },
-    normal: Normal { x: 0., y: 0., z: 1. },
+    pos: Position {
+        x: 0.,
+        y: 0.,
+        z: 1.,
+    },
+    normal: Normal {
+        x: 0.,
+        y: 0.,
+        z: 1.,
+    },
 };
 
 const BOT: Vertex = Vertex {
-    pos: Position { x: 0., y: 0., z: -1. },
-    normal: Normal { x: 0., y: 0., z: -1. },
+    pos: Position {
+        x: 0.,
+        y: 0.,
+        z: -1.,
+    },
+    normal: Normal {
+        x: 0.,
+        y: 0.,
+        z: -1.,
+    },
 };
 
 impl Cylinder {
@@ -89,20 +105,20 @@ impl Iterator for Cylinder {
         let u1 = self.u % self.sub_u;
 
         Some(if self.h < 0 {
-                 let x = self.vert(u, self.h);
-                 let y = self.vert(u1, self.h);
-                 Polygon::PolyTri(Triangle::new(x, BOT, y))
-             } else if self.h == self.sub_h {
-                 let x = self.vert(u, self.h + 1);
-                 let y = self.vert(u1, self.h + 1);
-                 Polygon::PolyTri(Triangle::new(x, y, TOP))
-             } else {
-                 let x = self.vert(u, self.h);
-                 let y = self.vert(u1, self.h);
-                 let z = self.vert(u1, self.h + 1);
-                 let w = self.vert(u, self.h + 1);
-                 Polygon::PolyQuad(Quad::new(x, y, z, w))
-             })
+            let x = self.vert(u, self.h);
+            let y = self.vert(u1, self.h);
+            Polygon::PolyTri(Triangle::new(x, BOT, y))
+        } else if self.h == self.sub_h {
+            let x = self.vert(u, self.h + 1);
+            let y = self.vert(u1, self.h + 1);
+            Polygon::PolyTri(Triangle::new(x, y, TOP))
+        } else {
+            let x = self.vert(u, self.h);
+            let y = self.vert(u1, self.h);
+            let z = self.vert(u1, self.h + 1);
+            let w = self.vert(u, self.h + 1);
+            Polygon::PolyQuad(Quad::new(x, y, z, w))
+        })
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -147,10 +163,12 @@ impl IndexedPolygon<Polygon<usize>> for Cylinder {
             let end = self.shared_vertex_count() - 1;
             Polygon::PolyTri(Triangle::new(base + u, base + u1, end))
         } else {
-            Polygon::PolyQuad(Quad::new(base + u,
-                                        base + u1,
-                                        base + u1 + self.sub_u,
-                                        base + u + self.sub_u))
+            Polygon::PolyQuad(Quad::new(
+                base + u,
+                base + u1,
+                base + u1 + self.sub_u,
+                base + u + self.sub_u,
+            ))
         }
     }
 
