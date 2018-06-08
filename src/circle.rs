@@ -31,7 +31,7 @@ impl Circle {
             let p = [u.cos(), u.sin(), 0.];
             Vertex {
                 pos: p.into(),
-                normal: p.into(),
+                normal: [0., 0., 1.].into(),
             }
         }
     }
@@ -106,7 +106,7 @@ mod tests {
         assert_eq!(
             Some(&Vertex {
                 pos: [0.707107, -0.70710653, 0.0].into(),
-                normal: [0.707107, -0.70710653, 0.0].into()
+                normal: [0., 0., 1.].into()
             }),
             circle.shared_vertex_iter().collect::<Vec<_>>().last()
         );

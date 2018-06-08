@@ -1,6 +1,6 @@
 [package]
 name = "genmesh"
-version = "0.6.1"
+version = "0.6.2"
 authors = [
     "Coraline Sherratt <cora.sherratt@gmail.com>",
     "Dzmitry Malyshau <kvarkus@gmail.com>",
