@@ -1,5 +1,5 @@
-use std::marker::PhantomData;
 use std::collections::VecDeque;
+use std::marker::PhantomData;
 
 /// A polygon with 4 points. Maps to `GL_QUADS`
 #[derive(Clone, Debug, PartialEq, Eq, Copy)]
@@ -64,12 +64,15 @@ pub trait EmitVertices<T> {
     /// Consume a polygon, each
     /// vertex is emitted to the parent function by calling the supplied
     /// lambda function
-    fn emit_vertices<F>(self, F) where F: FnMut(T);
+    fn emit_vertices<F>(self, F)
+    where
+        F: FnMut(T);
 }
 
 impl<T> EmitVertices<T> for Line<T> {
     fn emit_vertices<F>(self, mut emit: F)
-        where F: FnMut(T)
+    where
+        F: FnMut(T),
     {
         let Line { x, y } = self;
         emit(x);
@@ -79,7 +82,8 @@ impl<T> EmitVertices<T> for Line<T> {
 
 impl<T> EmitVertices<T> for Triangle<T> {
     fn emit_vertices<F>(self, mut emit: F)
-        where F: FnMut(T)
+    where
+        F: FnMut(T),
     {
         let Triangle { x, y, z } = self;
         emit(x);
@@ -90,7 +94,8 @@ impl<T> EmitVertices<T> for Triangle<T> {
 
 impl<T> EmitVertices<T> for Quad<T> {
     fn emit_vertices<F>(self, mut emit: F)
-        where F: FnMut(T)
+    where
+        F: FnMut(T),
     {
         let Quad { x, y, z, w } = self;
         emit(x);
@@ -102,7 +107,8 @@ impl<T> EmitVertices<T> for Quad<T> {
 
 impl<T> EmitVertices<T> for Polygon<T> {
     fn emit_vertices<F>(self, emit: F)
-        where F: FnMut(T)
+    where
+        F: FnMut(T),
     {
         use self::Polygon::{PolyQuad, PolyTri};
 
@@ -161,14 +167,17 @@ pub trait MapVertex<T, U> {
     /// It's internal values should reflect any transformation the map did.
     type Output;
     /// map a function to each vertex in polygon creating a new polygon
-    fn map_vertex<F>(self, F) -> Self::Output where F: FnMut(T) -> U;
+    fn map_vertex<F>(self, F) -> Self::Output
+    where
+        F: FnMut(T) -> U;
 }
 
 impl<T: Clone, U> MapVertex<T, U> for Line<T> {
     type Output = Line<U>;
 
     fn map_vertex<F>(self, mut map: F) -> Line<U>
-        where F: FnMut(T) -> U
+    where
+        F: FnMut(T) -> U,
     {
         let Line { x, y } = self;
         Line {
@@ -182,7 +191,8 @@ impl<T: Clone, U> MapVertex<T, U> for Triangle<T> {
     type Output = Triangle<U>;
 
     fn map_vertex<F>(self, mut map: F) -> Triangle<U>
-        where F: FnMut(T) -> U
+    where
+        F: FnMut(T) -> U,
     {
         let Triangle { x, y, z } = self;
         Triangle {
@@ -197,7 +207,8 @@ impl<T: Clone, U> MapVertex<T, U> for Quad<T> {
     type Output = Quad<U>;
 
     fn map_vertex<F>(self, mut map: F) -> Quad<U>
-        where F: FnMut(T) -> U
+    where
+        F: FnMut(T) -> U,
     {
         let Quad { x, y, z, w } = self;
         Quad {
@@ -213,9 +224,10 @@ impl<T: Clone, U> MapVertex<T, U> for Polygon<T> {
     type Output = Polygon<U>;
 
     fn map_vertex<F>(self, map: F) -> Polygon<U>
-        where F: FnMut(T) -> U
+    where
+        F: FnMut(T) -> U,
     {
-        use self::Polygon::{PolyTri, PolyQuad};
+        use self::Polygon::{PolyQuad, PolyTri};
 
         match self {
             PolyTri(p) => PolyTri(p.map_vertex(map)),
@@ -235,18 +247,20 @@ pub trait MapToVertices<T, U>: Sized {
 
     /// from a iterator of polygons, produces a iterator of polygons. Each
     /// vertex in the process is modified with the suppled function.
-    fn vertex<F>(self, map: F) -> MapToVerticesIter<Self, T, U, F> where F: FnMut(T) -> U;
+    fn vertex<F>(self, map: F) -> MapToVerticesIter<Self, T, U, F>
+    where
+        F: FnMut(T) -> U;
 }
 
-impl<VIn, VOut,
-    P, POut: MapVertex<VIn, VOut, Output=P>,
-    T: Iterator<Item=POut>>
-    MapToVertices<VIn, VOut> for T {
+impl<VIn, VOut, P, POut: MapVertex<VIn, VOut, Output = P>, T: Iterator<Item = POut>>
+    MapToVertices<VIn, VOut> for T
+{
     type Output = P;
 
     fn vertex<F>(self, map: F) -> MapToVerticesIter<T, VIn, VOut, F>
-            where F: FnMut(VIn) -> VOut {
-
+    where
+        F: FnMut(VIn) -> VOut,
+    {
         MapToVerticesIter {
             src: self,
             f: map,
@@ -261,10 +275,16 @@ pub struct MapToVerticesIter<SRC, T, U, F: FnMut(T) -> U> {
     phantom: PhantomData<(T, U)>,
 }
 
-impl<'a, P,
-         POut: MapVertex<T, U, Output=P>,
-         SRC: Iterator<Item=POut>,
-         T, U, F: FnMut(T) -> U> Iterator for MapToVerticesIter<SRC, T, U, F> {
+impl<
+        'a,
+        P,
+        POut: MapVertex<T, U, Output = P>,
+        SRC: Iterator<Item = POut>,
+        T,
+        U,
+        F: FnMut(T) -> U,
+    > Iterator for MapToVerticesIter<SRC, T, U, F>
+{
     type Item = P;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -300,14 +320,17 @@ pub trait EmitLines {
     /// convert a polygon into lines, each line is emitted via
     /// calling of the callback of `emit` This allow for
     /// a variable amount of lines to be returned
-    fn emit_lines<E>(self, emit: E) where E: FnMut(Line<Self::Vertex>);
+    fn emit_lines<E>(self, emit: E)
+    where
+        E: FnMut(Line<Self::Vertex>);
 }
 
 impl<T: Clone> EmitLines for Triangle<T> {
     type Vertex = T;
 
     fn emit_lines<E>(self, mut emit: E)
-        where E: FnMut(Line<T>)
+    where
+        E: FnMut(Line<T>),
     {
         emit(Line::new(self.x.clone(), self.y.clone()));
         emit(Line::new(self.y, self.z.clone()));
@@ -319,7 +342,8 @@ impl<T: Clone> EmitLines for Quad<T> {
     type Vertex = T;
 
     fn emit_lines<E>(self, mut emit: E)
-        where E: FnMut(Line<T>)
+    where
+        E: FnMut(Line<T>),
     {
         emit(Line::new(self.x.clone(), self.y.clone()));
         emit(Line::new(self.y, self.z.clone()));
@@ -332,7 +356,8 @@ impl<T: Clone> EmitLines for Polygon<T> {
     type Vertex = T;
 
     fn emit_lines<E>(self, emit: E)
-        where E: FnMut(Line<T>)
+    where
+        E: FnMut(Line<T>),
     {
         match self {
             Polygon::PolyTri(x) => x.emit_lines(emit),
@@ -351,8 +376,9 @@ pub trait Lines: Sized {
 }
 
 impl<T, P, V> Lines for T
-    where T: Iterator<Item = P>,
-          P: EmitLines<Vertex = V>
+where
+    T: Iterator<Item = P>,
+    P: EmitLines<Vertex = V>,
 {
     type Vertex = V;
 
@@ -371,8 +397,9 @@ pub struct LinesIterator<I, V> {
 }
 
 impl<I, P, V> Iterator for LinesIterator<I, V>
-    where I: Iterator<Item = P>,
-          P: EmitLines<Vertex = V>
+where
+    I: Iterator<Item = P>,
+    P: EmitLines<Vertex = V>,
 {
     type Item = Line<V>;
 

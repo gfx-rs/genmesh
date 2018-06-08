@@ -1,12 +1,11 @@
 //! This is a utility to search out and work in the mesh as a whole rather
 //! then polygon by polygon.
 
-use std::collections::{HashMap, HashSet};
 use cgmath::{InnerSpace, Vector3};
+use std::collections::{HashMap, HashSet};
 
+use poly::{EmitLines, Line, Triangle};
 use Normal;
-use poly::{Triangle, Line, EmitLines};
-
 
 /// Neighbors search accelerating structure.
 pub struct Neighbors<T> {
@@ -26,18 +25,17 @@ impl<T> Neighbors<T> {
         let mut shares_vertex = HashMap::new();
 
         for (i, p) in polygons.iter().enumerate() {
-            p.clone()
-                .emit_lines(|line| {
-                    shares_vertex
-                        .entry(line.x.clone())
-                        .or_insert(Vec::new())
-                        .push(i);
-                    shares_vertex
-                        .entry(line.y.clone())
-                        .or_insert(Vec::new())
-                        .push(i);
-                    shares_edge.entry(line).or_insert(Vec::new()).push(i);
-                });
+            p.clone().emit_lines(|line| {
+                shares_vertex
+                    .entry(line.x.clone())
+                    .or_insert(Vec::new())
+                    .push(i);
+                shares_vertex
+                    .entry(line.y.clone())
+                    .or_insert(Vec::new())
+                    .push(i);
+                shares_edge.entry(line).or_insert(Vec::new()).push(i);
+            });
         }
 
         Neighbors {
@@ -63,22 +61,18 @@ impl<T> Neighbors<T> {
     /// polygon at index i. This can be used to prep data for a Geometry
     /// shader (eg trinagle_adjacency)
     pub fn polygon_neighbors(&self, i: usize) -> Option<HashSet<usize>> {
-        self.polygons
-            .get(i)
-            .map(|x| {
-                let mut v = HashSet::new();
-                x.clone()
-                    .emit_lines(|line| {
-                                    self.shares_edge
-                                        .get(&line)
-                                        .map(|x| for &i in x {
-                                                 v.insert(i);
-                                             });
-                                });
-                v.remove(&i);
-                v
-            })
-
+        self.polygons.get(i).map(|x| {
+            let mut v = HashSet::new();
+            x.clone().emit_lines(|line| {
+                self.shares_edge.get(&line).map(|x| {
+                    for &i in x {
+                        v.insert(i);
+                    }
+                });
+            });
+            v.remove(&i);
+            v
+        })
     }
 
     /// Calculate the normal for face. This is a `flat` shading
@@ -86,7 +80,8 @@ impl<T> Neighbors<T> {
     /// You must supply a function that can be used to lookup
     /// The position which is needed to calculate the normal
     pub fn normal_for_face<F>(&self, i: usize, mut f: F) -> Normal
-        where F: FnMut(&T) -> Normal
+    where
+        F: FnMut(&T) -> Normal,
     {
         let Triangle { x, y, z } = self.polygons[i];
 
@@ -106,7 +101,8 @@ impl<T> Neighbors<T> {
     /// You must supply a function that can be used to lookup
     /// The position which is needed to calculate the normal
     pub fn normal_for_vertex<F>(&self, i: usize, mut f: F) -> Normal
-        where F: FnMut(&T) -> Normal
+    where
+        F: FnMut(&T) -> Normal,
     {
         let mut normal = Vector3::new(0f32, 0., 0.);
 

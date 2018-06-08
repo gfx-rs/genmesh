@@ -26,31 +26,33 @@ pub use indexer::{Indexer, LruIndexer};
 
 pub use neighbors::Neighbors;
 
-mod triangulate;
-mod poly;
-mod indexer;
 mod generator;
+mod indexer;
 mod neighbors;
+mod poly;
+mod triangulate;
 
+mod circle;
 mod cone;
 mod cube;
 mod cylinder;
+mod icosphere;
 mod plane;
 mod sphere;
 mod torus;
-mod icosphere;
 
 /// A collection of utilties that can be used to build
 /// meshes programmatically.
 pub mod generators {
-    pub use generator::{IndexedPolygon, IndexedPolygonIterator, SharedVertex, SharedVertexIterator};
+    pub use circle::Circle;
     pub use cone::Cone;
     pub use cube::Cube;
     pub use cylinder::Cylinder;
+    pub use generator::{IndexedPolygon, IndexedPolygonIterator, SharedVertex, SharedVertexIterator};
+    pub use icosphere::IcoSphere;
     pub use plane::Plane;
     pub use sphere::SphereUv;
     pub use torus::Torus;
-    pub use icosphere::IcoSphere;
 }
 
 /// Common vertex position type.

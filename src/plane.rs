@@ -1,6 +1,6 @@
-use Vertex;
+use super::generators::{IndexedPolygon, SharedVertex};
 use super::Quad;
-use super::generators::{SharedVertex, IndexedPolygon};
+use Vertex;
 
 /// Represents a 2D plane with origin of (0, 0), from 1 to -1
 #[derive(Clone, Copy)]
@@ -94,10 +94,12 @@ impl IndexedPolygon<Quad<usize>> for Plane {
         let x = idx % self.subdivide_x;
         let base = y * (self.subdivide_x + 1) + x;
 
-        Quad::new(base,
-                  base + 1,
-                  base + self.subdivide_x + 2,
-                  base + self.subdivide_x + 1)
+        Quad::new(
+            base,
+            base + 1,
+            base + self.subdivide_x + 2,
+            base + self.subdivide_x + 1,
+        )
     }
 
     fn indexed_polygon_count(&self) -> usize {
@@ -114,7 +116,6 @@ fn test_shared_vertex_count() {
     let plane = Plane::subdivide(2, 2);
     assert_eq!(plane.shared_vertex_count(), 9);
     assert_eq!(plane.indexed_polygon_count(), 4);
-
 
     let plane = Plane::subdivide(4, 4);
     assert_eq!(plane.shared_vertex_count(), 25);
