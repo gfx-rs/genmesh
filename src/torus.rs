@@ -122,3 +122,12 @@ impl IndexedPolygon<Quad<usize>> for Torus {
         self.tubular_segments * self.radial_segments
     }
 }
+
+#[test]
+fn test_torus_len() {
+    let mut torus = Torus::new(2.0, 2.0, 6, 5);
+    assert_eq!(30, torus.len());
+    torus.next();
+    assert_eq!(29, torus.len());
+    assert_eq!(29, torus.count());
+}

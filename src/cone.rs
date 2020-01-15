@@ -121,7 +121,7 @@ impl Iterator for Cone {
 
 impl ExactSizeIterator for Cone {
     fn len(&self) -> usize {
-        self.sub_u * 2
+        self.sub_u * 2 - self.u
     }
 }
 
@@ -168,15 +168,11 @@ impl IndexedPolygon<Triangle<usize>> for Cone {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_cone() {
-        let cone = Cone::new(8);
-        assert_eq!((16, Some(16)), cone.size_hint());
-        assert_eq!(25, cone.shared_vertex_count());
-        assert_eq!(16, cone.indexed_polygon_count());
-    }
+#[test]
+fn test_cone_len() {
+    let mut cone = Cone::new(5);
+    assert_eq!(10, cone.len());
+    cone.next();
+    assert_eq!(9, cone.len());
+    assert_eq!(9, cone.count());
 }

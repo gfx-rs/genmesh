@@ -138,3 +138,12 @@ impl IndexedPolygon<Polygon<usize>> for SphereUv {
         self.sub_v * self.sub_u
     }
 }
+
+#[test]
+fn test_sphere_len() {
+    let mut sphere = SphereUv::new(5, 5);
+    assert_eq!(25, sphere.len());
+    sphere.next();
+    assert_eq!(24, sphere.len());
+    assert_eq!(24, sphere.count());
+}
