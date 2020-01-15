@@ -196,3 +196,12 @@ impl IndexedPolygon<Triangle<usize>> for IcoSphere {
         Triangle::new(self.faces[idx][0], self.faces[idx][1], self.faces[idx][2])
     }
 }
+
+#[test]
+fn test_icosphere_len() {
+    let mut ico = IcoSphere::new();
+    assert_eq!(20, ico.len());
+    ico.next();
+    assert_eq!(19, ico.len());
+    assert_eq!(19, ico.count());
+}

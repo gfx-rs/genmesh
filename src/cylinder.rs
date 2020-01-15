@@ -181,3 +181,12 @@ impl IndexedPolygon<Polygon<usize>> for Cylinder {
         (2 + self.sub_h) as usize * self.sub_u
     }
 }
+
+#[test]
+fn test_cylinder_len() {
+    let mut cylinder = Cylinder::new(5);
+    assert_eq!(15, cylinder.len());
+    cylinder.next();
+    assert_eq!(14, cylinder.len());
+    assert_eq!(14, cylinder.count());
+}

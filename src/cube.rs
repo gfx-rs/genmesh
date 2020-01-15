@@ -91,3 +91,12 @@ impl IndexedPolygon<Quad<usize>> for Cube {
         6
     }
 }
+
+#[test]
+fn test_cube_len() {
+    let mut cube = Cube::new();
+    assert_eq!(6, cube.len());
+    cube.next();
+    assert_eq!(5, cube.len());
+    assert_eq!(5, cube.count());
+}
