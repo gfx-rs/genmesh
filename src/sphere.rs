@@ -74,8 +74,13 @@ impl Iterator for SphereUv {
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let n = (self.sub_v - self.v) * self.sub_u + (self.sub_u - self.u);
-        (n, Some(n))
+        (self.len(), Some(self.len()))
+    }
+}
+
+impl ExactSizeIterator for SphereUv {
+    fn len(&self) -> usize {
+        (self.sub_v - self.v - 1) * self.sub_u + (self.sub_u - self.u)
     }
 }
 

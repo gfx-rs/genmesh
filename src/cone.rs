@@ -46,7 +46,8 @@ impl Cone {
                         pos.cos() * FRAC_1_SQRT_2,
                         pos.sin() * FRAC_1_SQRT_2,
                         -FRAC_1_SQRT_2,
-                    ].into(),
+                    ]
+                    .into(),
                 }
             }
             VertexSection::TopRadius(i) => {
@@ -57,7 +58,8 @@ impl Cone {
                         pos.cos() * FRAC_1_SQRT_2,
                         pos.sin() * FRAC_1_SQRT_2,
                         -FRAC_1_SQRT_2,
-                    ].into(),
+                    ]
+                    .into(),
                 }
             }
             VertexSection::BottomRadius(i) => {
@@ -99,6 +101,10 @@ impl Cone {
 impl Iterator for Cone {
     type Item = Triangle<Vertex>;
 
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (self.len(), Some(self.len()))
+    }
+
     fn next(&mut self) -> Option<Self::Item> {
         if self.u < self.sub_u * 2 {
             let idx = self.u;
@@ -110,6 +116,12 @@ impl Iterator for Cone {
         } else {
             None
         }
+    }
+}
+
+impl ExactSizeIterator for Cone {
+    fn len(&self) -> usize {
+        self.sub_u * 2
     }
 }
 
@@ -153,5 +165,18 @@ impl IndexedPolygon<Triangle<usize>> for Cone {
         // a face for every subdivide on the top, and one for every
         // subdivide around the bottom circle.
         self.sub_u * 2
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_cone() {
+        let cone = Cone::new(8);
+        assert_eq!((16, Some(16)), cone.size_hint());
+        assert_eq!(25, cone.shared_vertex_count());
+        assert_eq!(16, cone.indexed_polygon_count());
     }
 }

@@ -55,6 +55,12 @@ impl Iterator for Cube {
     }
 }
 
+impl ExactSizeIterator for Cube {
+    fn len(&self) -> usize {
+        self.range.len()
+    }
+}
+
 impl SharedVertex<Vertex> for Cube {
     fn shared_vertex(&self, idx: usize) -> Vertex {
         let (no, quad) = self.face_indexed(idx / 4);

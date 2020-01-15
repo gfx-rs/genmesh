@@ -41,7 +41,7 @@ impl Iterator for Circle {
     type Item = Polygon<Vertex>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        (self.sub_u, Some(self.sub_u))
+        (self.len(), Some(self.len()))
     }
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -62,6 +62,12 @@ impl Iterator for Circle {
                 self.vert(self.u),
             )))
         }
+    }
+}
+
+impl ExactSizeIterator for Circle {
+    fn len(&self) -> usize {
+        self.sub_u - self.u + 1
     }
 }
 

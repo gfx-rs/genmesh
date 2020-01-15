@@ -41,6 +41,12 @@ impl<'a, T: SharedVertex<V>, V> Iterator for SharedVertexIterator<'a, T, V> {
     }
 }
 
+impl<'a, T: SharedVertex<V>, V> ExactSizeIterator for SharedVertexIterator<'a, T, V> {
+    fn len(&self) -> usize {
+        self.idx.len()
+    }
+}
+
 /// The `IndexedPolygon` trait is used with the `SharedVertex` trait in order to build
 /// a mesh. `IndexedPolygon` calculates each polygon face required to build an implementors mesh.
 /// each face is always returned in indexed form that points to the correct vertice supplied
@@ -78,5 +84,11 @@ impl<'a, T: IndexedPolygon<V>, V> Iterator for IndexedPolygonIterator<'a, T, V> 
 
     fn next(&mut self) -> Option<V> {
         self.idx.next().map(|idx| self.base.indexed_polygon(idx))
+    }
+}
+
+impl<'a, T: IndexedPolygon<V>, V> ExactSizeIterator for IndexedPolygonIterator<'a, T, V> {
+    fn len(&self) -> usize {
+        self.idx.len()
     }
 }

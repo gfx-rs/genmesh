@@ -42,6 +42,10 @@ impl Torus {
 impl Iterator for Torus {
     type Item = Quad<Vertex>;
 
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (self.len(), Some(self.len()))
+    }
+
     fn next(&mut self) -> Option<Self::Item> {
         if self.idx < self.indexed_polygon_count() {
             let idx = self.idx;
@@ -53,6 +57,12 @@ impl Iterator for Torus {
         } else {
             None
         }
+    }
+}
+
+impl ExactSizeIterator for Torus {
+    fn len(&self) -> usize {
+        self.indexed_polygon_count() - self.idx
     }
 }
 
@@ -71,13 +81,15 @@ impl SharedVertex<Vertex> for Torus {
                 gamma * beta.cos(),
                 self.tubular_radius * alpha.sin(),
                 -gamma * beta.sin(),
-            ].into(),
+            ]
+            .into(),
             normal: Vector3::new(
                 alpha.cos() * beta.cos(),
                 alpha.sin(),
                 -alpha.cos() * beta.sin(),
-            ).normalize()
-                .into(),
+            )
+            .normalize()
+            .into(),
         }
     }
 
