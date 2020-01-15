@@ -153,7 +153,7 @@ impl Iterator for IcoSphere {
     type Item = Triangle<Vertex>;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        (self.faces.len(), Some(self.faces.len()))
+        (self.len(), Some(self.len()))
     }
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -168,6 +168,12 @@ impl Iterator for IcoSphere {
         self.i += 1;
 
         Some(Triangle::new(x, y, z))
+    }
+}
+
+impl ExactSizeIterator for IcoSphere {
+    fn len(&self) -> usize {
+        self.faces.len() - self.i
     }
 }
 

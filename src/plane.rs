@@ -70,8 +70,13 @@ impl Iterator for Plane {
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let n = (self.subdivide_y - self.y) * self.subdivide_x + (self.subdivide_x - self.x);
-        (n, Some(n))
+        (self.len(), Some(self.len()))
+    }
+}
+
+impl ExactSizeIterator for Plane {
+    fn len(&self) -> usize {
+        (self.subdivide_y - self.y - 1) * self.subdivide_x + (self.subdivide_x - self.x)
     }
 }
 
@@ -120,4 +125,13 @@ fn test_shared_vertex_count() {
     let plane = Plane::subdivide(4, 4);
     assert_eq!(plane.shared_vertex_count(), 25);
     assert_eq!(plane.indexed_polygon_count(), 16);
+}
+
+#[test]
+fn test_plane_len() {
+    let mut plane = Plane::subdivide(2, 2);
+    assert_eq!(4, plane.len());
+    plane.next();
+    assert_eq!(3, plane.len());
+    assert_eq!(3, plane.count());
 }

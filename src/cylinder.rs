@@ -122,8 +122,13 @@ impl Iterator for Cylinder {
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let n = self.sub_u * (1 + self.sub_h - self.h) as usize - self.u;
-        (n, Some(n))
+        (self.len(), Some(self.len()))
+    }
+}
+
+impl ExactSizeIterator for Cylinder {
+    fn len(&self) -> usize {
+        self.sub_u * (1 + self.sub_h - self.h) as usize - self.u
     }
 }
 
