@@ -1,6 +1,6 @@
 use std::f32::consts::PI;
 
-use cgmath::{InnerSpace, Vector3};
+use nalgebra::Vector3;
 
 use super::generators::{IndexedPolygon, SharedVertex};
 use super::{MapVertex, Quad, Vertex};

@@ -1,5 +1,5 @@
-extern crate cgmath;
 extern crate genmesh;
+extern crate nalgebra;
 
 use genmesh::{generators, EmitTriangles, MapVertex, Triangulate};
 use std::fmt::Debug;

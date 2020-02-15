@@ -1,16 +1,16 @@
-extern crate cgmath;
 extern crate genmesh;
+extern crate nalgebra;
 
 use std::collections::HashSet;
 
-use cgmath::InnerSpace;
 use genmesh::{generators, EmitLines, Line, Lines, MapToVertices, Vertex};
+use nalgebra::Vector3;
 
 #[derive(Debug)]
 struct Edge {
-    dir: cgmath::Vector3<f32>,
-    mid: cgmath::Vector3<f32>,
-    nor: cgmath::Vector3<f32>,
+    dir: Vector3<f32>,
+    mid: Vector3<f32>,
+    nor: Vector3<f32>,
 }
 
 impl Edge {
@@ -21,18 +21,18 @@ impl Edge {
         } = line;
 
         Edge {
-            dir: cgmath::vec3(y.x - x.x, y.y - x.y, y.z - x.z),
-            mid: cgmath::vec3(y.x + x.x, y.y + x.y, y.z + x.z) * 0.5,
-            nor: cgmath::vec3(nx.x + ny.x, nx.y + ny.y, nx.z + ny.z),
+            dir: Vector3::new(y.x - x.x, y.y - x.y, y.z - x.z),
+            mid: Vector3::new(y.x + x.x, y.y + x.y, y.z + x.z) * 0.5,
+            nor: Vector3::new(nx.x + ny.x, nx.y + ny.y, nx.z + ny.z),
         }
     }
 
     /// Check that the corner `(self, e)` has outward winding order
     /// (thus, it's normal is in the same hemisphere as it's offset).
     fn check_to(&self, e: &Edge) {
-        let normal = self.dir.cross(e.dir);
+        let normal = self.dir.cross(&e.dir);
         let mid = (self.mid + e.mid) * 0.5;
-        assert!(normal.dot(mid) > 0.0 && e.nor.dot(mid) > 0.0);
+        assert!(normal.dot(&mid) > 0.0 && e.nor.dot(&mid) > 0.0);
     }
 }
 

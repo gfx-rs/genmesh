@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 
-use cgmath::{InnerSpace, Vector3};
+use nalgebra::Vector3;
 
 use generators::{IndexedPolygon, SharedVertex};
 use {Triangle, Vertex};
