@@ -17,8 +17,10 @@
 extern crate cgmath;
 extern crate mint;
 
-pub use poly::{EmitLines, Line, Lines, MapToVertices, MapVertex, Polygon, Quad, Triangle,
-               Vertices, VerticesIterator};
+pub use poly::{
+    EmitLines, Line, Lines, MapToVertices, MapVertex, Polygon, Quad, Triangle, Vertices,
+    VerticesIterator,
+};
 
 pub use triangulate::{EmitTriangles, Triangulate, TriangulateIterator};
 
@@ -48,7 +50,9 @@ pub mod generators {
     pub use cone::Cone;
     pub use cube::Cube;
     pub use cylinder::Cylinder;
-    pub use generator::{IndexedPolygon, IndexedPolygonIterator, SharedVertex, SharedVertexIterator};
+    pub use generator::{
+        IndexedPolygon, IndexedPolygonIterator, SharedVertex, SharedVertexIterator,
+    };
     pub use icosphere::IcoSphere;
     pub use plane::Plane;
     pub use sphere::SphereUv;
