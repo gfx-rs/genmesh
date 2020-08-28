@@ -4,8 +4,8 @@
 use cgmath::{InnerSpace, Vector3};
 use std::collections::{HashMap, HashSet};
 
-use poly::{EmitLines, Line, Triangle};
-use Normal;
+use crate::poly::{EmitLines, Line, Triangle};
+use crate::Normal;
 
 /// Neighbors search accelerating structure.
 pub struct Neighbors<T> {

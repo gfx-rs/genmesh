@@ -1,8 +1,8 @@
-use super::generators::{IndexedPolygon, SharedVertex};
-use super::Polygon::PolyTri;
-use super::{Polygon, Triangle};
 use std::f32::consts::PI;
-use Vertex;
+
+use crate::generators::{IndexedPolygon, SharedVertex};
+use crate::Polygon::{self, PolyTri};
+use crate::{Triangle, Vertex};
 
 /// Represents a circle in the XY plane with radius of 1, centered at (0, 0, 0)
 #[derive(Clone, Copy)]
