@@ -15,9 +15,6 @@
 #![deny(missing_docs)]
 #![allow(clippy::many_single_char_names)]
 
-extern crate cgmath;
-extern crate mint;
-
 pub use poly::{
     EmitLines, Line, Lines, MapToVertices, MapVertex, Polygon, Quad, Triangle, Vertices,
     VerticesIterator,
@@ -28,6 +25,8 @@ pub use triangulate::{EmitTriangles, Triangulate, TriangulateIterator};
 pub use indexer::{Indexer, LruIndexer};
 
 pub use neighbors::Neighbors;
+
+mod math;
 
 mod generator;
 mod indexer;

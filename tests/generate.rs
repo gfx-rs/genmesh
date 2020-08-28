@@ -1,6 +1,3 @@
-extern crate cgmath;
-extern crate genmesh;
-
 use genmesh::{generators, EmitTriangles, MapVertex, Triangulate};
 use std::fmt::Debug;
 

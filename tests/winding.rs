@@ -1,6 +1,3 @@
-extern crate cgmath;
-extern crate genmesh;
-
 use std::collections::HashSet;
 
 use cgmath::InnerSpace;

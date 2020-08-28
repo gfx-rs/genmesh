@@ -2,10 +2,8 @@
 
 use std::collections::HashMap;
 
-use cgmath::{InnerSpace, Vector3};
-
 use crate::generators::{IndexedPolygon, SharedVertex};
-use crate::{Triangle, Vertex};
+use crate::{math::Vector3, Triangle, Vertex};
 
 /// Icosahedral sphere with radius 1, centered at (0., 0., 0.)
 #[derive(Clone, Debug)]
@@ -151,7 +149,7 @@ fn subdivide_impl(
 
 fn new_point(start: [f32; 3], end: [f32; 3]) -> [f32; 3] {
     Vector3::new(start[0] + end[0], start[1] + end[1], start[2] + end[2])
-        .normalize()
+        .normalized()
         .into()
 }
 
