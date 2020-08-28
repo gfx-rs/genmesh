@@ -46,17 +46,17 @@ mod torus;
 /// A collection of utilties that can be used to build
 /// meshes programmatically.
 pub mod generators {
-    pub use circle::Circle;
-    pub use cone::Cone;
-    pub use cube::Cube;
-    pub use cylinder::Cylinder;
-    pub use generator::{
+    pub use super::circle::Circle;
+    pub use super::cone::Cone;
+    pub use super::cube::Cube;
+    pub use super::cylinder::Cylinder;
+    pub use super::generator::{
         IndexedPolygon, IndexedPolygonIterator, SharedVertex, SharedVertexIterator,
     };
-    pub use icosphere::IcoSphere;
-    pub use plane::Plane;
-    pub use sphere::SphereUv;
-    pub use torus::Torus;
+    pub use super::icosphere::IcoSphere;
+    pub use super::plane::Plane;
+    pub use super::sphere::SphereUv;
+    pub use super::torus::Torus;
 }
 
 /// Common vertex position type.

@@ -1,7 +1,7 @@
-use super::generators::{IndexedPolygon, SharedVertex};
-use super::{MapVertex, Quad};
 use std::ops::Range;
-use {Normal, Position, Vertex};
+
+use crate::generators::{IndexedPolygon, SharedVertex};
+use crate::{MapVertex, Normal, Position, Quad, Vertex};
 
 /// A perfect cube, centered at (0, 0, 0) with each face starting at 1/-1 away from the origin
 #[derive(Clone)]
