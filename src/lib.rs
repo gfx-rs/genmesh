@@ -13,6 +13,7 @@
 //! needs.
 
 #![deny(missing_docs)]
+#![allow(clippy::many_single_char_names)]
 
 extern crate cgmath;
 extern crate mint;

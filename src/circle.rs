@@ -45,22 +45,25 @@ impl Iterator for Circle {
     }
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.u > self.sub_u {
-            None
-        } else if self.u == self.sub_u {
-            self.u += 1;
-            Some(PolyTri(Triangle::new(
-                self.vert(0),
-                self.vert(self.u - 1),
-                self.vert(1),
-            )))
-        } else {
-            self.u += 1;
-            Some(PolyTri(Triangle::new(
-                self.vert(0),
-                self.vert(self.u - 1),
-                self.vert(self.u),
-            )))
+        use std::cmp::Ordering;
+        match self.u.cmp(&self.sub_u) {
+            Ordering::Less => {
+                self.u += 1;
+                Some(PolyTri(Triangle::new(
+                    self.vert(0),
+                    self.vert(self.u - 1),
+                    self.vert(self.u),
+                )))
+            }
+            Ordering::Equal => {
+                self.u += 1;
+                Some(PolyTri(Triangle::new(
+                    self.vert(0),
+                    self.vert(self.u - 1),
+                    self.vert(1),
+                )))
+            }
+            Ordering::Greater => None,
         }
     }
 }
@@ -104,6 +107,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[allow(clippy::approx_constant)]
     fn test_circle() {
         let circle = Circle::new(8);
         assert_eq!((8, Some(8)), circle.size_hint());

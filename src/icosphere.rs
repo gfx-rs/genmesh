@@ -113,6 +113,12 @@ impl IcoSphere {
     }
 }
 
+impl Default for IcoSphere {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 fn subdivide_impl(
     mut vertices: Vec<[f32; 3]>,
     faces: Vec<[usize; 3]>,

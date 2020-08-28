@@ -98,7 +98,7 @@ where
     // this means that there is no polygon who's neighbor switches winding
     // direction, but it does not mean that the polygon is correct. They
     // all could be backwards. So this still requires a secondary inspection.
-    assert!(lines.len() == 0);
+    assert_eq!(lines.len(), 0);
 }
 
 #[test]

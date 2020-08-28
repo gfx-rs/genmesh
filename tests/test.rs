@@ -1,7 +1,9 @@
 extern crate genmesh;
 
-use genmesh::{EmitTriangles, Indexer, LruIndexer, MapToVertices, Quad, Triangle, Triangulate,
-              Vertex, Vertices};
+use genmesh::{
+    EmitTriangles, Indexer, LruIndexer, MapToVertices, Quad, Triangle, Triangulate, Vertex,
+    Vertices,
+};
 
 use genmesh::generators::Plane;
 
@@ -14,9 +16,9 @@ fn quad_vertex() {
         Quad::new(true, false, true, false),
     ];
 
-    let transformed = input.iter().map(|x| x.clone()).vertex(|v| v % 2 != 0);
+    let transformed = input.iter().cloned().vertex(|v| v % 2 != 0);
 
-    for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
+    for (x, y) in transformed.zip(output.iter().cloned()) {
         assert_eq!(x, y);
     }
 }
@@ -32,11 +34,11 @@ fn quad_vertex_two_stages() {
 
     let transformed = input
         .iter()
-        .map(|x| x.clone())
+        .cloned()
         .vertex(|v| v as u8)
         .vertex(|v| v % 2 != 0);
 
-    for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
+    for (x, y) in transformed.zip(output.iter().cloned()) {
         assert_eq!(x, y);
     }
 }
@@ -49,10 +51,10 @@ fn quad_poly_simple() {
 
     let transformed = input
         .iter()
-        .map(|x| x.clone())
+        .cloned()
         .map(|v| Quad::new(0isize, v.y as isize, v.z as isize, 0));
 
-    for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
+    for (x, y) in transformed.zip(output.iter().cloned()) {
         assert_eq!(x, y);
     }
 }
@@ -66,9 +68,9 @@ fn triangle_vertex() {
         Triangle::new(true, false, true),
     ];
 
-    let transformed = input.iter().map(|x| x.clone()).vertex(|v| v % 2 != 0);
+    let transformed = input.iter().cloned().vertex(|v| v % 2 != 0);
 
-    for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
+    for (x, y) in transformed.zip(output.iter().cloned()) {
         assert_eq!(x, y);
     }
 }
@@ -84,11 +86,11 @@ fn triangle_vertex_two_stages() {
 
     let transformed = input
         .iter()
-        .map(|x| x.clone())
+        .cloned()
         .vertex(|v| v as u8)
         .vertex(|v| v % 2 != 0);
 
-    for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
+    for (x, y) in transformed.zip(output.iter().cloned()) {
         assert_eq!(x, y);
     }
 }
@@ -101,10 +103,10 @@ fn triangle_poly_simple() {
 
     let transformed = input
         .iter()
-        .map(|x| x.clone())
+        .cloned()
         .map(|v| Triangle::new(0isize, v.y as isize, v.z as isize));
 
-    for (x, y) in transformed.zip(output.iter().map(|x| x.clone())) {
+    for (x, y) in transformed.zip(output.iter().cloned()) {
         assert_eq!(x, y);
     }
 }
@@ -194,7 +196,7 @@ fn emit_lines() {
     assert_eq!(Line::new(3, 0), lines[3]);
 
     let quads = [Quad::new(0i8, 1, 2, 3), Quad::new(4i8, 5, 6, 7)];
-    let lines: Vec<Line<i8>> = quads.iter().map(|&x| x).lines().collect();
+    let lines: Vec<Line<i8>> = quads.iter().copied().lines().collect();
 
     assert_eq!(8, lines.len());
     assert_eq!(Line::new(0, 1), lines[0]);

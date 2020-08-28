@@ -43,6 +43,12 @@ impl Cube {
     }
 }
 
+impl Default for Cube {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Iterator for Cube {
     type Item = Quad<Vertex>;
 

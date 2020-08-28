@@ -31,7 +31,7 @@ impl<T, F: FnMut(usize, T)> LruIndexer<T, F> {
             index: 0,
             max: size,
             cache: Vec::new(),
-            emit: emit,
+            emit,
         }
     }
 }

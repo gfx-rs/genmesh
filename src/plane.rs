@@ -47,6 +47,12 @@ impl Plane {
     }
 }
 
+impl Default for Plane {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Iterator for Plane {
     type Item = Quad<Vertex>;
 
