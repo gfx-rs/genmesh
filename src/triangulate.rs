@@ -52,8 +52,8 @@ impl<T: Clone> EmitTriangles for Polygon<T> {
         F: FnMut(Triangle<T>),
     {
         match self {
-            &PolyTri(ref t) => t.emit_triangles(emit),
-            &PolyQuad(ref q) => q.emit_triangles(emit),
+            PolyTri(t) => t.emit_triangles(emit),
+            PolyQuad(q) => q.emit_triangles(emit),
         }
     }
 }
@@ -99,15 +99,13 @@ impl<V, U: EmitTriangles<Vertex = V>, SRC: Iterator<Item = U>> Iterator
 
     fn next(&mut self) -> Option<Self::Item> {
         loop {
-            match self.buffer.pop_front() {
-                Some(v) => return Some(v),
-                None => (),
+            if let v @ Some(_) = self.buffer.pop_front() {
+                break v;
             }
 
-            match self.source.next() {
-                Some(p) => p.emit_triangles(|v| self.buffer.push_back(v)),
-                None => return None,
-            }
+            self.source
+                .next()?
+                .emit_triangles(|v| self.buffer.push_back(v));
         }
     }
 }

@@ -13,7 +13,7 @@ pub trait SharedVertex<V>: Sized {
 
     /// create an iterator that returns each shared vertex that is required to
     /// build the mesh.
-    fn shared_vertex_iter<'a>(&'a self) -> SharedVertexIterator<'a, Self, V> {
+    fn shared_vertex_iter(&self) -> SharedVertexIterator<Self, V> {
         SharedVertexIterator {
             base: self,
             idx: 0..self.shared_vertex_count(),
@@ -59,7 +59,7 @@ pub trait IndexedPolygon<V>: Sized {
     fn indexed_polygon_count(&self) -> usize;
 
     /// create a iterator that will return a polygon for each face in the source mesh
-    fn indexed_polygon_iter<'a>(&'a self) -> IndexedPolygonIterator<'a, Self, V> {
+    fn indexed_polygon_iter(&self) -> IndexedPolygonIterator<Self, V> {
         IndexedPolygonIterator {
             base: self,
             idx: 0..self.indexed_polygon_count(),

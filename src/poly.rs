@@ -148,15 +148,13 @@ impl<V, U: EmitVertices<V>, SRC: Iterator<Item = U>> Iterator for VerticesIterat
 
     fn next(&mut self) -> Option<V> {
         loop {
-            match self.buffer.pop_front() {
-                Some(v) => return Some(v),
-                None => (),
+            if let v @ Some(_) = self.buffer.pop_front() {
+                break v;
             }
 
-            match self.source.next() {
-                Some(p) => p.emit_vertices(|v| self.buffer.push_back(v)),
-                None => return None,
-            }
+            self.source
+                .next()?
+                .emit_vertices(|v| self.buffer.push_back(v));
         }
     }
 }
@@ -308,7 +306,7 @@ pub struct Line<T> {
 impl<T> Line<T> {
     /// Create a new line using point x and y
     pub fn new(x: T, y: T) -> Self {
-        Line { x: x, y: y }
+        Line { x, y }
     }
 }
 
@@ -410,15 +408,11 @@ where
 
     fn next(&mut self) -> Option<Line<V>> {
         loop {
-            match self.buffer.pop_front() {
-                Some(v) => return Some(v),
-                None => (),
+            if let v @ Some(_) = self.buffer.pop_front() {
+                break v;
             }
 
-            match self.source.next() {
-                Some(p) => p.emit_lines(|v| self.buffer.push_back(v)),
-                None => return None,
-            }
+            self.source.next()?.emit_lines(|v| self.buffer.push_back(v));
         }
     }
 }

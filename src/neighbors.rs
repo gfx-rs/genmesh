@@ -26,23 +26,17 @@ impl<T> Neighbors<T> {
 
         for (i, p) in polygons.iter().enumerate() {
             p.clone().emit_lines(|line| {
-                shares_vertex
-                    .entry(line.x.clone())
-                    .or_insert(Vec::new())
-                    .push(i);
-                shares_vertex
-                    .entry(line.y.clone())
-                    .or_insert(Vec::new())
-                    .push(i);
-                shares_edge.entry(line).or_insert(Vec::new()).push(i);
+                shares_vertex.entry(line.x).or_insert_with(Vec::new).push(i);
+                shares_vertex.entry(line.y).or_insert_with(Vec::new).push(i);
+                shares_edge.entry(line).or_insert_with(Vec::new).push(i);
             });
         }
 
         Neighbors {
-            vertices: vertices,
-            shares_vertex: shares_vertex,
-            shares_edge: shares_edge,
-            polygons: polygons,
+            vertices,
+            shares_vertex,
+            shares_edge,
+            polygons,
         }
     }
 
@@ -64,11 +58,11 @@ impl<T> Neighbors<T> {
         self.polygons.get(i).map(|x| {
             let mut v = HashSet::new();
             x.clone().emit_lines(|line| {
-                self.shares_edge.get(&line).map(|x| {
+                if let Some(x) = self.shares_edge.get(&line) {
                     for &i in x {
                         v.insert(i);
                     }
-                });
+                }
             });
             v.remove(&i);
             v
