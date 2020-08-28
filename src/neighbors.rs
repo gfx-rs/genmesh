@@ -1,11 +1,10 @@
 //! This is a utility to search out and work in the mesh as a whole rather
 //! then polygon by polygon.
 
-use cgmath::{InnerSpace, Vector3};
 use std::collections::{HashMap, HashSet};
 
 use crate::poly::{EmitLines, Line, Triangle};
-use crate::Normal;
+use crate::{math::Vector3, Normal};
 
 /// Neighbors search accelerating structure.
 pub struct Neighbors<T> {
@@ -86,7 +85,7 @@ impl<T> Neighbors<T> {
         let a = z - x;
         let b = z - y;
 
-        a.cross(b).normalize().into()
+        a.cross(b).normalized().into()
     }
 
     /// Calculate the normal for an vertex based on the average
@@ -104,6 +103,6 @@ impl<T> Neighbors<T> {
             normal += Vector3::from(self.normal_for_face(face, &mut f));
         }
 
-        normal.normalize().into()
+        normal.normalized().into()
     }
 }

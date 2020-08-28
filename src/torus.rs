@@ -1,9 +1,8 @@
 use std::f32::consts::PI;
 
-use cgmath::{InnerSpace, Vector3};
-
 use super::generators::{IndexedPolygon, SharedVertex};
 use super::{MapVertex, Quad, Vertex};
+use crate::math::Vector3;
 
 ///
 #[derive(Clone, Copy)]
@@ -88,7 +87,7 @@ impl SharedVertex<Vertex> for Torus {
                 alpha.sin(),
                 -alpha.cos() * beta.sin(),
             )
-            .normalize()
+            .normalized()
             .into(),
         }
     }

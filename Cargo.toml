@@ -17,5 +17,7 @@ name = "genmesh"
 path = "src/lib.rs"
 
 [dependencies]
-cgmath = { version = "0.17", features = ["mint"] }
 mint = "0.5"
+
+[dev-dependencies]
+cgmath = { version = "0.17" }
