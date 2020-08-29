@@ -13,25 +13,31 @@ enum VertexSection {
     BottomCenter,
 }
 
-/// The `Cone` mesh will create a mesh that is from 1 to -1
+/// The `Cone` mesh will create a mesh that goes from 1 to -1.
 /// The bottom will be a circle around [0, 0, -1] with a radius
-/// of 1, all coords on the bottom will follow the plan equation `-z-1=0`
-/// The tip of the cone will always be at coord [0, 0, 1]
+/// of 1, all coords on the bottom will follow the plane equation `-z-1=0`.
+/// The tip of the cone will always be at coord [0, 0, 1].
 pub struct Cone {
     u: usize,
     sub_u: usize,
 }
 
 impl Cone {
-    /// Creates a new `Cone`
-    /// `u` is the number of subdivisions around the radius of the cone
-    /// it must be greater then 1.
+    /// Creates a new cone.
+    ///
+    /// # Arguments
+    ///
+    /// - `u` is the number of subdivisions around the radius of the cone,
+    ///     it must be at least 2
+    ///
+    /// # Panics
+    ///
+    /// This function panics if `u` is less than 2.
     pub fn new(u: usize) -> Self {
         assert!(u >= 2);
         Cone { u: 0, sub_u: u }
     }
 
-    ///
     fn vertex(&self, sec: VertexSection) -> Vertex {
         let divisions = TWO_PI / self.sub_u as f32;
 

@@ -3,14 +3,14 @@ use std::collections::VecDeque;
 use crate::Polygon::{self, PolyQuad, PolyTri};
 use crate::{Quad, Triangle};
 
-/// provides a way to convert a polygon down to triangles
+/// Provides a way to convert a polygon down to triangles.
 pub trait EmitTriangles {
-    /// The content of each point in the face
+    /// The content of each point in the triangle.
     type Vertex;
 
-    /// convert a polygon to one or more triangles, each triangle
-    /// is returned by calling `emit`
-    fn emit_triangles<F>(&self, f: F)
+    /// Convert a polygon to one or more triangles, each triangle
+    /// is returned by calling `emit`.
+    fn emit_triangles<F>(&self, emit: F)
     where
         F: FnMut(Triangle<Self::Vertex>);
 }
@@ -58,11 +58,10 @@ impl<T: Clone> EmitTriangles for Polygon<T> {
     }
 }
 
-/// `Triangluate` is a easy to to convert any Polygon stream to
-/// a stream of triangles. This is useful since Quads and other geometry
-/// are not supported by modern graphics pipelines like OpenGL.
+/// A trait to easily convert any polygon [`Iterator`] into a triangle [`Iterator`].
+/// This is useful since Quads and other geometry are not supported by modern graphics pipelines like OpenGL.
 pub trait Triangulate<T, V> {
-    /// convert a stream of Polygons to a stream of triangles
+    /// Convert an [`Iterator`] of polygons into an [`Iterator`] of triangles.
     fn triangulate(self) -> TriangulateIterator<T, V>;
 }
 
@@ -72,7 +71,12 @@ impl<V, P: EmitTriangles<Vertex = V>, T: Iterator<Item = P>> Triangulate<T, V> f
     }
 }
 
-/// Used to iterator of polygons into a iterator of triangles
+/// An [`Iterator`] that turns an [`Iterator`] of polygons into an [`Iterator`] of triangles.
+///
+/// This `struct` is created by the [`triangulate`] method on [`Triangulate`].
+///
+/// [`triangulate`]: trait.Triangulate.html#method.triangulate
+/// [`Triangulate`]: trait.Triangulate.html
 pub struct TriangulateIterator<SRC, V> {
     source: SRC,
     buffer: VecDeque<Triangle<V>>,

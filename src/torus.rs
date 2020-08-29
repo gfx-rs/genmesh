@@ -15,12 +15,18 @@ pub struct Torus {
 }
 
 impl Torus {
-    /// Create a new Torus Generator.
-    /// `radius` is the radius from the center [0, 0, 0] to the center
-    ///          of the the tubular radius
-    /// `tubular_radius` is the radius to the surface from the toridal
-    /// `tubular_segments` the number of segments that wrap around the tube, must be at least 3
-    /// `radial_segments` the number of tube segments requested to generate, must be at least 3
+    /// Creates a new torus.
+    ///
+    /// # Arguments
+    ///
+    /// - `radius` is the radius from the center [0, 0, 0] to the center of the tubular radius
+    /// - `tubular_radius` is the radius to the surface from the toridal
+    /// - `tubular_segments` is the number of segments that wrap around the tube, it must be at least 3
+    /// - `radial_segments` is the number of tube segments requested to generate, it must be at least 3
+    ///
+    /// # Panics
+    ///
+    /// This function panics if `tubular_segments` or `radial_segments` is less than 3.
     pub fn new(
         radius: f32,
         tubular_radius: f32,

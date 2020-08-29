@@ -1,16 +1,16 @@
-/// A trait defining how to defined an Indexer. An indexer is a object
-/// that collects verticies and emits indexes for the vertex. The intent
-/// is that an Indexer can find redundent vertexes and deduplicate them
-/// by returning aliased indexes.
+/// A trait defining how to define an Indexer. An indexer is an object
+/// that collects vertices and emits indices for the given vertex. The intent
+/// is that an Indexer can find redundent vertices and deduplicate them
+/// by returning aliased indices.
 pub trait Indexer<T> {
-    /// convert a vertex into an index.
+    /// Converts a vertex into an index.
     fn index(&mut self, v: T) -> usize;
 }
 
-/// An `LruIndexer` is useful for creating indexed steam from a stream of
-/// vertices. Each vertex that is index is only compared against the vetices
-/// contained in the cache. If a vertex is not found the LruIndexer will `emit`
-/// a new vertex and return the index of that new vertex.
+/// An `LruIndexer` is useful for creating an indexed steam from a stream of
+/// vertices. Each vertex that is indexed is only being compared against the
+/// vertices which are contained in the cache. If a vertex is not found, the
+/// LruIndexer will `emit` a new vertex and return the index of that new vertex.
 ///
 /// The oldest sample by time used will be dropped if a new vertex is found.
 pub struct LruIndexer<T, F: FnMut(usize, T)> {
@@ -21,11 +21,11 @@ pub struct LruIndexer<T, F: FnMut(usize, T)> {
 }
 
 impl<T, F: FnMut(usize, T)> LruIndexer<T, F> {
-    /// create a new `LruIndexer`, the window size is limited by the `size` parameter
-    /// it is recommended to keep this small since lookup is done in N time
+    /// Creates a new `LruIndexer` with a given window size limited by the `size` parameter.
+    /// It is recommended to keep this small, since lookup is done in N time
     ///
-    /// if a new vertex is found, `emit` will be called. emit will be supplied with a
-    /// vertex and a index that was used.
+    /// If a new vertex is found, `emit` will be called. `emit` will be supplied with a
+    /// vertex and an index that was used.
     pub fn new(size: usize, emit: F) -> LruIndexer<T, F> {
         LruIndexer {
             index: 0,

@@ -16,8 +16,8 @@
 #![allow(clippy::many_single_char_names)]
 
 pub use poly::{
-    EmitLines, Line, Lines, MapToVertices, MapVertex, Polygon, Quad, Triangle, Vertices,
-    VerticesIterator,
+    EmitLines, EmitVertices, Line, Lines, LinesIterator, MapToVertices, MapToVerticesIter,
+    MapVertex, Polygon, Quad, Triangle, Vertices, VerticesIterator,
 };
 
 pub use triangulate::{EmitTriangles, Triangulate, TriangulateIterator};
