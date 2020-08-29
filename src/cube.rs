@@ -10,7 +10,7 @@ pub struct Cube {
 }
 
 impl Cube {
-    /// create a new cube generator
+    /// Creates a new cube.
     pub fn new() -> Self {
         Cube { range: 0..6 }
     }

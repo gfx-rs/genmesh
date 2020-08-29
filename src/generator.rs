@@ -1,17 +1,19 @@
 use std::marker::PhantomData;
 use std::ops::Range;
 
-/// The `SharedVertex` trait is meant to be used with the `IndexedPolygon` trait.
+/// The `SharedVertex` trait is meant to be used with the [`IndexedPolygon`] trait.
 /// This trait is meant as a way to calculate the shared vertices that are
 /// required to build the implementors mesh.
+///
+/// [`IndexedPolygon`]: trait.IndexedPolygon.html
 pub trait SharedVertex<V>: Sized {
-    /// return the shared vertex at offset `i`
+    /// Returns the shared vertex at offset `i`.
     fn shared_vertex(&self, i: usize) -> V;
 
-    /// return the number of shared vertices required to represent the mesh
+    /// Returns the number of shared vertices required to represent the mesh.
     fn shared_vertex_count(&self) -> usize;
 
-    /// create an iterator that returns each shared vertex that is required to
+    /// Create an [`Iterator`] that returns each shared vertex that is required to
     /// build the mesh.
     fn shared_vertex_iter(&self) -> SharedVertexIterator<Self, V> {
         SharedVertexIterator {
@@ -22,7 +24,12 @@ pub trait SharedVertex<V>: Sized {
     }
 }
 
-/// An iterator that yields the shared vertices of the mesh
+/// An [`Iterator`] that yields the shared vertices of the mesh.
+///
+/// This `struct` is created by the [`shared_vertex_iter`] method on [`SharedVertex`].
+///
+/// [`shared_vertex_iter`]: trait.SharedVertex.html#method.shared_vertex_iter
+/// [`SharedVertex`]: trait.SharedVertex.html
 pub struct SharedVertexIterator<'a, T: 'a, V> {
     base: &'a T,
     idx: Range<usize>,
@@ -47,18 +54,20 @@ impl<'a, T: SharedVertex<V>, V> ExactSizeIterator for SharedVertexIterator<'a, T
     }
 }
 
-/// The `IndexedPolygon` trait is used with the `SharedVertex` trait in order to build
+/// The `IndexedPolygon` trait is used with the [`SharedVertex`] trait in order to build
 /// a mesh. `IndexedPolygon` calculates each polygon face required to build an implementors mesh.
-/// each face is always returned in indexed form that points to the correct vertice supplied
-/// by the `SharedVertex` trait.
+/// Each face is always returned in indexed form that points to the correct vertice supplied
+/// by the [`SharedVertex`] trait.
+///
+/// [`SharedVertex`]: trait.SharedVertex.html
 pub trait IndexedPolygon<V>: Sized {
-    /// return a polygon with indices to the shared vertex
+    /// Returns a polygon with indices to the shared vertex.
     fn indexed_polygon(&self, i: usize) -> V;
 
-    /// return the number of polygons that are needed to represent this mesh
+    /// Returns the number of polygons that are needed to represent this mesh.
     fn indexed_polygon_count(&self) -> usize;
 
-    /// create a iterator that will return a polygon for each face in the source mesh
+    /// Creates an [`Iterator`] that will return a polygon for each face in the source mesh.
     fn indexed_polygon_iter(&self) -> IndexedPolygonIterator<Self, V> {
         IndexedPolygonIterator {
             base: self,
@@ -68,7 +77,12 @@ pub trait IndexedPolygon<V>: Sized {
     }
 }
 
-/// An iterator that yields the indices of the mesh
+/// An [`Iterator`] that yields the indices of the mesh
+///
+/// This `struct` is created by the [`indexed_polygon_iter`] method on [`IndexedPolygon`].
+///
+/// [`indexed_polygon_iter`]: trait.IndexedPolygon.html#method.indexed_polygon_iter
+/// [`IndexedPolygon`]: trait.IndexedPolygon.html
 pub struct IndexedPolygonIterator<'a, T: 'a, V> {
     base: &'a T,
     idx: Range<usize>,

@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use crate::generators::{IndexedPolygon, SharedVertex};
 use crate::{math::Vector3, Triangle, Vertex};
 
-/// Icosahedral sphere with radius 1, centered at (0., 0., 0.)
+/// Icosahedral sphere with radius 1, centered at (0., 0., 0.).
 #[derive(Clone, Debug)]
 pub struct IcoSphere {
     i: usize,
@@ -71,7 +71,7 @@ const FACES: [[usize; 3]; 20] = [
 ];
 
 impl IcoSphere {
-    /// Create a unit sphere with 20 faces and 12 vertices.
+    /// Creates a unit sphere with 20 faces and 12 vertices.
     pub fn new() -> Self {
         Self {
             i: 0,
@@ -83,9 +83,9 @@ impl IcoSphere {
     /// Create a unit sphere with subdivision, resulting in 20 * 4^N faces, where N is the number of
     /// subdivisions.
     ///
-    /// ## Parameters
+    /// # Arguments
     ///
-    /// - `subdivides`: Number of subdivisions to perform.
+    /// - `subdivides` is the number of subdivisions to perform
     pub fn subdivide(subdivides: usize) -> Self {
         let mut vertices = VERTICES.to_vec();
         let mut faces = FACES.to_vec();

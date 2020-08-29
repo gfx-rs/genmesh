@@ -12,8 +12,15 @@ pub struct Circle {
 }
 
 impl Circle {
-    /// Create a new sphere.
-    /// `u` is the number of points around the circle, must be > 3
+    /// Creates a new sphere.
+    ///
+    /// # Arguments
+    ///
+    /// - `u` is the number of points around the circle, it must be at least 4
+    ///
+    /// # Panics
+    ///
+    /// This function panics if `u` is less than 4.
     pub fn new(u: usize) -> Self {
         assert!(u > 3);
         Circle { u: 1, sub_u: u }

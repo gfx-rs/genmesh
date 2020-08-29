@@ -1,7 +1,7 @@
 use super::generators::{IndexedPolygon, SharedVertex};
 use super::{Quad, Vertex};
 
-/// Represents a 2D plane with origin of (0, 0), from 1 to -1
+/// Represents a 2D plane with origin of (0, 0), from 1 to -1.
 #[derive(Clone, Copy)]
 pub struct Plane {
     subdivide_x: usize,
@@ -11,7 +11,7 @@ pub struct Plane {
 }
 
 impl Plane {
-    /// create a new cube generator
+    /// Creates a new plane.
     pub fn new() -> Plane {
         Plane {
             subdivide_x: 1,
@@ -21,10 +21,17 @@ impl Plane {
         }
     }
 
-    /// create a subdivided plane. This can be used to build
+    /// Creates a subdivided plane. This can be used to build
     /// a grid of points.
-    /// `x` is the number of subdivisions in the x axis
-    /// `y` is the number of subdivisions in the y axis
+    ///
+    /// # Arguments
+    ///
+    /// - `x` is the number of subdivisions in the x axis, must be at least 1
+    /// - `y` is the number of subdivisions in the y axis, must be at least 1
+    ///
+    /// # Panics
+    ///
+    /// This function panics if either `x` or `y` is zero.
     pub fn subdivide(x: usize, y: usize) -> Plane {
         assert!(x > 0 && y > 0);
         Plane {

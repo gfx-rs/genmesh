@@ -17,7 +17,7 @@ pub struct Neighbors<T> {
 }
 
 impl<T> Neighbors<T> {
-    /// Build a Neighbors search based on the supplied vertices
+    /// Builds a Neighbors search based on the supplied vertices
     /// and supplied triangle list.
     pub fn new(vertices: Vec<T>, polygons: Vec<Triangle<usize>>) -> Self {
         let mut shares_edge = HashMap::new();
@@ -39,20 +39,22 @@ impl<T> Neighbors<T> {
         }
     }
 
-    /// return the vector and triangle list used to create the Neighbors
+    /// Returns the vector and triangle list used to create the Neighbors.
     pub fn split(self) -> (Vec<T>, Vec<Triangle<usize>>) {
         (self.vertices, self.polygons)
     }
 
-    /// looks up the index of every polygon that contains
-    /// vertex t, this can be used to calculate new faces
+    /// Looks up the index of every polygon that contains
+    /// vertex `t`, this can be used to calculate new faces.
     pub fn vertex_neighbors(&self, t: &usize) -> Option<&[usize]> {
         self.shares_vertex.get(t).map(|x| &x[..])
     }
 
-    /// looks up the index of every polygon that is a neighbor of
-    /// polygon at index i. This can be used to prep data for a Geometry
-    /// shader (eg trinagle_adjacency)
+    /// Looks up the index of every [`Polygon`] that is a neighbor of the
+    /// [`Polygon`] at index `i`. This can be used to prep data for a Geometry
+    /// shader (eg triangle_adjacency).
+    ///
+    /// [`Polygon`]: enum.Polygon.html
     pub fn polygon_neighbors(&self, i: usize) -> Option<HashSet<usize>> {
         self.polygons.get(i).map(|x| {
             let mut v = HashSet::new();
@@ -68,10 +70,10 @@ impl<T> Neighbors<T> {
         })
     }
 
-    /// Calculate the normal for face. This is a `flat` shading
+    /// Calculate the normal for a face. This is a `flat` shading.
     ///
     /// You must supply a function that can be used to lookup
-    /// The position which is needed to calculate the normal
+    /// the position which is needed to calculate the normal.
     pub fn normal_for_face<F>(&self, i: usize, mut f: F) -> Normal
     where
         F: FnMut(&T) -> Normal,
@@ -88,11 +90,11 @@ impl<T> Neighbors<T> {
         a.cross(b).normalized().into()
     }
 
-    /// Calculate the normal for an vertex based on the average
-    /// of it's Neighbors this is a `smooth` shading
+    /// Calculate the normal for a vertex based on the average
+    /// of its neighbors. This is a `smooth` shading.
     ///
     /// You must supply a function that can be used to lookup
-    /// The position which is needed to calculate the normal
+    /// the position which is needed to calculate the normal.
     pub fn normal_for_vertex<F>(&self, i: usize, mut f: F) -> Normal
     where
         F: FnMut(&T) -> Normal,

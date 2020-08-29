@@ -39,8 +39,15 @@ const BOT: Vertex = Vertex {
 };
 
 impl Cylinder {
-    /// Create a new cylinder.
-    /// `u` is the number of points across the radius.
+    /// Creates a new cylinder.
+    ///
+    /// # Arguments
+    ///
+    /// - `u` is the number of points across the radius, it must be at least 2
+    ///
+    /// # Panics
+    ///
+    /// This function panics if `u` is less than 2.
     pub fn new(u: usize) -> Self {
         assert!(u > 1);
         Cylinder {
@@ -51,9 +58,16 @@ impl Cylinder {
         }
     }
 
-    /// Create a new subdivided cylinder.
-    /// `u` is the number of points across the radius.
-    /// `h` is the number of segments across the height.
+    /// Creates a new subdivided cylinder.
+    ///
+    /// # Arguments
+    ///
+    /// - `u` is the number of points across the radius, it must be at least 2
+    /// - `h` is the number of segments across the height, it must be non-zero
+    ///
+    /// # Panics
+    ///
+    /// This function panics if `u` is less than 2 or if `h` is 0.
     pub fn subdivide(u: usize, h: usize) -> Self {
         assert!(u > 1 && h > 0);
         Cylinder {

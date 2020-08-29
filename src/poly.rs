@@ -1,21 +1,21 @@
 use std::collections::VecDeque;
 use std::marker::PhantomData;
 
-/// A polygon with 4 points. Maps to `GL_QUADS`
+/// A polygon with 4 points. Maps to `GL_QUADS`.
 #[derive(Clone, Debug, PartialEq, Eq, Copy)]
 pub struct Quad<T> {
-    /// the first point of a quad
+    /// The first point of the quad
     pub x: T,
-    /// the second point of a quad
+    /// The second point of the quad
     pub y: T,
-    /// the third point of a quad
+    /// The third point of the quad
     pub z: T,
-    /// the fourth point of a quad
+    /// The fourth point of the quad
     pub w: T,
 }
 
 impl<T> Quad<T> {
-    /// create a new `Quad` with supplied vertices
+    /// Create a new `Quad` with the supplied vertices.
     pub fn new(v0: T, v1: T, v2: T, v3: T) -> Self {
         Quad {
             x: v0,
@@ -26,19 +26,19 @@ impl<T> Quad<T> {
     }
 }
 
-/// A polygon with 3 points. Maps to `GL_TRIANGLE`
+/// A polygon with 3 points. Maps to `GL_TRIANGLE`.
 #[derive(Clone, Debug, PartialEq, Eq, Copy)]
 pub struct Triangle<T> {
-    /// the first point of a triangle
+    /// the first point of the triangle
     pub x: T,
-    /// the second point of a triangle
+    /// the second point of the triangle
     pub y: T,
-    /// the third point of a triangle
+    /// the third point of the triangle
     pub z: T,
 }
 
 impl<T> Triangle<T> {
-    /// create a new `Triangle` with supplied vertcies
+    /// Create a new `Triangle` with the supplied vertices.
     pub fn new(v0: T, v1: T, v2: T) -> Self {
         Triangle {
             x: v0,
@@ -49,21 +49,27 @@ impl<T> Triangle<T> {
 }
 
 /// This is All-the-types container. This exists since some generators
-/// produce both `Triangles` and `Quads`.
+/// produce both [`Triangles`] and [`Quads`].
+///
+/// [`Triangles`]: struct.Triangle.html
+/// [`Quads`]: struct.Quad.html
 #[derive(Debug, Clone, PartialEq, Copy)]
 pub enum Polygon<T> {
-    /// A wraped triangle
+    /// A wrapped triangle
     PolyTri(Triangle<T>),
-    /// A wraped quad
+    /// A wrapped quad
     PolyQuad(Quad<T>),
 }
 
-/// The core mechanism of `Vertices` trait. This is a mechanism for unwraping
+/// The core mechanism of the [`Vertices`] trait. This is a mechanism for unwrapping
 /// a polygon extracting all of the vertices that it bound together.
+///
+/// [`Vertices`]: trait.Vertices.html
 pub trait EmitVertices<T> {
-    /// Consume a polygon, each
-    /// vertex is emitted to the parent function by calling the supplied
-    /// lambda function
+    /// Consume a [`Polygon`], each vertex is emitted to the parent function by
+    /// calling the supplied lambda function.
+    ///
+    /// [`Polygon`]: enum.Polygon.html
     fn emit_vertices<F>(self, f: F)
     where
         F: FnMut(T);
@@ -119,11 +125,13 @@ impl<T> EmitVertices<T> for Polygon<T> {
     }
 }
 
-/// Supplies a way to convert an iterator of polygons to an iterator
+/// Supplies a way to convert an [`Iterator`] of [`polygons`] to an [`Iterator`]
 /// of vertices. Useful for when you need to write the vertices into
 /// a graphics pipeline.
+///
+/// [`polygons`]: enum.Polygon.html
 pub trait Vertices<SRC, V> {
-    /// Convert a polygon iterator to a vertices iterator.
+    /// Convert a polygon [`Iterator`] to a vertices [`Iterator`].
     fn vertices(self) -> VerticesIterator<SRC, V>;
 }
 
@@ -136,8 +144,14 @@ impl<V, P: EmitVertices<V>, T: Iterator<Item = P>> Vertices<T, V> for T {
     }
 }
 
-/// an iterator that breaks a polygon down into its individual
-/// verticies.
+/// An [`Iterator`] that breaks a [`Polygon`] down into its individual
+/// vertices.
+///
+/// This `struct` is created by the [`vertices`] method on [`Vertices`].
+///
+/// [`Polygon`]: enum.Polygon.html
+/// [`Vertices`]: trait.Vertices.html
+/// [`vertices`]: trait.Vertices.html#method.vertices
 pub struct VerticesIterator<SRC, V> {
     source: SRC,
     buffer: VecDeque<V>,
@@ -159,12 +173,14 @@ impl<V, U: EmitVertices<V>, SRC: Iterator<Item = U>> Iterator for VerticesIterat
     }
 }
 
-/// equivalent of `map` but per-vertex
+/// Equivalent of `map` but per-vertex.
 pub trait MapVertex<T, U> {
-    /// `Output` should be a a container of the same shape of the type
+    /// `Output` should be a container of the same shape of the type.
     /// It's internal values should reflect any transformation the map did.
     type Output;
-    /// map a function to each vertex in polygon creating a new polygon
+    /// Map a function to each vertex in a [`Polygon`] creating a new [`Polygon`].
+    ///
+    /// [`Polygon`]: enum.Polygon.html
     fn map_vertex<F>(self, f: F) -> Self::Output
     where
         F: FnMut(T) -> U;
@@ -235,16 +251,18 @@ impl<T: Clone, U> MapVertex<T, U> for Polygon<T> {
 }
 
 /// This acts very similar to a vertex shader. It gives a way to manipulate
-/// and modify the vertices in a polygon. This is useful if you need to scale
-/// the mesh using a matrix multiply, or just for modifying the type of each
-/// vertex.
+/// and modify the vertices in a [`Polygon`]. This is useful if you need to
+/// scale the mesh using a matrix multiply, or just for modifying the type of
+/// each vertex.
+///
+/// [`Polygon`]: enum.Polygon.html
 pub trait MapToVertices<T, U>: Sized {
-    /// `Output` should be a a container of the same shape of the type
+    /// `Output` should be a a container of the same shape of the type.
     /// It's internal values should reflect any transformation the map did.
     type Output;
 
-    /// from a iterator of polygons, produces a iterator of polygons. Each
-    /// vertex in the process is modified with the suppled function.
+    /// Produces an [`Iterator`] of mapped polygons from an [`Iterator`] of polygons.
+    /// Each vertex in the process is modified with the supplied function.
     fn vertex<F>(self, map: F) -> MapToVerticesIter<Self, T, U, F>
     where
         F: FnMut(T) -> U;
@@ -267,6 +285,12 @@ impl<VIn, VOut, P, POut: MapVertex<VIn, VOut, Output = P>, T: Iterator<Item = PO
     }
 }
 
+/// An [`Iterator`] that maps vertices with a given function.
+///
+/// This `struct` is created by the [`vertex`] method on [`MapToVertices`].
+///
+/// [`vertex`]: trait.MapToVertices.html#method.vertex
+/// [`MapToVertices`]: trait.MapToVertices.html
 pub struct MapToVerticesIter<SRC, T, U, F: FnMut(T) -> U> {
     src: SRC,
     f: F,
@@ -294,30 +318,37 @@ impl<
     }
 }
 
-/// Represents a line
+/// Represents a line.
 #[derive(Clone, Debug, PartialEq, Eq, Copy, Hash)]
 pub struct Line<T> {
-    /// the first point
+    /// The first point
     pub x: T,
     /// The second point
     pub y: T,
 }
 
 impl<T> Line<T> {
-    /// Create a new line using point x and y
+    /// Create a new line using point x and y.
     pub fn new(x: T, y: T) -> Self {
         Line { x, y }
     }
 }
 
-/// Convert a Polygon into it's fragments
+/// Convert a [`Polygon`] into it's fragments.
+///
+/// [`Polygon`]: enum.Polygon.html
 pub trait EmitLines {
-    /// The Vertex defines the corners of a Polygon
+    /// The Vertex defines the corners of a [`Polygon`].
+    ///
+    /// [`Polygon`]: enum.Polygon.html
     type Vertex;
 
-    /// convert a polygon into lines, each line is emitted via
-    /// calling of the callback of `emit` This allow for
-    /// a variable amount of lines to be returned
+    /// Convert a polygon into lines, each [`Line`] is emitted via
+    /// calling of the callback of `emit`. This allows for
+    /// a variable amount of lines to be returned.
+    ///
+    /// [`Polygon`]: enum.Polygon.html
+    /// [`Line`]: struct.Line.html
     fn emit_lines<E>(self, emit: E)
     where
         E: FnMut(Line<Self::Vertex>);
@@ -364,12 +395,17 @@ impl<T: Clone> EmitLines for Polygon<T> {
     }
 }
 
-/// Creates an LinesIterator from another Iterator
+/// Supplies a way to convert an [`Iterator`] of [`polygons`] into an [`Iterator`] of
+/// the [`polygons`] lines
+///
+/// [`polygons`]: enum.Polygon.html
 pub trait Lines: Sized {
-    /// The type of each point in the lines
+    /// The type of each point in the lines.
     type Vertex;
 
-    /// Convert the iterator into a LinesIterator
+    /// Convert the [`Iterator`] into a [`LinesIterator`].
+    ///
+    /// [`LinesIterator`]: struct.LinesIterator.html
     fn lines(self) -> LinesIterator<Self, Self::Vertex>;
 }
 
@@ -388,7 +424,12 @@ where
     }
 }
 
-/// An iterator that turns Polygons into an Iterator of Lines
+/// An [`Iterator`] that turns polygons into an [`Iterator`] of lines.
+///
+/// This `struct` is created by the [`lines`] method on [`Lines`].
+///
+/// [`lines`]: trait.Lines.html#method.lines
+/// [`Lines`]: trait.Lines.html
 pub struct LinesIterator<I, V> {
     source: I,
     buffer: VecDeque<Line<V>>,

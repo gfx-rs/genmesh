@@ -4,7 +4,7 @@ use crate::generators::{IndexedPolygon, SharedVertex};
 use crate::Polygon::{self, PolyQuad, PolyTri};
 use crate::{Quad, Triangle, Vertex};
 
-/// Represents a sphere with radius of 1, centered at (0, 0, 0)
+/// Represents a sphere with radius of 1, centered at (0, 0, 0).
 #[derive(Clone, Copy)]
 pub struct SphereUv {
     u: usize,
@@ -14,9 +14,16 @@ pub struct SphereUv {
 }
 
 impl SphereUv {
-    /// Create a new sphere.
-    /// `u` is the number of points across the equator of the sphere.
-    /// `v` is the number of points from pole to pole.
+    /// Creates a new sphere.
+    ///
+    /// # Arguments
+    ///
+    /// - `u` is the number of points across the equator of the sphere, must be at least 2
+    /// - `v` is the number of points from pole to pole, must be at least 2
+    ///
+    /// # Panics
+    ///
+    /// This function panics if `u` or `v` are less than 2 respectively.
     pub fn new(u: usize, v: usize) -> Self {
         assert!(u > 1 && v > 1);
         SphereUv {
