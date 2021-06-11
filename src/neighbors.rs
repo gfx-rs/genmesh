@@ -33,9 +33,9 @@ impl<T> Neighbors<T> {
 
         Neighbors {
             vertices,
-            shares_vertex,
-            shares_edge,
             polygons,
+            shares_edge,
+            shares_vertex,
         }
     }
 
