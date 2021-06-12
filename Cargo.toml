@@ -20,4 +20,4 @@ path = "src/lib.rs"
 mint = "0.5"
 
 [dev-dependencies]
-cgmath = { version = "0.17" }
+cgmath = { version = "0.18" }
