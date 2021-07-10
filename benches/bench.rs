@@ -12,17 +12,14 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-#![feature(test)]
+use criterion::{black_box, criterion_group, criterion_main, Criterion, Bencher};
 
 extern crate genmesh;
-extern crate test;
 
 use genmesh::generators::{IndexedPolygon, SharedVertex};
 use genmesh::generators::{Plane, SphereUv};
 use genmesh::*;
-use test::{black_box, Bencher};
 
-#[bench]
 fn plane(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = Plane::new();
@@ -35,7 +32,6 @@ fn plane(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn plane_16x16_index(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = Plane::subdivide(16, 16);
@@ -45,7 +41,6 @@ fn plane_16x16_index(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn plane_256x256_index(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = Plane::subdivide(256, 256);
@@ -55,7 +50,6 @@ fn plane_256x256_index(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn plane_16x16_vertex(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = Plane::subdivide(16, 16);
@@ -65,7 +59,6 @@ fn plane_16x16_vertex(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn plane_256x256_vertex(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = Plane::subdivide(256, 256);
@@ -75,7 +68,6 @@ fn plane_256x256_vertex(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn plane_16x16_index_triangulate(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = Plane::subdivide(16, 16);
@@ -85,7 +77,6 @@ fn plane_16x16_index_triangulate(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn plane_256x256_index_triangulate(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = Plane::subdivide(256, 256);
@@ -95,7 +86,6 @@ fn plane_256x256_index_triangulate(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn sphere_16x16_index(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = SphereUv::new(16, 16);
@@ -105,7 +95,6 @@ fn sphere_16x16_index(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn sphere_256x256_index(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = SphereUv::new(256, 256);
@@ -115,7 +104,6 @@ fn sphere_256x256_index(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn sphere_16x16_vertex(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = SphereUv::new(16, 16);
@@ -125,7 +113,6 @@ fn sphere_16x16_vertex(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn sphere_256x256_vertex(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = SphereUv::new(256, 256);
@@ -135,7 +122,6 @@ fn sphere_256x256_vertex(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn sphere_16x16_index_triangulate(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = SphereUv::new(16, 16);
@@ -145,7 +131,6 @@ fn sphere_16x16_index_triangulate(bench: &mut Bencher) {
     });
 }
 
-#[bench]
 fn sphere_256x256_index_triangulate(bench: &mut Bencher) {
     bench.iter(|| {
         let plane = SphereUv::new(256, 256);
@@ -154,3 +139,22 @@ fn sphere_256x256_index_triangulate(bench: &mut Bencher) {
         }
     });
 }
+
+fn criterion_benchmark(c: &mut Criterion) {
+    c.bench_function("plane", plane);
+    c.bench_function("plane_16x16_index", plane_16x16_index);
+    c.bench_function("plane_16x16_vertex", plane_16x16_vertex);
+    c.bench_function("plane_16x16_index_triangulate", plane_16x16_index_triangulate);
+    c.bench_function("plane_256x256_index", plane_256x256_index);
+    c.bench_function("plane_256x256_vertex", plane_256x256_vertex);
+    c.bench_function("plane_256x256_index_triangulate", plane_256x256_index_triangulate);
+    c.bench_function("sphere_16x16_index", sphere_16x16_index);
+    c.bench_function("sphere_16x16_vertex", sphere_16x16_vertex);
+    c.bench_function("sphere_16x16_index_triangulate", sphere_16x16_index_triangulate);
+    c.bench_function("sphere_256x256_index", sphere_256x256_index);
+    c.bench_function("sphere_256x256_vertex", sphere_256x256_vertex);
+    c.bench_function("sphere_256x256_index_triangulate", sphere_256x256_index_triangulate);
+}
+
+criterion_group!(benches, criterion_benchmark);
+criterion_main!(benches);

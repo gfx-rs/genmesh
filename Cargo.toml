@@ -21,3 +21,8 @@ mint = "0.5"
 
 [dev-dependencies]
 cgmath = { version = "0.18" }
+criterion = "0.3"
+
+[[bench]]
+name = "bench"
+harness = false
