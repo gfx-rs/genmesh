@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion, Bencher};
+use criterion::{black_box, criterion_group, criterion_main, Bencher, Criterion};
 
 extern crate genmesh;
 
@@ -144,16 +144,28 @@ fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("plane", plane);
     c.bench_function("plane_16x16_index", plane_16x16_index);
     c.bench_function("plane_16x16_vertex", plane_16x16_vertex);
-    c.bench_function("plane_16x16_index_triangulate", plane_16x16_index_triangulate);
+    c.bench_function(
+        "plane_16x16_index_triangulate",
+        plane_16x16_index_triangulate,
+    );
     c.bench_function("plane_256x256_index", plane_256x256_index);
     c.bench_function("plane_256x256_vertex", plane_256x256_vertex);
-    c.bench_function("plane_256x256_index_triangulate", plane_256x256_index_triangulate);
+    c.bench_function(
+        "plane_256x256_index_triangulate",
+        plane_256x256_index_triangulate,
+    );
     c.bench_function("sphere_16x16_index", sphere_16x16_index);
     c.bench_function("sphere_16x16_vertex", sphere_16x16_vertex);
-    c.bench_function("sphere_16x16_index_triangulate", sphere_16x16_index_triangulate);
+    c.bench_function(
+        "sphere_16x16_index_triangulate",
+        sphere_16x16_index_triangulate,
+    );
     c.bench_function("sphere_256x256_index", sphere_256x256_index);
     c.bench_function("sphere_256x256_vertex", sphere_256x256_vertex);
-    c.bench_function("sphere_256x256_index_triangulate", sphere_256x256_index_triangulate);
+    c.bench_function(
+        "sphere_256x256_index_triangulate",
+        sphere_256x256_index_triangulate,
+    );
 }
 
 criterion_group!(benches, criterion_benchmark);
