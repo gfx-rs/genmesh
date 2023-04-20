@@ -1,0 +1,12 @@
+[package]
+name = "viewer"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = "0.10.1"
+bevy_panorbit_camera = "0.2.0"
+genmesh = { version = "0.6.2", path = "../..", features= ["into_bevy_mesh"] }
+glam = { version = "0.23.0", features = ["mint"] }

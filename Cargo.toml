@@ -5,6 +5,7 @@ authors = [
     "Coraline Sherratt <cora.sherratt@gmail.com>",
     "Dzmitry Malyshau <kvarkus@gmail.com>",
 ]
+resolver = "2"
 
 license = "Apache-2.0"
 description = "A package for generating 3D meshes"
@@ -12,11 +13,17 @@ homepage = "https://github.com/gfx-rs/genmesh"
 repository = "https://github.com/gfx-rs/genmesh"
 edition = "2018"
 
+[features]
+default = []
+into_bevy_mesh = ["dep:bevy_render", "dep:glam"]
+
 [lib]
 name = "genmesh"
 path = "src/lib.rs"
 
 [dependencies]
+bevy_render = { version = "0.10.1", default-features = false, optional = true }
+glam = { version = "0.23.0", features = ["mint"], optional = true }
 mint = "0.5"
 
 [dev-dependencies]
