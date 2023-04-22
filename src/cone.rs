@@ -51,7 +51,7 @@ impl Cone {
                     normal: [
                         pos.cos() * FRAC_1_SQRT_2,
                         pos.sin() * FRAC_1_SQRT_2,
-                        -FRAC_1_SQRT_2,
+                        FRAC_1_SQRT_2,
                     ]
                     .into(),
                 }

@@ -106,3 +106,4 @@ impl<'a, T: IndexedPolygon<V>, V> ExactSizeIterator for IndexedPolygonIterator<'
         self.idx.len()
     }
 }
+

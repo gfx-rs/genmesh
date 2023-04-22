@@ -71,3 +71,7 @@ pub struct Vertex {
     /// Vertex normal
     pub normal: Normal,
 }
+
+/// Provides generator into bevy mesh functionality.
+#[cfg(feature = "into_bevy_mesh")]
+pub mod bevy_compat;
